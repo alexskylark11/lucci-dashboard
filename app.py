@@ -74,7 +74,9 @@ html, body, [class*="css"] {{
     flex-direction: column;
     gap: 4px;
     height: 100%;
+    min-height: 110px;
     border-radius: 6px;
+    box-sizing: border-box;
 }}
 .kpi-card-dark {{
     border: 2px solid {RED};
@@ -84,7 +86,9 @@ html, body, [class*="css"] {{
     flex-direction: column;
     gap: 4px;
     height: 100%;
+    min-height: 110px;
     border-radius: 6px;
+    box-sizing: border-box;
 }}
 .kpi-label {{
     font-size: 11px;
@@ -197,11 +201,12 @@ st.markdown(f"""
 # ── HELPERS ──────────────────────────────────────────────────────────────────
 def kpi(label, value, sub="", dark=False):
     s = "-dark" if dark else ""
+    sub_text = sub if sub else "&nbsp;"
     return f"""
     <div class="kpi-card{s}">
         <span class="kpi-label{s}">{label}</span>
         <span class="kpi-value{s}">{value}</span>
-        <span class="kpi-sub{s}">{sub}</span>
+        <span class="kpi-sub{s}">{sub_text}</span>
     </div>"""
 
 
