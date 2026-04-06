@@ -431,14 +431,16 @@ if active_tab == "Overview":
     total_on = cm_filt["On-Premise"].sum()
     total_off = cm_filt["Off-Premise"].sum()
 
-    c1, c2, c3, c4 = st.columns(4)
+    c1, c2, c3, c4, c5 = st.columns(5)
     with c1:
-        st.markdown(kpi("Total Depletions (Cases)", f"{total_cases:,.2f}", "Filtered period", dark=True), unsafe_allow_html=True)
+        st.markdown(kpi("Gross Revenue YTD", "$148,106", "4,811 cases shipped", dark=True), unsafe_allow_html=True)
     with c2:
-        st.markdown(kpi("Total PODs", "1,046", "Points of distribution"), unsafe_allow_html=True)
+        st.markdown(kpi("Net Revenue YTD", "$134,582", "After credit memos", dark=True), unsafe_allow_html=True)
     with c3:
-        st.markdown(kpi("Gopuff YTD Units", "116", "23 locations, 3 states"), unsafe_allow_html=True)
+        st.markdown(kpi("Total Depletions", f"{total_cases:,.2f}", "Cases - filtered period"), unsafe_allow_html=True)
     with c4:
+        st.markdown(kpi("Gopuff YTD Units", "116", "23 locations, 3 states"), unsafe_allow_html=True)
+    with c5:
         st.markdown(kpi("ReserveBar Revenue", "$1.48K", "73 units, 23 orders"), unsafe_allow_html=True)
 
     st.markdown("<br>", unsafe_allow_html=True)
