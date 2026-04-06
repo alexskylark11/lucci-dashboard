@@ -375,13 +375,35 @@ rb_discounts = pd.DataFrame([
     {"Code": "feb26 codes", "Orders": 1, "Share": "8%"},
 ])
 
+# ── SHIPMENTS & REVENUE DATA ────────────────────────────────────────────────
+ship_monthly_cases = pd.DataFrame([
+    {"Month": "Dec '25", "Cases": 2302},
+    {"Month": "Jan '26", "Cases": 1447},
+    {"Month": "Feb '26", "Cases": 683},
+    {"Month": "Mar '26", "Cases": 379},
+])
+
+ship_monthly_revenue = pd.DataFrame([
+    {"Month": "Dec '25", "Revenue": 71539},
+    {"Month": "Jan '26", "Revenue": 47005},
+    {"Month": "Feb '26", "Revenue": 18488},
+    {"Month": "Mar '26", "Revenue": 11073},
+])
+
+ship_monthly_rev_per_case = pd.DataFrame([
+    {"Month": "Dec '25", "Rev/Case": 31.1},
+    {"Month": "Jan '26", "Rev/Case": 32.5},
+    {"Month": "Feb '26", "Rev/Case": 27.1},
+    {"Month": "Mar '26", "Rev/Case": 29.2},
+])
+
 
 # ══════════════════════════════════════════════════════════════════════════════
 # NAVIGATION
 # ══════════════════════════════════════════════════════════════════════════════
 active_tab = st.radio(
     "Dashboard",
-    ["Overview", "Depletions", "Gopuff", "ReserveBar"],
+    ["Overview", "Shipments & Revenue", "Depletions", "Gopuff", "ReserveBar"],
     horizontal=True,
     label_visibility="collapsed",
 )
@@ -452,6 +474,46 @@ if active_tab == "Overview":
         </div>
     </div>
     """, unsafe_allow_html=True)
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+# SHIPMENTS & REVENUE
+# ══════════════════════════════════════════════════════════════════════════════
+elif active_tab == "Shipments & Revenue":
+    c1, c2, c3, c4, c5 = st.columns(5)
+    with c1:
+        st.markdown(kpi("Cases Shipped YTD", "4,811", "Dec '25 - Mar '26", dark=True), unsafe_allow_html=True)
+    with c2:
+        st.markdown(kpi("Gross Revenue YTD", "$148,106", "Before credit memos"), unsafe_allow_html=True)
+    with c3:
+        st.markdown(kpi("Credit Memos YTD", "-$13,523", "Adjustments applied"), unsafe_allow_html=True)
+    with c4:
+        st.markdown(kpi("Net Revenue YTD", "$134,582", "After credit memos"), unsafe_allow_html=True)
+    with c5:
+        st.markdown(kpi("Gross Rev / Case YTD", "$31", "Gross rev / cases shipped"), unsafe_allow_html=True)
+
+    st.markdown("<br>", unsafe_allow_html=True)
+    col1, col2 = st.columns(2)
+
+    with col1:
+        section_title("Monthly Cases Shipped")
+        fig = bar_chart(ship_monthly_cases, "Month", "Cases")
+        fig.update_traces(text=ship_monthly_cases["Cases"].apply(lambda x: f"{x:,.0f}"), textposition="outside")
+        fig.update_layout(height=320)
+        st.plotly_chart(fig, use_container_width=True)
+
+    with col2:
+        section_title("Monthly Gross Revenue")
+        fig = bar_chart(ship_monthly_revenue, "Month", "Revenue")
+        fig.update_traces(text=ship_monthly_revenue["Revenue"].apply(lambda x: f"${x:,.0f}"), textposition="outside")
+        fig.update_layout(height=320)
+        st.plotly_chart(fig, use_container_width=True)
+
+    section_title("Monthly Gross Revenue Per Case ($ / Case Shipped)")
+    fig = bar_chart(ship_monthly_rev_per_case, "Month", "Rev/Case")
+    fig.update_traces(text=ship_monthly_rev_per_case["Rev/Case"].apply(lambda x: f"${x:.1f}"), textposition="outside")
+    fig.update_layout(height=320)
+    st.plotly_chart(fig, use_container_width=True)
 
 
 # ══════════════════════════════════════════════════════════════════════════════
