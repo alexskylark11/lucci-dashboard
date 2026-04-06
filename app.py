@@ -435,7 +435,7 @@ if active_tab == "Overview":
     with c1:
         st.markdown(kpi("Gross Revenue YTD", "$148,106", "4,811 cases shipped", dark=True), unsafe_allow_html=True)
     with c2:
-        st.markdown(kpi("Net Revenue YTD", "$134,582", "After credit memos", dark=True), unsafe_allow_html=True)
+        st.markdown(kpi("Cases Shipped YTD", "4,811", "Dec '25 - Mar '26", dark=True), unsafe_allow_html=True)
     with c3:
         st.markdown(kpi("Total Depletions", f"{total_cases:,.2f}", "Cases - filtered period"), unsafe_allow_html=True)
     with c4:
