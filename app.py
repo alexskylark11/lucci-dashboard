@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
-import plotly.express as px
 import plotly.graph_objects as go
+import plotly.express as px
 
 # ── PAGE CONFIG ──────────────────────────────────────────────────────────────
 st.set_page_config(
@@ -23,190 +23,185 @@ TEXT_DARK = "#2C1A0E"
 TEXT_MID = "#5C3A1E"
 TEXT_LIGHT = "#8B6347"
 
+FONT = "Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+FONT_DISPLAY = "'Inter', 'Helvetica Neue', Arial, sans-serif"
+
 # ── CUSTOM CSS ───────────────────────────────────────────────────────────────
-st.markdown("""
+st.markdown(f"""
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Anton&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap');
 
-.main .block-container { padding-top: 0; }
+html, body, [class*="css"] {{
+    font-family: {FONT} !important;
+}}
+.main .block-container {{ padding-top: 0; }}
 
-.lucci-header {
-    background: #8B1A1A;
-    border-bottom: 4px solid #2C1A0E;
-    padding: 18px 40px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+.lucci-header {{
+    background: {RED};
+    border-bottom: 4px solid {TEXT_DARK};
+    padding: 20px 40px;
     margin: -1rem -1rem 1.5rem -1rem;
-}
-.lucci-title {
-    font-family: 'Anton', 'Impact', 'Arial Black', sans-serif;
-    font-size: 34px;
+}}
+.lucci-title {{
+    font-family: {FONT_DISPLAY};
+    font-size: 36px;
     font-weight: 900;
     color: white;
     letter-spacing: 0.06em;
     line-height: 1;
-}
-.lucci-subtitle {
-    font-size: 10px;
-    color: rgba(255,255,255,0.6);
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    margin-left: 12px;
-}
-.lucci-period {
-    font-size: 9px;
-    color: rgba(255,255,255,0.5);
+}}
+.lucci-subtitle {{
+    font-size: 12px;
+    color: rgba(255,255,255,0.65);
     letter-spacing: 0.15em;
     text-transform: uppercase;
-    margin-top: 3px;
-}
+    margin-left: 14px;
+    font-weight: 500;
+}}
+.lucci-period {{
+    font-size: 11px;
+    color: rgba(255,255,255,0.5);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-top: 4px;
+}}
 
-.kpi-card {
-    border: 2px solid #EEDBD8;
-    padding: 18px 20px;
-    background: #FFFDF5;
+.kpi-card {{
+    border: 2px solid {RED_FAINT};
+    padding: 20px 22px;
+    background: {WHITE};
     display: flex;
     flex-direction: column;
-    gap: 3px;
+    gap: 4px;
     height: 100%;
-}
-.kpi-card-dark {
-    border: 2px solid #8B1A1A;
-    padding: 18px 20px;
-    background: #8B1A1A;
+    border-radius: 6px;
+}}
+.kpi-card-dark {{
+    border: 2px solid {RED};
+    padding: 20px 22px;
+    background: {RED};
     display: flex;
     flex-direction: column;
-    gap: 3px;
+    gap: 4px;
     height: 100%;
-}
-.kpi-label {
-    font-size: 9px;
-    letter-spacing: 0.18em;
+    border-radius: 6px;
+}}
+.kpi-label {{
+    font-size: 11px;
+    letter-spacing: 0.12em;
     text-transform: uppercase;
-    color: #8B6347;
-    font-family: Georgia, serif;
-}
-.kpi-label-dark {
-    font-size: 9px;
-    letter-spacing: 0.18em;
+    color: {TEXT_MID};
+    font-weight: 600;
+}}
+.kpi-label-dark {{
+    font-size: 11px;
+    letter-spacing: 0.12em;
     text-transform: uppercase;
-    color: #EEDBD8;
-    font-family: Georgia, serif;
-}
-.kpi-value {
+    color: {RED_FAINT};
+    font-weight: 600;
+}}
+.kpi-value {{
     font-size: 32px;
     font-weight: 900;
-    color: #8B1A1A;
-    font-family: 'Anton', 'Impact', 'Arial Black', sans-serif;
-    line-height: 1.05;
-    letter-spacing: 0.02em;
-}
-.kpi-value-dark {
+    color: {RED};
+    font-family: {FONT_DISPLAY};
+    line-height: 1.1;
+}}
+.kpi-value-dark {{
     font-size: 32px;
     font-weight: 900;
     color: white;
-    font-family: 'Anton', 'Impact', 'Arial Black', sans-serif;
-    line-height: 1.05;
-    letter-spacing: 0.02em;
-}
-.kpi-sub {
-    font-size: 11px;
-    color: #5C3A1E;
-}
-.kpi-sub-dark {
-    font-size: 11px;
-    color: rgba(255,255,255,0.65);
-}
+    font-family: {FONT_DISPLAY};
+    line-height: 1.1;
+}}
+.kpi-sub {{
+    font-size: 13px;
+    color: {TEXT_MID};
+}}
+.kpi-sub-dark {{
+    font-size: 13px;
+    color: rgba(255,255,255,0.7);
+}}
 
-.section-title {
+.section-title {{
     display: flex;
     align-items: center;
     gap: 10px;
-    margin-bottom: 8px;
-}
-.section-bar {
+    margin-bottom: 10px;
+}}
+.section-bar {{
     width: 4px;
-    height: 20px;
-    background: #8B1A1A;
+    height: 22px;
+    background: {RED};
     display: inline-block;
-}
-.section-text {
-    font-size: 11px;
-    letter-spacing: 0.22em;
+    border-radius: 2px;
+}}
+.section-text {{
+    font-size: 13px;
+    letter-spacing: 0.14em;
     text-transform: uppercase;
-    color: #8B1A1A;
-    font-family: 'Anton', 'Impact', 'Arial Black', sans-serif;
-    font-weight: 900;
-}
+    color: {RED};
+    font-weight: 800;
+}}
 
-.highlight-banner {
-    background: #8B1A1A;
-    border: 3px solid #2C1A0E;
-    padding: 20px 28px;
+.highlight-banner {{
+    background: {RED};
+    border: 3px solid {TEXT_DARK};
+    padding: 22px 30px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 20px;
+    gap: 24px;
     margin-top: 1rem;
-}
-.highlight-text { color: white; }
-.highlight-stat {
-    text-align: center;
-    color: white;
-    font-family: 'Anton', 'Impact', sans-serif;
-}
+    border-radius: 6px;
+}}
 
-.footer-text {
+.footer-text {{
     text-align: center;
-    color: #8B6347;
-    font-size: 9px;
-    letter-spacing: 0.15em;
+    color: {TEXT_MID};
+    font-size: 11px;
+    letter-spacing: 0.12em;
     text-transform: uppercase;
     margin-top: 2rem;
-}
+}}
 
-/* Style the radio buttons / tabs */
-div[data-testid="stHorizontalBlock"] .stRadio > div {
-    flex-direction: row;
-    gap: 0;
-}
-
-/* Table styling */
-table { font-size: 12px !important; }
-thead tr th {
-    background: #8B1A1A !important;
+/* Table legibility */
+table {{ font-size: 13px !important; }}
+thead tr th {{
+    background: {RED} !important;
     color: white !important;
-    font-weight: 900 !important;
-    font-size: 9px !important;
-    letter-spacing: 0.1em !important;
+    font-weight: 700 !important;
+    font-size: 11px !important;
+    letter-spacing: 0.08em !important;
     text-transform: uppercase !important;
-}
+}}
+
+/* Streamlit overrides for legibility */
+.stDataFrame {{ font-size: 13px; }}
+div[data-testid="stMetricValue"] {{ font-size: 28px !important; }}
 </style>
 """, unsafe_allow_html=True)
 
 # ── HEADER ───────────────────────────────────────────────────────────────────
-st.markdown("""
+st.markdown(f"""
 <div class="lucci-header">
-    <div>
-        <div style="display:flex; align-items:baseline;">
-            <span class="lucci-title">LUCCI</span>
-            <span class="lucci-subtitle">Lambrusco Reggiano DOC</span>
-        </div>
-        <p class="lucci-period">Sales Intelligence Dashboard</p>
+    <div style="display:flex; align-items:baseline;">
+        <span class="lucci-title">LUCCI</span>
+        <span class="lucci-subtitle">Lambrusco Reggiano DOC</span>
     </div>
+    <p class="lucci-period">Sales Intelligence Dashboard</p>
 </div>
 """, unsafe_allow_html=True)
 
 
 # ── HELPERS ──────────────────────────────────────────────────────────────────
 def kpi(label, value, sub="", dark=False):
-    cls = "dark" if dark else ""
+    s = "-dark" if dark else ""
     return f"""
-    <div class="kpi-card{'-dark' if dark else ''}">
-        <span class="kpi-label{'-dark' if dark else ''}">{label}</span>
-        <span class="kpi-value{'-dark' if dark else ''}">{value}</span>
-        <span class="kpi-sub{'-dark' if dark else ''}">{sub}</span>
+    <div class="kpi-card{s}">
+        <span class="kpi-label{s}">{label}</span>
+        <span class="kpi-value{s}">{value}</span>
+        <span class="kpi-sub{s}">{sub}</span>
     </div>"""
 
 
@@ -218,23 +213,25 @@ def section_title(text):
     </div>""", unsafe_allow_html=True)
 
 
-def bar_chart(df, x, y, title="", color=RED, highlight_max=True, horizontal=False):
+CHART_FONT = dict(family=FONT, color=TEXT_DARK, size=12)
+CHART_LAYOUT = dict(
+    plot_bgcolor=WHITE,
+    paper_bgcolor=WHITE,
+    font=CHART_FONT,
+    margin=dict(l=10, r=10, t=10, b=10),
+    xaxis=dict(showgrid=False, showline=False),
+    yaxis=dict(showgrid=True, gridcolor=CREAM_DARK, showline=False),
+    showlegend=False,
+    height=280,
+)
+
+
+def bar_chart(df, x, y, color=RED, horizontal=False):
     if horizontal:
         fig = px.bar(df, y=x, x=y, orientation="h", color_discrete_sequence=[color])
-        fig.update_layout(yaxis=dict(autorange="reversed"))
     else:
         fig = px.bar(df, x=x, y=y, color_discrete_sequence=[color])
-
-    fig.update_layout(
-        plot_bgcolor=WHITE,
-        paper_bgcolor=WHITE,
-        font=dict(family="Georgia, serif", color=TEXT_LIGHT, size=11),
-        margin=dict(l=10, r=10, t=10, b=10),
-        xaxis=dict(showgrid=False, showline=False),
-        yaxis=dict(showgrid=True, gridcolor=CREAM_DARK, showline=False),
-        showlegend=False,
-        height=260,
-    )
+    fig.update_layout(**CHART_LAYOUT)
     if horizontal:
         fig.update_layout(
             xaxis=dict(showgrid=True, gridcolor=CREAM_DARK, showline=False),
@@ -243,61 +240,30 @@ def bar_chart(df, x, y, title="", color=RED, highlight_max=True, horizontal=Fals
     return fig
 
 
-def grouped_bar(df, x, y1, y2, name1, name2, color1=RED, color2=RED_PALE):
+def grouped_bar(df, x, y1, y2, name1, name2, color1=RED, color2=RED_PALE, horizontal=False):
     fig = go.Figure()
-    fig.add_trace(go.Bar(x=df[x], y=df[y1], name=name1, marker_color=color1))
-    fig.add_trace(go.Bar(x=df[x], y=df[y2], name=name2, marker_color=color2))
-    fig.update_layout(
-        barmode="group",
-        plot_bgcolor=WHITE,
-        paper_bgcolor=WHITE,
-        font=dict(family="Georgia, serif", color=TEXT_LIGHT, size=11),
-        margin=dict(l=10, r=10, t=10, b=10),
-        xaxis=dict(showgrid=False, showline=False),
-        yaxis=dict(showgrid=True, gridcolor=CREAM_DARK, showline=False),
-        legend=dict(orientation="h", yanchor="bottom", y=1.02, font=dict(size=10)),
-        height=260,
-    )
+    if horizontal:
+        fig.add_trace(go.Bar(y=df[x], x=df[y1], name=name1, marker_color=color1, orientation="h"))
+        fig.add_trace(go.Bar(y=df[x], x=df[y2], name=name2, marker_color=color2, orientation="h"))
+    else:
+        fig.add_trace(go.Bar(x=df[x], y=df[y1], name=name1, marker_color=color1))
+        fig.add_trace(go.Bar(x=df[x], y=df[y2], name=name2, marker_color=color2))
+    layout = {**CHART_LAYOUT, "barmode": "group", "showlegend": True}
+    layout["legend"] = dict(orientation="h", yanchor="bottom", y=1.02, font=dict(size=11))
+    fig.update_layout(**layout)
+    if horizontal:
+        fig.update_layout(
+            xaxis=dict(showgrid=True, gridcolor=CREAM_DARK, showline=False),
+            yaxis=dict(showgrid=False, showline=False, autorange="reversed"),
+            height=360,
+        )
     return fig
-
-
-def horizontal_grouped_bar(df, cat, y1, y2, name1, name2, color1=RED, color2=RED_PALE):
-    fig = go.Figure()
-    fig.add_trace(go.Bar(y=df[cat], x=df[y1], name=name1, marker_color=color1, orientation="h"))
-    fig.add_trace(go.Bar(y=df[cat], x=df[y2], name=name2, marker_color=color2, orientation="h"))
-    fig.update_layout(
-        barmode="group",
-        plot_bgcolor=WHITE,
-        paper_bgcolor=WHITE,
-        font=dict(family="Georgia, serif", color=TEXT_LIGHT, size=11),
-        margin=dict(l=10, r=10, t=10, b=10),
-        xaxis=dict(showgrid=True, gridcolor=CREAM_DARK, showline=False),
-        yaxis=dict(showgrid=False, showline=False, autorange="reversed"),
-        legend=dict(orientation="h", yanchor="bottom", y=1.02, font=dict(size=10)),
-        height=340,
-    )
-    return fig
-
-
-def style_dataframe(df):
-    return df.style.set_properties(**{
-        "font-size": "12px",
-        "font-family": "Georgia, serif",
-    }).set_table_styles([
-        {"selector": "thead th", "props": [
-            ("background-color", RED), ("color", "white"), ("font-weight", "900"),
-            ("font-size", "9px"), ("letter-spacing", "0.1em"), ("text-transform", "uppercase"),
-            ("padding", "8px 10px"),
-        ]},
-        {"selector": "tbody td", "props": [("padding", "8px 10px")]},
-    ])
 
 
 # ══════════════════════════════════════════════════════════════════════════════
 # DATA
 # ══════════════════════════════════════════════════════════════════════════════
 
-# ── DEPLETION DATA ───────────────────────────────────────────────────────────
 grand_monthly = pd.DataFrame([
     {"Month": "Nov", "Cases": 1}, {"Month": "Dec", "Cases": 28.17},
     {"Month": "Jan", "Cases": 248.25}, {"Month": "Feb", "Cases": 634.83},
@@ -310,18 +276,6 @@ combined_monthly = pd.DataFrame([
     {"Month": "Jan", "On-Premise": 30.25, "Off-Premise": 207.08},
     {"Month": "Feb", "On-Premise": 128.33, "Off-Premise": 506.25},
     {"Month": "Mar", "On-Premise": 137.17, "Off-Premise": 353.5},
-])
-
-on_monthly = pd.DataFrame([
-    {"Month": "Nov", "Cases": 0}, {"Month": "Dec", "Cases": 16.33},
-    {"Month": "Jan", "Cases": 30.25}, {"Month": "Feb", "Cases": 128.33},
-    {"Month": "Mar", "Cases": 137.17},
-])
-
-off_monthly = pd.DataFrame([
-    {"Month": "Nov", "Cases": 1}, {"Month": "Dec", "Cases": 11.83},
-    {"Month": "Jan", "Cases": 207.08}, {"Month": "Feb", "Cases": 506.25},
-    {"Month": "Mar", "Cases": 353.5},
 ])
 
 on_states = pd.DataFrame([
@@ -365,10 +319,8 @@ off_states = pd.DataFrame([
     {"State": "AZ", "YTD 9L": 0.25, "YTD PODs": 1, "Mar 9L": 0, "Mar PODs": 0, "Feb 9L": 0.25, "Jan 9L": 0},
 ])
 
-# ── GOPUFF DATA ──────────────────────────────────────────────────────────────
 WEEKS = ["Jan 19", "Jan 26", "Feb 2", "Feb 9", "Feb 16", "Feb 23", "Mar 2", "Mar 9", "Mar 16"]
-weekly_totals = [5, 6, 8, 26, 21, 15, 8, 15, 12]
-gopuff_weekly = pd.DataFrame({"Week": WEEKS, "Units": weekly_totals})
+gopuff_weekly = pd.DataFrame({"Week": WEEKS, "Units": [5, 6, 8, 26, 21, 15, 8, 15, 12]})
 
 gopuff_states = pd.DataFrame([
     {"State": "NY", "Units": 75, "Pct": 64.7, "Locations": 5},
@@ -397,7 +349,6 @@ gopuff_location_detail = pd.DataFrame([
     {"Rank": 10, "Location": "MIA_Miami_330", "ST": "FL", "Jan 19": None, "Jan 26": None, "Feb 2": 1, "Feb 9": 1, "Feb 16": None, "Feb 23": None, "Mar 2": 1, "Mar 9": None, "Mar 16": None, "YTD": 3},
 ])
 
-# ── RESERVEBAR DATA ──────────────────────────────────────────────────────────
 rb_order_range = pd.DataFrame([
     {"Range": "<$100", "Pct": 65.2}, {"Range": "$100-200", "Pct": 26.1},
     {"Range": "$200-500", "Pct": 4.3}, {"Range": "$500-1K", "Pct": 4.3},
@@ -421,44 +372,107 @@ rb_discounts = pd.DataFrame([
 
 
 # ══════════════════════════════════════════════════════════════════════════════
-# NAVIGATION — single row of tabs
+# NAVIGATION
 # ══════════════════════════════════════════════════════════════════════════════
 active_tab = st.radio(
     "Dashboard",
-    ["Depletion Overview", "On-Premise", "Off-Premise", "Gopuff", "ReserveBar"],
+    ["Overview", "Depletions", "Gopuff", "ReserveBar"],
     horizontal=True,
     label_visibility="collapsed",
 )
 
 st.markdown("---")
 
+
 # ══════════════════════════════════════════════════════════════════════════════
-# DEPLETION OVERVIEW
+# OVERVIEW — master cross-channel summary
 # ══════════════════════════════════════════════════════════════════════════════
-if active_tab == "Depletion Overview":
+if active_tab == "Overview":
     c1, c2, c3, c4 = st.columns(4)
     with c1:
-        st.markdown(kpi("YTD Total 9L Equiv", "1,402.92", "Nov 2025 - Mar 2026", dark=True), unsafe_allow_html=True)
+        st.markdown(kpi("Total Depletions (9L)", "1,402.92", "Nov 2025 - Mar 2026", dark=True), unsafe_allow_html=True)
     with c2:
-        st.markdown(kpi("YTD Total PODs", "1,046", "Points of distribution"), unsafe_allow_html=True)
+        st.markdown(kpi("Total PODs", "1,046", "Points of distribution"), unsafe_allow_html=True)
+    with c3:
+        st.markdown(kpi("Gopuff YTD Units", "116", "23 locations, 3 states"), unsafe_allow_html=True)
+    with c4:
+        st.markdown(kpi("ReserveBar Revenue", "$1.48K", "73 units, 23 orders"), unsafe_allow_html=True)
+
+    st.markdown("<br>", unsafe_allow_html=True)
+    col1, col2 = st.columns(2)
+
+    with col1:
+        section_title("Monthly Depletions (9L Equiv)")
+        st.plotly_chart(bar_chart(grand_monthly, "Month", "Cases"), use_container_width=True)
+
+    with col2:
+        section_title("On-Premise vs Off-Premise by Month")
+        st.plotly_chart(
+            grouped_bar(combined_monthly, "Month", "On-Premise", "Off-Premise", "On-Premise", "Off-Premise"),
+            use_container_width=True,
+        )
+
+    # Channel breakdown
+    section_title("Channel Breakdown")
+    detail = pd.DataFrame([
+        {"Month": "Nov 2025", "Total 9L": 1.00, "On-Premise": 0, "Off-Premise": 1.00},
+        {"Month": "Dec 2025", "Total 9L": 28.17, "On-Premise": 16.33, "Off-Premise": 11.83},
+        {"Month": "Jan 2026", "Total 9L": 248.25, "On-Premise": 30.25, "Off-Premise": 207.08},
+        {"Month": "Feb 2026", "Total 9L": 634.83, "On-Premise": 128.33, "Off-Premise": 506.25},
+        {"Month": "Mar 2026", "Total 9L": 490.67, "On-Premise": 137.17, "Off-Premise": 353.50},
+    ])
+    st.dataframe(detail, hide_index=True, use_container_width=True)
+
+    # March highlight
+    st.markdown("""
+    <div class="highlight-banner">
+        <div>
+            <p style="margin:0; font-size:11px; color:rgba(255,255,255,0.6); letter-spacing:0.15em; text-transform:uppercase;">March 2026 Highlights</p>
+            <p style="margin:8px 0 0; font-size:18px; color:white; font-weight:900; letter-spacing:0.02em;">Strong March across all channels</p>
+            <p style="margin:4px 0 0; font-size:13px; color:rgba(255,255,255,0.7);">490.67 depletion cases &middot; 520 PODs active &middot; 12 Gopuff units &middot; 17+ states</p>
+        </div>
+        <div style="display:flex; gap:32px; flex-shrink:0;">
+            <div style="text-align:center;">
+                <p style="margin:0; font-size:30px; font-weight:900; color:white; line-height:1;">490.67</p>
+                <p style="margin:4px 0 0; font-size:11px; color:rgba(255,255,255,0.6); letter-spacing:0.1em;">MAR 9L</p>
+            </div>
+            <div style="text-align:center;">
+                <p style="margin:0; font-size:30px; font-weight:900; color:white; line-height:1;">520</p>
+                <p style="margin:4px 0 0; font-size:11px; color:rgba(255,255,255,0.6); letter-spacing:0.1em;">MAR PODS</p>
+            </div>
+            <div style="text-align:center;">
+                <p style="margin:0; font-size:30px; font-weight:900; color:white; line-height:1;">17+</p>
+                <p style="margin:4px 0 0; font-size:11px; color:rgba(255,255,255,0.6); letter-spacing:0.1em;">STATES</p>
+            </div>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+# DEPLETIONS — merged On + Off Premise
+# ══════════════════════════════════════════════════════════════════════════════
+elif active_tab == "Depletions":
+    c1, c2, c3, c4 = st.columns(4)
+    with c1:
+        st.markdown(kpi("Total YTD (9L)", "1,402.92", "Nov 2025 - Mar 2026", dark=True), unsafe_allow_html=True)
+    with c2:
+        st.markdown(kpi("Total PODs", "1,046", "Points of distribution"), unsafe_allow_html=True)
     with c3:
         st.markdown(kpi("On-Premise YTD", "312.08", "278 PODs - 22% of total"), unsafe_allow_html=True)
     with c4:
         st.markdown(kpi("Off-Premise YTD", "1,079.67", "765 PODs - 77% of total"), unsafe_allow_html=True)
 
     st.markdown("<br>", unsafe_allow_html=True)
-    col1, col2 = st.columns(2)
 
-    with col1:
-        section_title("Total Monthly Depletions (9L Equiv)")
-        fig = bar_chart(grand_monthly, "Month", "Cases")
-        st.plotly_chart(fig, use_container_width=True)
+    # On vs Off by Month chart
+    section_title("On-Premise vs Off-Premise by Month")
+    st.plotly_chart(
+        grouped_bar(combined_monthly, "Month", "On-Premise", "Off-Premise", "On-Premise", "Off-Premise"),
+        use_container_width=True,
+    )
 
-    with col2:
-        section_title("On vs Off Premise by Month")
-        fig = grouped_bar(combined_monthly, "Month", "On-Premise", "Off-Premise", "On-Premise", "Off-Premise")
-        st.plotly_chart(fig, use_container_width=True)
-
+    # Monthly detail table
     section_title("Monthly Depletion Detail")
     detail = pd.DataFrame([
         {"Month": "Nov 2025", "Total 9L": 1.00, "On-Premise": 0, "Off-Premise": 1.00},
@@ -469,84 +483,31 @@ if active_tab == "Depletion Overview":
     ])
     st.dataframe(detail, hide_index=True, use_container_width=True)
 
-    st.markdown("""
-    <div class="highlight-banner">
-        <div>
-            <p style="margin:0; font-size:9px; color:rgba(255,255,255,0.55); letter-spacing:0.2em; text-transform:uppercase;">March 2026 Highlight</p>
-            <p style="margin:6px 0 0; font-size:16px; color:white; font-weight:900; font-family:'Anton','Impact',sans-serif; letter-spacing:0.03em;">STRONG MARCH — 490.67 TOTAL 9L CASES ACROSS 17+ STATES</p>
-            <p style="margin:4px 0 0; font-size:11px; color:rgba(255,255,255,0.6);">Off-premise 353.5 - On-premise 137.17 - 520 PODs active</p>
-        </div>
-        <div style="display:flex; gap:28px; flex-shrink:0;">
-            <div style="text-align:center;">
-                <p style="margin:0; font-size:30px; font-weight:900; color:white; font-family:'Anton','Impact',sans-serif; line-height:1;">490.67</p>
-                <p style="margin:4px 0 0; font-size:9px; color:rgba(255,255,255,0.55); letter-spacing:0.15em;">MAR 9L</p>
-            </div>
-            <div style="text-align:center;">
-                <p style="margin:0; font-size:30px; font-weight:900; color:white; font-family:'Anton','Impact',sans-serif; line-height:1;">520</p>
-                <p style="margin:4px 0 0; font-size:9px; color:rgba(255,255,255,0.55); letter-spacing:0.15em;">MAR PODS</p>
-            </div>
-            <div style="text-align:center;">
-                <p style="margin:0; font-size:30px; font-weight:900; color:white; font-family:'Anton','Impact',sans-serif; line-height:1;">17+</p>
-                <p style="margin:4px 0 0; font-size:9px; color:rgba(255,255,255,0.55); letter-spacing:0.15em;">STATES</p>
-            </div>
-        </div>
-    </div>
-    """, unsafe_allow_html=True)
-
-# ══════════════════════════════════════════════════════════════════════════════
-# ON-PREMISE
-# ══════════════════════════════════════════════════════════════════════════════
-elif active_tab == "On-Premise":
-    c1, c2, c3, c4 = st.columns(4)
-    with c1:
-        st.markdown(kpi("YTD 9L Equiv", "312.08", "On-Premise total", dark=True), unsafe_allow_html=True)
-    with c2:
-        st.markdown(kpi("YTD PODs", "278", "Points of distribution"), unsafe_allow_html=True)
-    with c3:
-        st.markdown(kpi("March 9L", "137.17", "118 active PODs"), unsafe_allow_html=True)
-    with c4:
-        st.markdown(kpi("Top State (YTD)", "CA", "96 9L - 58 PODs"), unsafe_allow_html=True)
-
+    # Side-by-side state charts
     st.markdown("<br>", unsafe_allow_html=True)
-    section_title("On-Premise Monthly Trend")
-    st.plotly_chart(bar_chart(on_monthly, "Month", "Cases"), use_container_width=True)
+    col_on, col_off = st.columns(2)
 
-    section_title("On-Premise by State — YTD vs March")
-    st.plotly_chart(
-        horizontal_grouped_bar(on_states.head(10), "State", "YTD 9L", "Mar 9L", "YTD 9L", "Mar 9L"),
-        use_container_width=True,
-    )
+    with col_on:
+        section_title("On-Premise Top States — YTD vs March")
+        st.plotly_chart(
+            grouped_bar(on_states.head(10), "State", "YTD 9L", "Mar 9L", "YTD 9L", "Mar 9L", horizontal=True),
+            use_container_width=True,
+        )
 
-    section_title("Full On-Premise State Detail")
-    st.dataframe(on_states, hide_index=True, use_container_width=True)
+    with col_off:
+        section_title("Off-Premise Top States — YTD vs March")
+        st.plotly_chart(
+            grouped_bar(off_states.head(10), "State", "YTD 9L", "Mar 9L", "YTD 9L", "Mar 9L", horizontal=True),
+            use_container_width=True,
+        )
 
-# ══════════════════════════════════════════════════════════════════════════════
-# OFF-PREMISE
-# ══════════════════════════════════════════════════════════════════════════════
-elif active_tab == "Off-Premise":
-    c1, c2, c3, c4 = st.columns(4)
-    with c1:
-        st.markdown(kpi("YTD 9L Equiv", "1,079.67", "Off-Premise total", dark=True), unsafe_allow_html=True)
-    with c2:
-        st.markdown(kpi("YTD PODs", "765", "Points of distribution"), unsafe_allow_html=True)
-    with c3:
-        st.markdown(kpi("March 9L", "353.50", "402 active PODs"), unsafe_allow_html=True)
-    with c4:
-        st.markdown(kpi("Top State (YTD)", "CA", "310.33 9L - 225 PODs"), unsafe_allow_html=True)
+    # Expandable detail tables
+    with st.expander("Full On-Premise State Detail"):
+        st.dataframe(on_states, hide_index=True, use_container_width=True)
 
-    st.markdown("<br>", unsafe_allow_html=True)
-    section_title("Off-Premise Monthly Trend")
-    st.plotly_chart(bar_chart(off_monthly, "Month", "Cases"), use_container_width=True)
-
-    section_title("Off-Premise by State — YTD vs March")
-    st.plotly_chart(
-        horizontal_grouped_bar(off_states.head(10), "State", "YTD 9L", "Mar 9L", "YTD 9L", "Mar 9L"),
-        use_container_width=True,
-    )
-
-    section_title("Full Off-Premise State Detail")
-    st.dataframe(off_states, hide_index=True, use_container_width=True)
-    st.caption("Key chains: BevMo! - Binny's - Stew Leonard's - Total Wine - ShopRite - Milam's Markets - Food Lion")
+    with st.expander("Full Off-Premise State Detail"):
+        st.dataframe(off_states, hide_index=True, use_container_width=True)
+        st.caption("Key chains: BevMo! - Binny's - Stew Leonard's - Total Wine - ShopRite - Milam's Markets - Food Lion")
 
 
 # ══════════════════════════════════════════════════════════════════════════════
@@ -583,8 +544,7 @@ elif active_tab == "Gopuff":
     st.plotly_chart(fig, use_container_width=True)
 
     section_title("Location Detail — Weekly Units")
-    display_df = gopuff_location_detail.fillna("-")
-    st.dataframe(display_df, hide_index=True, use_container_width=True)
+    st.dataframe(gopuff_location_detail.fillna("-"), hide_index=True, use_container_width=True)
 
 
 # ══════════════════════════════════════════════════════════════════════════════
@@ -623,17 +583,17 @@ elif active_tab == "ReserveBar":
         acq1, acq2 = st.columns(2)
         with acq1:
             st.markdown(f"""
-            <div style="background:{RED}; padding:22px 16px; text-align:center;">
-                <span style="font-size:48px; font-weight:900; color:white; font-family:'Anton','Impact',sans-serif; line-height:1;">19</span><br>
-                <span style="font-size:9px; color:rgba(255,255,255,0.7); letter-spacing:0.12em; text-transform:uppercase;">New Customers</span><br>
-                <span style="font-size:22px; color:white; font-weight:900; font-family:'Anton','Impact',sans-serif;">83%</span>
+            <div style="background:{RED}; padding:22px 16px; text-align:center; border-radius:6px;">
+                <span style="font-size:48px; font-weight:900; color:white; line-height:1;">19</span><br>
+                <span style="font-size:11px; color:rgba(255,255,255,0.75); letter-spacing:0.1em; text-transform:uppercase;">New Customers</span><br>
+                <span style="font-size:22px; color:white; font-weight:900;">83%</span>
             </div>""", unsafe_allow_html=True)
         with acq2:
             st.markdown(f"""
-            <div style="background:{RED_MID}; padding:22px 16px; text-align:center;">
-                <span style="font-size:48px; font-weight:900; color:white; font-family:'Anton','Impact',sans-serif; line-height:1;">4</span><br>
-                <span style="font-size:9px; color:rgba(255,255,255,0.7); letter-spacing:0.12em; text-transform:uppercase;">Repeat Customers</span><br>
-                <span style="font-size:22px; color:white; font-weight:900; font-family:'Anton','Impact',sans-serif;">17%</span>
+            <div style="background:{RED_MID}; padding:22px 16px; text-align:center; border-radius:6px;">
+                <span style="font-size:48px; font-weight:900; color:white; line-height:1;">4</span><br>
+                <span style="font-size:11px; color:rgba(255,255,255,0.75); letter-spacing:0.1em; text-transform:uppercase;">Repeat Customers</span><br>
+                <span style="font-size:22px; color:white; font-weight:900;">17%</span>
             </div>""", unsafe_allow_html=True)
 
     with col4:
@@ -645,18 +605,18 @@ elif active_tab == "ReserveBar":
     st.markdown(f"""
     <div class="highlight-banner">
         <div>
-            <p style="margin:0; font-size:9px; color:rgba(255,255,255,0.55); letter-spacing:0.2em; text-transform:uppercase;">Top Item Sold</p>
-            <p style="margin:6px 0 0; font-size:17px; color:white; font-weight:900; font-family:'Anton','Impact',sans-serif; letter-spacing:0.04em;">LUCCI LAMBRUSCO REGGIANO DOC DRY SPARKLING WINE</p>
-            <p style="margin:4px 0 0; font-size:11px; color:rgba(255,255,255,0.6);">Only SKU - 100% of Champagne & Sparkling category</p>
+            <p style="margin:0; font-size:11px; color:rgba(255,255,255,0.6); letter-spacing:0.15em; text-transform:uppercase;">Top Item Sold</p>
+            <p style="margin:8px 0 0; font-size:18px; color:white; font-weight:900; letter-spacing:0.02em;">Lucci Lambrusco Reggiano DOC Dry Sparkling Wine</p>
+            <p style="margin:4px 0 0; font-size:13px; color:rgba(255,255,255,0.7);">Only SKU - 100% of Champagne & Sparkling category</p>
         </div>
-        <div style="display:flex; gap:28px; flex-shrink:0;">
+        <div style="display:flex; gap:32px; flex-shrink:0;">
             <div style="text-align:center;">
-                <p style="margin:0; font-size:32px; font-weight:900; color:white; font-family:'Anton','Impact',sans-serif; line-height:1;">73</p>
-                <p style="margin:4px 0 0; font-size:9px; color:rgba(255,255,255,0.55); letter-spacing:0.15em;">UNITS</p>
+                <p style="margin:0; font-size:32px; font-weight:900; color:white; line-height:1;">73</p>
+                <p style="margin:4px 0 0; font-size:11px; color:rgba(255,255,255,0.6); letter-spacing:0.1em;">UNITS</p>
             </div>
             <div style="text-align:center;">
-                <p style="margin:0; font-size:32px; font-weight:900; color:white; font-family:'Anton','Impact',sans-serif; line-height:1;">$1,478</p>
-                <p style="margin:4px 0 0; font-size:9px; color:rgba(255,255,255,0.55); letter-spacing:0.15em;">REVENUE</p>
+                <p style="margin:0; font-size:32px; font-weight:900; color:white; line-height:1;">$1,478</p>
+                <p style="margin:4px 0 0; font-size:11px; color:rgba(255,255,255,0.6); letter-spacing:0.1em;">REVENUE</p>
             </div>
         </div>
     </div>
@@ -664,4 +624,4 @@ elif active_tab == "ReserveBar":
 
 
 # ── FOOTER ───────────────────────────────────────────────────────────────────
-st.markdown('<p class="footer-text">Data Period: Nov 2025 - Mar 2026 - Lucci Sales Intelligence</p>', unsafe_allow_html=True)
+st.markdown('<p class="footer-text">Data Period: Nov 2025 - Mar 2026 &middot; Lucci Sales Intelligence</p>', unsafe_allow_html=True)
