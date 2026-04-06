@@ -421,11 +421,11 @@ rb_discounts = pd.DataFrame([
 
 
 # ══════════════════════════════════════════════════════════════════════════════
-# NAVIGATION
+# NAVIGATION — single row of tabs
 # ══════════════════════════════════════════════════════════════════════════════
-main_tab = st.radio(
+active_tab = st.radio(
     "Dashboard",
-    ["Depletion Report", "Gopuff", "ReserveBar"],
+    ["Depletion Overview", "On-Premise", "Off-Premise", "Gopuff", "ReserveBar"],
     horizontal=True,
     label_visibility="collapsed",
 )
@@ -433,133 +433,126 @@ main_tab = st.radio(
 st.markdown("---")
 
 # ══════════════════════════════════════════════════════════════════════════════
-# DEPLETION REPORT
+# DEPLETION OVERVIEW
 # ══════════════════════════════════════════════════════════════════════════════
-if main_tab == "Depletion Report":
-    depl_tab = st.radio(
-        "View",
-        ["Overview", "On-Premise", "Off-Premise"],
-        horizontal=True,
-        label_visibility="collapsed",
-    )
+if active_tab == "Depletion Overview":
+    c1, c2, c3, c4 = st.columns(4)
+    with c1:
+        st.markdown(kpi("YTD Total 9L Equiv", "1,402.92", "Nov 2025 - Mar 2026", dark=True), unsafe_allow_html=True)
+    with c2:
+        st.markdown(kpi("YTD Total PODs", "1,046", "Points of distribution"), unsafe_allow_html=True)
+    with c3:
+        st.markdown(kpi("On-Premise YTD", "312.08", "278 PODs - 22% of total"), unsafe_allow_html=True)
+    with c4:
+        st.markdown(kpi("Off-Premise YTD", "1,079.67", "765 PODs - 77% of total"), unsafe_allow_html=True)
 
-    # ── OVERVIEW ─────────────────────────────────────────────────────────────
-    if depl_tab == "Overview":
-        c1, c2, c3, c4 = st.columns(4)
-        with c1:
-            st.markdown(kpi("YTD Total 9L Equiv", "1,402.92", "Nov 2025 - Mar 2026", dark=True), unsafe_allow_html=True)
-        with c2:
-            st.markdown(kpi("YTD Total PODs", "1,046", "Points of distribution"), unsafe_allow_html=True)
-        with c3:
-            st.markdown(kpi("On-Premise YTD", "312.08", "278 PODs - 22% of total"), unsafe_allow_html=True)
-        with c4:
-            st.markdown(kpi("Off-Premise YTD", "1,079.67", "765 PODs - 77% of total"), unsafe_allow_html=True)
+    st.markdown("<br>", unsafe_allow_html=True)
+    col1, col2 = st.columns(2)
 
-        st.markdown("<br>", unsafe_allow_html=True)
-        col1, col2 = st.columns(2)
+    with col1:
+        section_title("Total Monthly Depletions (9L Equiv)")
+        fig = bar_chart(grand_monthly, "Month", "Cases")
+        st.plotly_chart(fig, use_container_width=True)
 
-        with col1:
-            section_title("Total Monthly Depletions (9L Equiv)")
-            fig = bar_chart(grand_monthly, "Month", "Cases")
-            st.plotly_chart(fig, use_container_width=True)
+    with col2:
+        section_title("On vs Off Premise by Month")
+        fig = grouped_bar(combined_monthly, "Month", "On-Premise", "Off-Premise", "On-Premise", "Off-Premise")
+        st.plotly_chart(fig, use_container_width=True)
 
-        with col2:
-            section_title("On vs Off Premise by Month")
-            fig = grouped_bar(combined_monthly, "Month", "On-Premise", "Off-Premise", "On-Premise", "Off-Premise")
-            st.plotly_chart(fig, use_container_width=True)
+    section_title("Monthly Depletion Detail")
+    detail = pd.DataFrame([
+        {"Month": "Nov 2025", "Total 9L": 1.00, "On-Premise": 0, "Off-Premise": 1.00},
+        {"Month": "Dec 2025", "Total 9L": 28.17, "On-Premise": 16.33, "Off-Premise": 11.83},
+        {"Month": "Jan 2026", "Total 9L": 248.25, "On-Premise": 30.25, "Off-Premise": 207.08},
+        {"Month": "Feb 2026", "Total 9L": 634.83, "On-Premise": 128.33, "Off-Premise": 506.25},
+        {"Month": "Mar 2026", "Total 9L": 490.67, "On-Premise": 137.17, "Off-Premise": 353.50},
+    ])
+    st.dataframe(detail, hide_index=True, use_container_width=True)
 
-        # Monthly detail table
-        section_title("Monthly Depletion Detail")
-        detail = pd.DataFrame([
-            {"Month": "Nov 2025", "Total 9L": 1.00, "On-Premise": 0, "Off-Premise": 1.00},
-            {"Month": "Dec 2025", "Total 9L": 28.17, "On-Premise": 16.33, "Off-Premise": 11.83},
-            {"Month": "Jan 2026", "Total 9L": 248.25, "On-Premise": 30.25, "Off-Premise": 207.08},
-            {"Month": "Feb 2026", "Total 9L": 634.83, "On-Premise": 128.33, "Off-Premise": 506.25},
-            {"Month": "Mar 2026", "Total 9L": 490.67, "On-Premise": 137.17, "Off-Premise": 353.50},
-        ])
-        st.dataframe(detail, hide_index=True, use_container_width=True)
-
-        # March highlight banner
-        st.markdown(f"""
-        <div class="highlight-banner">
-            <div>
-                <p style="margin:0; font-size:9px; color:rgba(255,255,255,0.55); letter-spacing:0.2em; text-transform:uppercase;">March 2026 Highlight</p>
-                <p style="margin:6px 0 0; font-size:16px; color:white; font-weight:900; font-family:'Anton','Impact',sans-serif; letter-spacing:0.03em;">STRONG MARCH — 490.67 TOTAL 9L CASES ACROSS 17+ STATES</p>
-                <p style="margin:4px 0 0; font-size:11px; color:rgba(255,255,255,0.6);">Off-premise 353.5 - On-premise 137.17 - 520 PODs active</p>
+    st.markdown("""
+    <div class="highlight-banner">
+        <div>
+            <p style="margin:0; font-size:9px; color:rgba(255,255,255,0.55); letter-spacing:0.2em; text-transform:uppercase;">March 2026 Highlight</p>
+            <p style="margin:6px 0 0; font-size:16px; color:white; font-weight:900; font-family:'Anton','Impact',sans-serif; letter-spacing:0.03em;">STRONG MARCH — 490.67 TOTAL 9L CASES ACROSS 17+ STATES</p>
+            <p style="margin:4px 0 0; font-size:11px; color:rgba(255,255,255,0.6);">Off-premise 353.5 - On-premise 137.17 - 520 PODs active</p>
+        </div>
+        <div style="display:flex; gap:28px; flex-shrink:0;">
+            <div style="text-align:center;">
+                <p style="margin:0; font-size:30px; font-weight:900; color:white; font-family:'Anton','Impact',sans-serif; line-height:1;">490.67</p>
+                <p style="margin:4px 0 0; font-size:9px; color:rgba(255,255,255,0.55); letter-spacing:0.15em;">MAR 9L</p>
             </div>
-            <div style="display:flex; gap:28px; flex-shrink:0;">
-                <div style="text-align:center;">
-                    <p style="margin:0; font-size:30px; font-weight:900; color:white; font-family:'Anton','Impact',sans-serif; line-height:1;">490.67</p>
-                    <p style="margin:4px 0 0; font-size:9px; color:rgba(255,255,255,0.55); letter-spacing:0.15em;">MAR 9L</p>
-                </div>
-                <div style="text-align:center;">
-                    <p style="margin:0; font-size:30px; font-weight:900; color:white; font-family:'Anton','Impact',sans-serif; line-height:1;">520</p>
-                    <p style="margin:4px 0 0; font-size:9px; color:rgba(255,255,255,0.55); letter-spacing:0.15em;">MAR PODS</p>
-                </div>
-                <div style="text-align:center;">
-                    <p style="margin:0; font-size:30px; font-weight:900; color:white; font-family:'Anton','Impact',sans-serif; line-height:1;">17+</p>
-                    <p style="margin:4px 0 0; font-size:9px; color:rgba(255,255,255,0.55); letter-spacing:0.15em;">STATES</p>
-                </div>
+            <div style="text-align:center;">
+                <p style="margin:0; font-size:30px; font-weight:900; color:white; font-family:'Anton','Impact',sans-serif; line-height:1;">520</p>
+                <p style="margin:4px 0 0; font-size:9px; color:rgba(255,255,255,0.55); letter-spacing:0.15em;">MAR PODS</p>
+            </div>
+            <div style="text-align:center;">
+                <p style="margin:0; font-size:30px; font-weight:900; color:white; font-family:'Anton','Impact',sans-serif; line-height:1;">17+</p>
+                <p style="margin:4px 0 0; font-size:9px; color:rgba(255,255,255,0.55); letter-spacing:0.15em;">STATES</p>
             </div>
         </div>
-        """, unsafe_allow_html=True)
+    </div>
+    """, unsafe_allow_html=True)
 
-    # ── ON-PREMISE ───────────────────────────────────────────────────────────
-    elif depl_tab == "On-Premise":
-        c1, c2, c3, c4 = st.columns(4)
-        with c1:
-            st.markdown(kpi("YTD 9L Equiv", "312.08", "On-Premise total", dark=True), unsafe_allow_html=True)
-        with c2:
-            st.markdown(kpi("YTD PODs", "278", "Points of distribution"), unsafe_allow_html=True)
-        with c3:
-            st.markdown(kpi("March 9L", "137.17", "118 active PODs"), unsafe_allow_html=True)
-        with c4:
-            st.markdown(kpi("Top State (YTD)", "CA", "96 9L - 58 PODs"), unsafe_allow_html=True)
+# ══════════════════════════════════════════════════════════════════════════════
+# ON-PREMISE
+# ══════════════════════════════════════════════════════════════════════════════
+elif active_tab == "On-Premise":
+    c1, c2, c3, c4 = st.columns(4)
+    with c1:
+        st.markdown(kpi("YTD 9L Equiv", "312.08", "On-Premise total", dark=True), unsafe_allow_html=True)
+    with c2:
+        st.markdown(kpi("YTD PODs", "278", "Points of distribution"), unsafe_allow_html=True)
+    with c3:
+        st.markdown(kpi("March 9L", "137.17", "118 active PODs"), unsafe_allow_html=True)
+    with c4:
+        st.markdown(kpi("Top State (YTD)", "CA", "96 9L - 58 PODs"), unsafe_allow_html=True)
 
-        st.markdown("<br>", unsafe_allow_html=True)
-        section_title("On-Premise Monthly Trend")
-        st.plotly_chart(bar_chart(on_monthly, "Month", "Cases"), use_container_width=True)
+    st.markdown("<br>", unsafe_allow_html=True)
+    section_title("On-Premise Monthly Trend")
+    st.plotly_chart(bar_chart(on_monthly, "Month", "Cases"), use_container_width=True)
 
-        section_title("On-Premise by State — YTD vs March")
-        st.plotly_chart(
-            horizontal_grouped_bar(on_states.head(10), "State", "YTD 9L", "Mar 9L", "YTD 9L", "Mar 9L"),
-            use_container_width=True,
-        )
+    section_title("On-Premise by State — YTD vs March")
+    st.plotly_chart(
+        horizontal_grouped_bar(on_states.head(10), "State", "YTD 9L", "Mar 9L", "YTD 9L", "Mar 9L"),
+        use_container_width=True,
+    )
 
-        section_title("Full On-Premise State Detail")
-        st.dataframe(on_states, hide_index=True, use_container_width=True)
+    section_title("Full On-Premise State Detail")
+    st.dataframe(on_states, hide_index=True, use_container_width=True)
 
-    # ── OFF-PREMISE ──────────────────────────────────────────────────────────
-    elif depl_tab == "Off-Premise":
-        c1, c2, c3, c4 = st.columns(4)
-        with c1:
-            st.markdown(kpi("YTD 9L Equiv", "1,079.67", "Off-Premise total", dark=True), unsafe_allow_html=True)
-        with c2:
-            st.markdown(kpi("YTD PODs", "765", "Points of distribution"), unsafe_allow_html=True)
-        with c3:
-            st.markdown(kpi("March 9L", "353.50", "402 active PODs"), unsafe_allow_html=True)
-        with c4:
-            st.markdown(kpi("Top State (YTD)", "CA", "310.33 9L - 225 PODs"), unsafe_allow_html=True)
+# ══════════════════════════════════════════════════════════════════════════════
+# OFF-PREMISE
+# ══════════════════════════════════════════════════════════════════════════════
+elif active_tab == "Off-Premise":
+    c1, c2, c3, c4 = st.columns(4)
+    with c1:
+        st.markdown(kpi("YTD 9L Equiv", "1,079.67", "Off-Premise total", dark=True), unsafe_allow_html=True)
+    with c2:
+        st.markdown(kpi("YTD PODs", "765", "Points of distribution"), unsafe_allow_html=True)
+    with c3:
+        st.markdown(kpi("March 9L", "353.50", "402 active PODs"), unsafe_allow_html=True)
+    with c4:
+        st.markdown(kpi("Top State (YTD)", "CA", "310.33 9L - 225 PODs"), unsafe_allow_html=True)
 
-        st.markdown("<br>", unsafe_allow_html=True)
-        section_title("Off-Premise Monthly Trend")
-        st.plotly_chart(bar_chart(off_monthly, "Month", "Cases"), use_container_width=True)
+    st.markdown("<br>", unsafe_allow_html=True)
+    section_title("Off-Premise Monthly Trend")
+    st.plotly_chart(bar_chart(off_monthly, "Month", "Cases"), use_container_width=True)
 
-        section_title("Off-Premise by State — YTD vs March")
-        st.plotly_chart(
-            horizontal_grouped_bar(off_states.head(10), "State", "YTD 9L", "Mar 9L", "YTD 9L", "Mar 9L"),
-            use_container_width=True,
-        )
+    section_title("Off-Premise by State — YTD vs March")
+    st.plotly_chart(
+        horizontal_grouped_bar(off_states.head(10), "State", "YTD 9L", "Mar 9L", "YTD 9L", "Mar 9L"),
+        use_container_width=True,
+    )
 
-        section_title("Full Off-Premise State Detail")
-        st.dataframe(off_states, hide_index=True, use_container_width=True)
-        st.caption("Key chains: BevMo! - Binny's - Stew Leonard's - Total Wine - ShopRite - Milam's Markets - Food Lion")
+    section_title("Full Off-Premise State Detail")
+    st.dataframe(off_states, hide_index=True, use_container_width=True)
+    st.caption("Key chains: BevMo! - Binny's - Stew Leonard's - Total Wine - ShopRite - Milam's Markets - Food Lion")
 
 
 # ══════════════════════════════════════════════════════════════════════════════
 # GOPUFF
 # ══════════════════════════════════════════════════════════════════════════════
-elif main_tab == "Gopuff":
+elif active_tab == "Gopuff":
     c1, c2, c3, c4 = st.columns(4)
     with c1:
         st.markdown(kpi("YTD Units Sold", "116", "All locations", dark=True), unsafe_allow_html=True)
@@ -597,7 +590,7 @@ elif main_tab == "Gopuff":
 # ══════════════════════════════════════════════════════════════════════════════
 # RESERVEBAR
 # ══════════════════════════════════════════════════════════════════════════════
-elif main_tab == "ReserveBar":
+elif active_tab == "ReserveBar":
     c1, c2, c3, c4, c5, c6 = st.columns(6)
     with c1:
         st.markdown(kpi("Revenue", "$1.48K", "", dark=True), unsafe_allow_html=True)
