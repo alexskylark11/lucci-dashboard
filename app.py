@@ -870,7 +870,57 @@ elif active_tab == "Depletions":
 
     st.markdown("<br>", unsafe_allow_html=True)
 
-    # State charts — YTD Cases + YTD PODs (side by side)
+    # ── Combined State View (On + Off Premise) ──
+    section_title("Combined State Performance (On + Off Premise)")
+
+    # Build combined state table from filtered on/off data
+    on_agg = on_filt.groupby("State").agg(
+        On_Cases=("YTD Cases", "sum"), On_PODs=("YTD PODs", "sum"),
+        On_Mar=("Mar Cases", "sum"), On_Feb=("Feb Cases", "sum"),
+        On_Mar_PODs=("Mar PODs", "sum"),
+    ).reset_index()
+    off_agg = off_filt.groupby("State").agg(
+        Off_Cases=("YTD Cases", "sum"), Off_PODs=("YTD PODs", "sum"),
+        Off_Mar=("Mar Cases", "sum"), Off_Feb=("Feb Cases", "sum"),
+        Off_Mar_PODs=("Mar PODs", "sum"),
+    ).reset_index()
+    combined_st = pd.merge(on_agg, off_agg, on="State", how="outer").fillna(0)
+    combined_st["Total Cases"] = combined_st["On_Cases"] + combined_st["Off_Cases"]
+    combined_st["Total PODs"] = combined_st["On_PODs"] + combined_st["Off_PODs"]
+    combined_st["On Cases"] = combined_st["On_Cases"]
+    combined_st["Off Cases"] = combined_st["Off_Cases"]
+    combined_st["Mar Cases"] = combined_st["On_Mar"] + combined_st["Off_Mar"]
+    combined_st["Feb Cases"] = combined_st["On_Feb"] + combined_st["Off_Feb"]
+    combined_st["Mar PODs"] = combined_st["On_Mar_PODs"] + combined_st["Off_Mar_PODs"]
+    combined_st["Chg vs LM"] = combined_st["Mar Cases"] - combined_st["Feb Cases"]
+    combined_st["% Growth"] = combined_st.apply(
+        lambda r: ((r["Mar Cases"] - r["Feb Cases"]) / r["Feb Cases"] * 100) if r["Feb Cases"] > 0 else (float("inf") if r["Mar Cases"] > 0 else 0),
+        axis=1,
+    )
+    combined_st = combined_st.sort_values("Total Cases", ascending=False).reset_index(drop=True)
+
+    # Chart: combined top states
+    chart_st = combined_st.head(10)
+    st.plotly_chart(
+        grouped_bar(chart_st, "State", "Total Cases", "Total PODs", "YTD Cases", "YTD PODs", horizontal=True),
+        use_container_width=True,
+    )
+
+    # Combined state detail table
+    cst_display = combined_st[["State", "Total Cases", "On Cases", "Off Cases", "Total PODs", "Mar Cases", "Feb Cases", "Chg vs LM", "% Growth"]].copy()
+    st.markdown(styled_table(cst_display, fmt={
+        "Total Cases": lambda v: f"{v:,.2f}",
+        "On Cases": lambda v: f"{v:,.2f}",
+        "Off Cases": lambda v: f"{v:,.2f}",
+        "Total PODs": lambda v: f"{int(v):,}",
+        "Mar Cases": lambda v: f"{v:,.2f}",
+        "Feb Cases": lambda v: f"{v:,.2f}",
+        "Chg vs LM": lambda v: change_fmt(v),
+        "% Growth": lambda v: pct_change_fmt(v),
+    }), unsafe_allow_html=True)
+
+    # ── On/Off Premise split (expandable) ──
+    st.markdown("<br>", unsafe_allow_html=True)
     col_on, col_off = st.columns(2)
 
     with col_on:
@@ -887,7 +937,6 @@ elif active_tab == "Depletions":
             use_container_width=True,
         )
 
-    # On-Premise state detail table
     with st.expander("On-Premise State Detail"):
         on_detail = on_filt[["State", "YTD Cases", "Depl Chg vs LM", "YTD PODs", "Mar PODs", "% Growth vs LM", "Feb Cases", "Mar Cases"]].copy()
         st.markdown(styled_table(on_detail, fmt={
@@ -900,7 +949,6 @@ elif active_tab == "Depletions":
             "Mar Cases": lambda v: f"{v:,.2f}",
         }), unsafe_allow_html=True)
 
-    # Off-Premise state detail table
     with st.expander("Off-Premise State Detail"):
         off_detail = off_filt[["State", "YTD Cases", "Depl Chg vs LM", "YTD PODs", "Mar PODs", "% Growth vs LM", "Feb Cases", "Mar Cases"]].copy()
         st.markdown(styled_table(off_detail, fmt={
@@ -912,7 +960,7 @@ elif active_tab == "Depletions":
             "Feb Cases": lambda v: f"{v:,.2f}",
             "Mar Cases": lambda v: f"{v:,.2f}",
         }), unsafe_allow_html=True)
-        st.caption("Key chains: BevMo! - Binny's - Stew Leonard's - Total Wine - ShopRite - Milam's Markets - Food Lion")
+        st.caption("Key chains: BevMo! - Binny's - Stew Leonard's - Total Wine - ShopRite - Milam's Markets")
 
     # Depletion performance by channel/premise type
     st.markdown("<br>", unsafe_allow_html=True)
