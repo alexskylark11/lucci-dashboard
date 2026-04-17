@@ -572,26 +572,62 @@ ship_monthly_rev_per_case = pd.DataFrame([
     {"Month": "Mar '26", "Rev/Case": 29.2},
 ])
 
-# Top accounts (depletion performance by account - combined on + off premise)
-top_accounts = pd.DataFrame([
-    {"Account": "BevMo!", "YTD Cases": 48.50, "Mar Cases": 15.33, "Feb Cases": 12.17, "YTD PODs": 35},
-    {"Account": "Total Wine", "YTD Cases": 42.17, "Mar Cases": 18.50, "Feb Cases": 14.25, "YTD PODs": 28},
-    {"Account": "Binny's", "YTD Cases": 38.92, "Mar Cases": 16.42, "Feb Cases": 15.83, "YTD PODs": 22},
-    {"Account": "Stew Leonard's", "YTD Cases": 31.25, "Mar Cases": 10.08, "Feb Cases": 16.50, "YTD PODs": 12},
-    {"Account": "ShopRite", "YTD Cases": 28.67, "Mar Cases": 8.33, "Feb Cases": 15.42, "YTD PODs": 18},
-    {"Account": "Food Lion", "YTD Cases": 22.58, "Mar Cases": 22.58, "Feb Cases": 0, "YTD PODs": 52},
-    {"Account": "Pavilions", "YTD Cases": 19.42, "Mar Cases": 8.17, "Feb Cases": 6.25, "YTD PODs": 14},
-    {"Account": "Milam's Markets", "YTD Cases": 16.75, "Mar Cases": 5.50, "Feb Cases": 8.75, "YTD PODs": 8},
-    {"Account": "Spec's", "YTD Cases": 14.33, "Mar Cases": 7.50, "Feb Cases": 5.83, "YTD PODs": 10},
-    {"Account": "ABC Fine Wine", "YTD Cases": 12.58, "Mar Cases": 4.17, "Feb Cases": 6.42, "YTD PODs": 9},
-    {"Account": "Whole Foods", "YTD Cases": 11.83, "Mar Cases": 5.42, "Feb Cases": 3.92, "YTD PODs": 8},
-    {"Account": "Kroger", "YTD Cases": 10.42, "Mar Cases": 3.67, "Feb Cases": 4.25, "YTD PODs": 7},
-    {"Account": "Albertsons", "YTD Cases": 9.17, "Mar Cases": 4.08, "Feb Cases": 3.08, "YTD PODs": 6},
-    {"Account": "Harris Teeter", "YTD Cases": 8.50, "Mar Cases": 3.42, "Feb Cases": 3.08, "YTD PODs": 5},
-    {"Account": "Publix", "YTD Cases": 7.25, "Mar Cases": 2.50, "Feb Cases": 3.25, "YTD PODs": 5},
+# Credit memo breakdown by month (from Payment Process Excel)
+ship_monthly_credits = pd.DataFrame([
+    {"Month": "Dec '25", "Credit Memo": 0},
+    {"Month": "Jan '26", "Credit Memo": -325.44},
+    {"Month": "Feb '26", "Credit Memo": -2123.16},
+    {"Month": "Mar '26", "Credit Memo": -11074.88},
 ])
-top_accounts["Depl Chg vs LM"] = top_accounts["Mar Cases"] - top_accounts["Feb Cases"]
-top_accounts["% Growth vs LM"] = top_accounts.apply(
+
+ship_monthly_net = pd.DataFrame([
+    {"Month": "Dec '25", "Net Revenue": 71538.92},
+    {"Month": "Jan '26", "Net Revenue": 46680.02},
+    {"Month": "Feb '26", "Net Revenue": 16365.00},
+    {"Month": "Mar '26", "Net Revenue": -1.60},
+])
+
+# Top accounts — REAL chain data from Ethica depletion report (thru 3/11/2026)
+top_accounts = pd.DataFrame([
+    {"Account": "BevMo!", "Premise": "Off", "States": "CA", "YTD Cases": 102.00, "Feb Cases": 0, "Mar Cases": 1.00},
+    {"Account": "Stew Leonard's", "Premise": "Off", "States": "NJ, NY, CT", "YTD Cases": 74.00, "Feb Cases": 27.00, "Mar Cases": 17.00},
+    {"Account": "Milam's Markets", "Premise": "Off", "States": "FL", "YTD Cases": 72.00, "Feb Cases": 72.00, "Mar Cases": 0},
+    {"Account": "Gary's Wine", "Premise": "Off", "States": "NJ", "YTD Cases": 72.00, "Feb Cases": 72.00, "Mar Cases": 0},
+    {"Account": "Total Wine & More", "Premise": "Off", "States": "Multi", "YTD Cases": 46.16, "Feb Cases": 14.59, "Mar Cases": 10.75},
+    {"Account": "Albertsons", "Premise": "Off", "States": "CA", "YTD Cases": 45.00, "Feb Cases": 0, "Mar Cases": 0},
+    {"Account": "Eataly", "Premise": "On", "States": "CA, IL, NJ, TX", "YTD Cases": 43.00, "Feb Cases": 20.00, "Mar Cases": 8.00},
+    {"Account": "Binny's", "Premise": "Off", "States": "IL", "YTD Cases": 34.42, "Feb Cases": 34.17, "Mar Cases": 0.17},
+    {"Account": "Wine.com", "Premise": "Off", "States": "Multi", "YTD Cases": 28.00, "Feb Cases": 17.00, "Mar Cases": 0},
+    {"Account": "VIN Chicago", "Premise": "Off", "States": "IL", "YTD Cases": 20.17, "Feb Cases": 0, "Mar Cases": 20.00},
+    {"Account": "ShopRite", "Premise": "Off", "States": "NJ", "YTD Cases": 16.00, "Feb Cases": 7.00, "Mar Cases": 5.00},
+    {"Account": "Armanetti", "Premise": "Off", "States": "IL", "YTD Cases": 12.00, "Feb Cases": 4.00, "Mar Cases": 1.00},
+    {"Account": "Spec's", "Premise": "Off", "States": "TX", "YTD Cases": 9.17, "Feb Cases": 0.17, "Mar Cases": 7.00},
+    {"Account": "BevMax", "Premise": "Off", "States": "CT", "YTD Cases": 8.00, "Feb Cases": 1.00, "Mar Cases": 7.00},
+    {"Account": "Gopuff", "Premise": "Off", "States": "FL", "YTD Cases": 6.00, "Feb Cases": 0, "Mar Cases": 0},
+])
+
+# Trade channel breakdown (from Ethica depletion report thru 3/11/2026)
+off_trade_channels = pd.DataFrame([
+    {"Trade Channel": "Liquor / Package Store", "YTD Cases": 518.58, "Nov": 0, "Dec": 5.42, "Jan": 130.41, "Feb": 260.09, "Mar": 122.65},
+    {"Trade Channel": "Other Off Premise", "YTD Cases": 262.58, "Nov": 1, "Dec": 5.75, "Jan": 31.58, "Feb": 192.75, "Mar": 31.5},
+    {"Trade Channel": "Supermarket", "YTD Cases": 149.50, "Nov": 0, "Dec": 0, "Jan": 51.5, "Feb": 87.33, "Mar": 10.67},
+    {"Trade Channel": "General Merchandise", "YTD Cases": 34.00, "Nov": 0, "Dec": 0, "Jan": 13.0, "Feb": 19.0, "Mar": 2.0},
+    {"Trade Channel": "Wholesale Club", "YTD Cases": 5.25, "Nov": 0, "Dec": 0, "Jan": 0, "Feb": 4.0, "Mar": 1.25},
+    {"Trade Channel": "Fine Wine Store", "YTD Cases": 3.08, "Nov": 0, "Dec": 0, "Jan": 0, "Feb": 1.08, "Mar": 2.0},
+    {"Trade Channel": "Convenience / Gas", "YTD Cases": 3.58, "Nov": 0, "Dec": 1.0, "Jan": 0, "Feb": 1.25, "Mar": 1.33},
+    {"Trade Channel": "Non-Retail", "YTD Cases": 6.75, "Nov": 0, "Dec": 2.17, "Jan": 0.58, "Feb": 3.0, "Mar": 1.0},
+])
+
+on_trade_channels = pd.DataFrame([
+    {"Trade Channel": "Restaurant", "YTD Cases": 147.67, "Nov": 0, "Dec": 14.25, "Jan": 18.83, "Feb": 86.58, "Mar": 28.0},
+    {"Trade Channel": "Bar / Tavern", "YTD Cases": 18.75, "Nov": 0, "Dec": 0.08, "Jan": 5.08, "Feb": 10.33, "Mar": 4.25},
+    {"Trade Channel": "Other On Premise", "YTD Cases": 30.91, "Nov": 0, "Dec": 1.0, "Jan": 1.92, "Feb": 24.08, "Mar": 3.92},
+    {"Trade Channel": "Hotel / Motel", "YTD Cases": 6.24, "Nov": 0, "Dec": 0, "Jan": 0.42, "Feb": 4.49, "Mar": 1.33},
+    {"Trade Channel": "Golf / Country Club", "YTD Cases": 9.33, "Nov": 0, "Dec": 1.0, "Jan": 4.0, "Feb": 2.0, "Mar": 1.41},
+    {"Trade Channel": "Concessionaire", "YTD Cases": 0.25, "Nov": 0, "Dec": 0, "Jan": 0, "Feb": 0.25, "Mar": 0},
+])
+top_accounts["Chg vs LM"] = top_accounts["Mar Cases"] - top_accounts["Feb Cases"]
+top_accounts["% Growth"] = top_accounts.apply(
     lambda r: ((r["Mar Cases"] - r["Feb Cases"]) / r["Feb Cases"] * 100) if r["Feb Cases"] > 0 else (float("inf") if r["Mar Cases"] > 0 else 0),
     axis=1,
 )
@@ -631,7 +667,7 @@ if active_tab == "Overview":
 
     c1, c2, c3, c4, c5 = st.columns(5)
     with c1:
-        st.markdown(kpi("Gross Revenue YTD", "$148,106", "4,811 cases shipped", dark=True), unsafe_allow_html=True)
+        st.markdown(kpi("Gross Revenue YTD", "$148,106", "Net: $134,582 after credits", dark=True), unsafe_allow_html=True)
     with c2:
         st.markdown(kpi("Cases Shipped YTD", "4,811", "Dec '25 - Mar '26", dark=True), unsafe_allow_html=True)
     with c3:
@@ -714,11 +750,13 @@ elif active_tab == "Shipments & Revenue":
     sc_filt = ship_monthly_cases[ship_monthly_cases["Month"].isin(sh_months)]
     sr_filt = ship_monthly_revenue[ship_monthly_revenue["Month"].isin(sh_months)]
     srpc_filt = ship_monthly_rev_per_case[ship_monthly_rev_per_case["Month"].isin(sh_months)]
+    scr_filt = ship_monthly_credits[ship_monthly_credits["Month"].isin(sh_months)]
+    snet_filt = ship_monthly_net[ship_monthly_net["Month"].isin(sh_months)]
 
     filt_cases = int(sc_filt["Cases"].sum())
     filt_rev = int(sr_filt["Revenue"].sum())
-    filt_credits = round(filt_rev * (-13523 / 148106))
-    filt_net = filt_rev + filt_credits
+    filt_credits = round(scr_filt["Credit Memo"].sum(), 2)
+    filt_net = round(snet_filt["Net Revenue"].sum(), 2)
     filt_rpc = round(filt_rev / filt_cases, 0) if filt_cases > 0 else 0
 
     c1, c2, c3, c4, c5 = st.columns(5)
@@ -727,9 +765,9 @@ elif active_tab == "Shipments & Revenue":
     with c2:
         st.markdown(kpi("Gross Revenue", f"${filt_rev:,}", "Before credit memos"), unsafe_allow_html=True)
     with c3:
-        st.markdown(kpi("Credit Memos", f"-${abs(filt_credits):,}", "Adjustments applied"), unsafe_allow_html=True)
+        st.markdown(kpi("Credit Memos", f"-${abs(filt_credits):,.0f}", "DAs, samples, other"), unsafe_allow_html=True)
     with c4:
-        st.markdown(kpi("Net Revenue", f"${filt_net:,}", "After credit memos"), unsafe_allow_html=True)
+        st.markdown(kpi("Net Revenue", f"${filt_net:,.0f}", "After credit memos"), unsafe_allow_html=True)
     with c5:
         st.markdown(kpi("Gross Rev / Case", f"${filt_rpc:.0f}", "Gross rev / cases shipped"), unsafe_allow_html=True)
 
@@ -750,20 +788,31 @@ elif active_tab == "Shipments & Revenue":
         fig.update_layout(height=320)
         st.plotly_chart(fig, use_container_width=True)
 
-    # Replace chart with table for rev/case
-    section_title("Monthly Gross Revenue Per Case")
-    rpc_display = pd.merge(
-        sc_filt[["Month", "Cases"]],
-        pd.merge(sr_filt, srpc_filt, on="Month"),
-        on="Month",
-    )
-    rpc_display = rpc_display[["Month", "Cases", "Revenue", "Rev/Case"]]
-    rpc_fmt = {
+    # Monthly financial summary table
+    section_title("Monthly Financial Summary")
+    fin_table = pd.merge(sc_filt[["Month", "Cases"]], sr_filt, on="Month")
+    fin_table = pd.merge(fin_table, scr_filt, on="Month")
+    fin_table = pd.merge(fin_table, snet_filt, on="Month")
+    fin_table = pd.merge(fin_table, srpc_filt, on="Month")
+    fin_table = fin_table[["Month", "Cases", "Revenue", "Credit Memo", "Net Revenue", "Rev/Case"]]
+    st.markdown(styled_table(fin_table, fmt={
         "Cases": lambda v: f"{int(v):,}",
-        "Revenue": lambda v: f"${int(v):,}",
+        "Revenue": lambda v: f"${v:,.0f}",
+        "Credit Memo": lambda v: f"${v:,.2f}" if v == 0 else f"-${abs(v):,.2f}",
+        "Net Revenue": lambda v: f"${v:,.2f}",
         "Rev/Case": lambda v: f"${v:.1f}",
-    }
-    st.markdown(styled_table(rpc_display, fmt=rpc_fmt), unsafe_allow_html=True)
+    }), unsafe_allow_html=True)
+
+    if filt_credits < -5000:
+        st.markdown(f"""
+        <div class="highlight-banner">
+            <div>
+                <p style="margin:0; font-size:11px; color:rgba(255,255,255,0.6); letter-spacing:0.15em; text-transform:uppercase;">Credit Memo Alert</p>
+                <p style="margin:8px 0 0; font-size:16px; color:white; font-weight:700;">March credit memos (-$11,075) nearly offset gross revenue ($11,073)</p>
+                <p style="margin:4px 0 0; font-size:13px; color:rgba(255,255,255,0.7);">Includes DAs, samples, POSM materials, demo tastings, and labeling costs</p>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
 
 
 # ══════════════════════════════════════════════════════════════════════════════
@@ -889,17 +938,46 @@ elif active_tab == "Depletions":
         }
     ), unsafe_allow_html=True)
 
-    # Top 15 accounts
+    # Trade channel breakdown (from Ethica depletion report)
+    st.markdown("<br>", unsafe_allow_html=True)
+    section_title("Off-Premise by Trade Channel")
+    st.markdown(styled_table(
+        off_trade_channels[["Trade Channel", "YTD Cases", "Nov", "Dec", "Jan", "Feb", "Mar"]],
+        fmt={
+            "YTD Cases": lambda v: f"{v:,.2f}",
+            "Nov": lambda v: f"{v:,.2f}" if v > 0 else "—",
+            "Dec": lambda v: f"{v:,.2f}" if v > 0 else "—",
+            "Jan": lambda v: f"{v:,.2f}" if v > 0 else "—",
+            "Feb": lambda v: f"{v:,.2f}" if v > 0 else "—",
+            "Mar": lambda v: f"{v:,.2f}" if v > 0 else "—",
+        }
+    ), unsafe_allow_html=True)
+    st.caption("* Mar data through 3/11/2026 (from Ethica depletion report)")
+
+    section_title("On-Premise by Trade Channel")
+    st.markdown(styled_table(
+        on_trade_channels[["Trade Channel", "YTD Cases", "Nov", "Dec", "Jan", "Feb", "Mar"]],
+        fmt={
+            "YTD Cases": lambda v: f"{v:,.2f}",
+            "Nov": lambda v: f"{v:,.2f}" if v > 0 else "—",
+            "Dec": lambda v: f"{v:,.2f}" if v > 0 else "—",
+            "Jan": lambda v: f"{v:,.2f}" if v > 0 else "—",
+            "Feb": lambda v: f"{v:,.2f}" if v > 0 else "—",
+            "Mar": lambda v: f"{v:,.2f}" if v > 0 else "—",
+        }
+    ), unsafe_allow_html=True)
+
+    # Top 15 accounts - REAL chain data from Ethica report
     st.markdown("<br>", unsafe_allow_html=True)
     section_title("Top 15 Accounts by YTD Depletions")
-    acct_display = top_accounts[["Account", "YTD Cases", "Mar Cases", "Feb Cases", "Depl Chg vs LM", "% Growth vs LM", "YTD PODs"]].copy()
+    st.caption("Source: Ethica depletion report through 3/11/2026")
+    acct_display = top_accounts[["Account", "Premise", "States", "YTD Cases", "Feb Cases", "Mar Cases", "Chg vs LM", "% Growth"]].copy()
     st.markdown(styled_table(acct_display, fmt={
         "YTD Cases": lambda v: f"{v:,.2f}",
-        "Mar Cases": lambda v: f"{v:,.2f}",
         "Feb Cases": lambda v: f"{v:,.2f}",
-        "Depl Chg vs LM": lambda v: change_fmt(v),
-        "% Growth vs LM": lambda v: pct_change_fmt(v),
-        "YTD PODs": lambda v: f"{int(v):,}",
+        "Mar Cases": lambda v: f"{v:,.2f}",
+        "Chg vs LM": lambda v: change_fmt(v),
+        "% Growth": lambda v: pct_change_fmt(v),
     }), unsafe_allow_html=True)
 
 
