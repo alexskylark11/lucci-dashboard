@@ -551,24 +551,42 @@ gopuff_location_detail = pd.DataFrame([
 
 # ── RESERVEBAR DATA ──────────────────────────────────────────────────────────
 rb_order_range = pd.DataFrame([
-    {"Range": "<$100", "Pct": 65.2}, {"Range": "$100-200", "Pct": 26.1},
-    {"Range": "$200-500", "Pct": 4.3}, {"Range": "$500-1K", "Pct": 4.3},
+    {"Range": "<$100", "Pct": 66.7}, {"Range": "$100-200", "Pct": 22.2},
+    {"Range": "$200-500", "Pct": 7.4}, {"Range": "$500-1K", "Pct": 3.7},
     {"Range": "$1K-2K", "Pct": 0}, {"Range": ">$2K", "Pct": 0},
 ])
 
 rb_dow = pd.DataFrame([
-    {"Day": "Mon", "Pct": 8.7}, {"Day": "Tue", "Pct": 8.7},
-    {"Day": "Wed", "Pct": 17.4}, {"Day": "Thu", "Pct": 21.7},
-    {"Day": "Fri", "Pct": 26.1}, {"Day": "Sat", "Pct": 13.0},
-    {"Day": "Sun", "Pct": 4.3},
+    {"Day": "Mon", "Pct": 11.1}, {"Day": "Tue", "Pct": 11.1},
+    {"Day": "Wed", "Pct": 14.8}, {"Day": "Thu", "Pct": 22.2},
+    {"Day": "Fri", "Pct": 22.2}, {"Day": "Sat", "Pct": 14.8},
+    {"Day": "Sun", "Pct": 3.7},
 ])
 
 rb_discounts = pd.DataFrame([
-    {"Code": "shiplucci", "Orders": 7, "Share": "58%"},
-    {"Code": "lastminlove", "Orders": 2, "Share": "17%"},
-    {"Code": "cheers10", "Orders": 1, "Share": "8%"},
-    {"Code": "reservebar10", "Orders": 1, "Share": "8%"},
-    {"Code": "feb26 codes", "Orders": 1, "Share": "8%"},
+    {"Code": "shiplucci", "Orders": 8, "Share": "57%"},
+    {"Code": "lastminlove", "Orders": 2, "Share": "14%"},
+    {"Code": "cheers10", "Orders": 1, "Share": "7%"},
+    {"Code": "reservebar10", "Orders": 1, "Share": "7%"},
+    {"Code": "feb26 codes", "Orders": 1, "Share": "7%"},
+    {"Code": "welcome10off", "Orders": 1, "Share": "7%"},
+])
+
+rb_monthly = pd.DataFrame([
+    {"Month": "Feb '26", "Units": 62},
+    {"Month": "Mar '26", "Units": 21},
+    {"Month": "Apr '26", "Units": 3},
+])
+
+rb_bottles = pd.DataFrame([
+    {"Bottles": "2", "Pct": 40.7},
+    {"Bottles": "1", "Pct": 22.2},
+    {"Bottles": "10+", "Pct": 7.4},
+    {"Bottles": "3", "Pct": 7.4},
+    {"Bottles": "4", "Pct": 7.4},
+    {"Bottles": "7", "Pct": 7.4},
+    {"Bottles": "5", "Pct": 3.7},
+    {"Bottles": "6", "Pct": 3.7},
 ])
 
 # ── SHIPMENTS & REVENUE DATA ────────────────────────────────────────────────
@@ -696,7 +714,7 @@ if active_tab == "Overview":
     with c4:
         st.markdown(kpi("Gopuff YTD Units", "140", "29 locations, 3 states"), unsafe_allow_html=True)
     with c5:
-        st.markdown(kpi("ReserveBar Units", "73", "23 orders, $1.48K revenue"), unsafe_allow_html=True)
+        st.markdown(kpi("ReserveBar Units", "86", "27 orders, $1.74K revenue"), unsafe_allow_html=True)
 
     st.markdown("<br>", unsafe_allow_html=True)
     col1, col2 = st.columns(2)
@@ -1125,19 +1143,27 @@ elif active_tab == "Gopuff":
 elif active_tab == "ReserveBar":
     c1, c2, c3, c4, c5, c6 = st.columns(6)
     with c1:
-        st.markdown(kpi("Revenue", "$1.48K", "", dark=True), unsafe_allow_html=True)
+        st.markdown(kpi("Revenue", "$1.74K", "Feb-Apr 2026", dark=True), unsafe_allow_html=True)
     with c2:
-        st.markdown(kpi("Orders", "23", ""), unsafe_allow_html=True)
+        st.markdown(kpi("Orders", "27", "27 unique customers"), unsafe_allow_html=True)
     with c3:
-        st.markdown(kpi("Qty Sold", "73", ""), unsafe_allow_html=True)
+        st.markdown(kpi("Qty Sold", "86", "Units"), unsafe_allow_html=True)
     with c4:
-        st.markdown(kpi("AOV", "$64.24", ""), unsafe_allow_html=True)
+        st.markdown(kpi("AOV", "$64.35", "Avg order value"), unsafe_allow_html=True)
     with c5:
-        st.markdown(kpi("AUO", "3.17", "Avg units/order"), unsafe_allow_html=True)
+        st.markdown(kpi("AUO", "3.19", "Avg units/order"), unsafe_allow_html=True)
     with c6:
-        st.markdown(kpi("Repeat Buyers", "4", "of 23 customers"), unsafe_allow_html=True)
+        st.markdown(kpi("Repeat Buyers", "4", "of 27 customers"), unsafe_allow_html=True)
 
     st.markdown("<br>", unsafe_allow_html=True)
+
+    # Monthly trend
+    section_title("Monthly Units Sold")
+    fig = bar_chart(rb_monthly, "Month", "Units")
+    fig.update_traces(text=rb_monthly["Units"].apply(lambda x: f"{x}"), textposition="outside")
+    fig.update_layout(height=260)
+    st.plotly_chart(fig, use_container_width=True)
+
     col1, col2 = st.columns(2)
 
     with col1:
@@ -1148,6 +1174,21 @@ elif active_tab == "ReserveBar":
         section_title("Sales by Day of Week")
         st.plotly_chart(bar_chart(rb_dow, "Day", "Pct"), use_container_width=True)
 
+    col_b1, col_b2 = st.columns(2)
+    with col_b1:
+        section_title("Share of Sales by # of Bottles")
+        st.plotly_chart(bar_chart(rb_bottles, "Bottles", "Pct"), use_container_width=True)
+    with col_b2:
+        section_title("Key Stats")
+        st.markdown(f"""
+        <div style="background:{CREAM}; padding:16px; border-radius:6px; border:2px solid {RED_FAINT};">
+            <p style="margin:0; font-size:13px; color:{TEXT_DARK};"><strong>2-bottle orders dominate</strong> — 40.7% of orders, followed by 1-bottle (22.2%)</p>
+            <p style="margin:8px 0 0; font-size:13px; color:{TEXT_DARK};"><strong>Thu + Fri</strong> are peak days (22.2% each, 44% of weekly sales)</p>
+            <p style="margin:8px 0 0; font-size:13px; color:{TEXT_DARK};"><strong>Feb was the strongest month</strong> at 62 units; Apr has slowed to 3 units MTD</p>
+            <p style="margin:8px 0 0; font-size:13px; color:{TEXT_DARK};"><strong>Repeat rate: 14.8%</strong> (4 of 27 customers)</p>
+        </div>
+        """, unsafe_allow_html=True)
+
     col3, col4 = st.columns(2)
 
     with col3:
@@ -1156,16 +1197,16 @@ elif active_tab == "ReserveBar":
         with acq1:
             st.markdown(f"""
             <div style="background:{RED}; padding:22px 16px; text-align:center; border-radius:6px;">
-                <span style="font-size:48px; font-weight:900; color:white; line-height:1;">19</span><br>
+                <span style="font-size:48px; font-weight:900; color:white; line-height:1;">23</span><br>
                 <span style="font-size:11px; color:rgba(255,255,255,0.75); letter-spacing:0.1em; text-transform:uppercase;">New Customers</span><br>
-                <span style="font-size:22px; color:white; font-weight:900;">83%</span>
+                <span style="font-size:22px; color:white; font-weight:900;">85%</span>
             </div>""", unsafe_allow_html=True)
         with acq2:
             st.markdown(f"""
             <div style="background:{RED_MID}; padding:22px 16px; text-align:center; border-radius:6px;">
                 <span style="font-size:48px; font-weight:900; color:white; line-height:1;">4</span><br>
                 <span style="font-size:11px; color:rgba(255,255,255,0.75); letter-spacing:0.1em; text-transform:uppercase;">Repeat Customers</span><br>
-                <span style="font-size:22px; color:white; font-weight:900;">17%</span>
+                <span style="font-size:22px; color:white; font-weight:900;">15%</span>
             </div>""", unsafe_allow_html=True)
 
     with col4:
@@ -1182,11 +1223,11 @@ elif active_tab == "ReserveBar":
         </div>
         <div style="display:flex; gap:32px; flex-shrink:0;">
             <div style="text-align:center;">
-                <p style="margin:0; font-size:32px; font-weight:900; color:white; line-height:1;">73</p>
+                <p style="margin:0; font-size:32px; font-weight:900; color:white; line-height:1;">86</p>
                 <p style="margin:4px 0 0; font-size:11px; color:rgba(255,255,255,0.6); letter-spacing:0.1em;">UNITS</p>
             </div>
             <div style="text-align:center;">
-                <p style="margin:0; font-size:32px; font-weight:900; color:white; line-height:1;">$1,478</p>
+                <p style="margin:0; font-size:32px; font-weight:900; color:white; line-height:1;">$1,737</p>
                 <p style="margin:4px 0 0; font-size:11px; color:rgba(255,255,255,0.6); letter-spacing:0.1em;">REVENUE</p>
             </div>
         </div>
