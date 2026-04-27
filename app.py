@@ -763,25 +763,30 @@ state_weekly = pd.DataFrame([
     {"Premise": "OFF", "State": "VA", "L7d Cases": 3.34, "P7d Cases": 0.08, "L7d PODs": 4, "P7d PODs": 1},
 ])
 
-# Trade channel breakdown (from Ethica depletion report thru 3/11/2026)
+# Trade channel breakdown (Ethica 04.24.26, samples / internal accounts removed)
 off_trade_channels = pd.DataFrame([
-    {"Trade Channel": "Liquor / Package Store", "YTD Cases": 518.58, "Nov": 0, "Dec": 5.42, "Jan": 130.41, "Feb": 260.09, "Mar": 122.65},
-    {"Trade Channel": "Other Off Premise", "YTD Cases": 262.58, "Nov": 1, "Dec": 5.75, "Jan": 31.58, "Feb": 192.75, "Mar": 31.5},
-    {"Trade Channel": "Supermarket", "YTD Cases": 149.50, "Nov": 0, "Dec": 0, "Jan": 51.5, "Feb": 87.33, "Mar": 10.67},
-    {"Trade Channel": "General Merchandise", "YTD Cases": 34.00, "Nov": 0, "Dec": 0, "Jan": 13.0, "Feb": 19.0, "Mar": 2.0},
-    {"Trade Channel": "Wholesale Club", "YTD Cases": 5.25, "Nov": 0, "Dec": 0, "Jan": 0, "Feb": 4.0, "Mar": 1.25},
-    {"Trade Channel": "Fine Wine Store", "YTD Cases": 3.08, "Nov": 0, "Dec": 0, "Jan": 0, "Feb": 1.08, "Mar": 2.0},
-    {"Trade Channel": "Convenience / Gas", "YTD Cases": 3.58, "Nov": 0, "Dec": 1.0, "Jan": 0, "Feb": 1.25, "Mar": 1.33},
-    {"Trade Channel": "Non-Retail", "YTD Cases": 6.75, "Nov": 0, "Dec": 2.17, "Jan": 0.58, "Feb": 3.0, "Mar": 1.0},
+    {"Trade Channel": "Liquor / Package Store", "YTD Cases": 641.24, "Dec": 3.40, "Jan": 132.81, "Feb": 192.62, "Mar": 223.97, "Apr": 88.43},
+    {"Trade Channel": "Supermarket", "YTD Cases": 295.72, "Dec": 0, "Jan": 51.50, "Feb": 86.66, "Mar": 122.72, "Apr": 34.84},
+    {"Trade Channel": "Other Off Premise", "YTD Cases": 221.06, "Dec": 4.00, "Jan": 5.24, "Feb": 170.65, "Mar": 21.99, "Apr": 19.16},
+    {"Trade Channel": "General Merchandise", "YTD Cases": 44.00, "Dec": 0, "Jan": 13.00, "Feb": 19.00, "Mar": 4.00, "Apr": 8.00},
+    {"Trade Channel": "Wholesale Club", "YTD Cases": 14.50, "Dec": 0, "Jan": 0, "Feb": 4.00, "Mar": 8.00, "Apr": 2.50},
+    {"Trade Channel": "Convenience / Gas", "YTD Cases": 8.42, "Dec": 1.00, "Jan": 0, "Feb": 1.25, "Mar": 4.83, "Apr": 1.34},
+    {"Trade Channel": "Fine Wine Store", "YTD Cases": 4.91, "Dec": 0, "Jan": 0, "Feb": 1.08, "Mar": 2.25, "Apr": 1.58},
+    {"Trade Channel": "Non-Retail", "YTD Cases": 1.72, "Dec": 0, "Jan": 0, "Feb": 0, "Mar": 0.41, "Apr": 1.31},
+    {"Trade Channel": "Small Grocery Store", "YTD Cases": 1.00, "Dec": 0, "Jan": 0, "Feb": 0, "Mar": 0, "Apr": 1.00},
+    {"Trade Channel": "Retail-Specialty Services", "YTD Cases": 0.50, "Dec": 0, "Jan": 0, "Feb": 0.50, "Mar": 0, "Apr": 0},
 ])
 
 on_trade_channels = pd.DataFrame([
-    {"Trade Channel": "Restaurant", "YTD Cases": 147.67, "Nov": 0, "Dec": 14.25, "Jan": 18.83, "Feb": 86.58, "Mar": 28.0},
-    {"Trade Channel": "Bar / Tavern", "YTD Cases": 18.75, "Nov": 0, "Dec": 0.08, "Jan": 5.08, "Feb": 10.33, "Mar": 4.25},
-    {"Trade Channel": "Other On Premise", "YTD Cases": 30.91, "Nov": 0, "Dec": 1.0, "Jan": 1.92, "Feb": 24.08, "Mar": 3.92},
-    {"Trade Channel": "Hotel / Motel", "YTD Cases": 6.24, "Nov": 0, "Dec": 0, "Jan": 0.42, "Feb": 4.49, "Mar": 1.33},
-    {"Trade Channel": "Golf / Country Club", "YTD Cases": 9.33, "Nov": 0, "Dec": 1.0, "Jan": 4.0, "Feb": 2.0, "Mar": 1.41},
-    {"Trade Channel": "Concessionaire", "YTD Cases": 0.25, "Nov": 0, "Dec": 0, "Jan": 0, "Feb": 0.25, "Mar": 0},
+    {"Trade Channel": "Restaurant", "YTD Cases": 370.91, "Dec": 14.24, "Jan": 18.82, "Feb": 87.07, "Mar": 122.13, "Apr": 128.65},
+    {"Trade Channel": "Bar / Tavern", "YTD Cases": 45.11, "Dec": 0.08, "Jan": 5.08, "Feb": 10.31, "Mar": 16.23, "Apr": 13.41},
+    {"Trade Channel": "Other On Premise", "YTD Cases": 35.91, "Dec": 1.00, "Jan": 2.00, "Feb": 19.16, "Mar": 9.41, "Apr": 4.33},
+    {"Trade Channel": "Golf / Country Club", "YTD Cases": 19.56, "Dec": 1.00, "Jan": 3.00, "Feb": 1.99, "Mar": 11.57, "Apr": 2.00},
+    {"Trade Channel": "Hotel / Motel", "YTD Cases": 17.81, "Dec": 0, "Jan": 0.42, "Feb": 4.49, "Mar": 3.57, "Apr": 9.33},
+    {"Trade Channel": "Special Event / Temp License", "YTD Cases": 1.00, "Dec": 0, "Jan": 0, "Feb": 0, "Mar": 0, "Apr": 1.00},
+    {"Trade Channel": "Concessionaire", "YTD Cases": 0.50, "Dec": 0, "Jan": 0, "Feb": 0.25, "Mar": 0, "Apr": 0.25},
+    {"Trade Channel": "Fine Dining / White Tablecloth", "YTD Cases": 0.25, "Dec": 0, "Jan": 0, "Feb": 0, "Mar": 0.25, "Apr": 0},
+    {"Trade Channel": "Recreation / Entertainment", "YTD Cases": 0.08, "Dec": 0, "Jan": 0, "Feb": 0, "Mar": 0.08, "Apr": 0},
 ])
 top_accounts["Chg vs LM"] = top_accounts["Apr Cases"] - top_accounts["Mar Cases"]
 top_accounts["% Growth"] = top_accounts.apply(
@@ -1115,32 +1120,33 @@ elif active_tab == "Depletions":
         }
     ), unsafe_allow_html=True)
 
-    # Trade channel breakdown (from Ethica depletion report)
+    # Trade channel breakdown (Ethica 04.24.26, samples / internal accounts removed)
     st.markdown("<br>", unsafe_allow_html=True)
     section_title("Off-Premise by Trade Channel")
+    st.caption(f"As of {DEPLETION_AS_OF} · Samples / internal accounts excluded · Apr column = 4/1–4/24 (24 days, partial month)")
     st.markdown(styled_table(
-        off_trade_channels[["Trade Channel", "YTD Cases", "Nov", "Dec", "Jan", "Feb", "Mar"]],
+        off_trade_channels[["Trade Channel", "YTD Cases", "Dec", "Jan", "Feb", "Mar", "Apr"]],
         fmt={
             "YTD Cases": lambda v: f"{v:,.2f}",
-            "Nov": lambda v: f"{v:,.2f}" if v > 0 else "—",
             "Dec": lambda v: f"{v:,.2f}" if v > 0 else "—",
             "Jan": lambda v: f"{v:,.2f}" if v > 0 else "—",
             "Feb": lambda v: f"{v:,.2f}" if v > 0 else "—",
             "Mar": lambda v: f"{v:,.2f}" if v > 0 else "—",
+            "Apr": lambda v: f"{v:,.2f}" if v > 0 else "—",
         }
     ), unsafe_allow_html=True)
-    st.caption("* Trade channel data through 3/11/2026 (detail not available in later tabs)")
 
     section_title("On-Premise by Trade Channel")
+    st.caption(f"As of {DEPLETION_AS_OF} · Samples / internal accounts excluded · Apr column = 4/1–4/24 (24 days, partial month)")
     st.markdown(styled_table(
-        on_trade_channels[["Trade Channel", "YTD Cases", "Nov", "Dec", "Jan", "Feb", "Mar"]],
+        on_trade_channels[["Trade Channel", "YTD Cases", "Dec", "Jan", "Feb", "Mar", "Apr"]],
         fmt={
             "YTD Cases": lambda v: f"{v:,.2f}",
-            "Nov": lambda v: f"{v:,.2f}" if v > 0 else "—",
             "Dec": lambda v: f"{v:,.2f}" if v > 0 else "—",
             "Jan": lambda v: f"{v:,.2f}" if v > 0 else "—",
             "Feb": lambda v: f"{v:,.2f}" if v > 0 else "—",
             "Mar": lambda v: f"{v:,.2f}" if v > 0 else "—",
+            "Apr": lambda v: f"{v:,.2f}" if v > 0 else "—",
         }
     ), unsafe_allow_html=True)
 
