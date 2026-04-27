@@ -1024,9 +1024,10 @@ elif active_tab == "Depletions":
     section_title("Monthly Depletion Detail")
     st.caption("⚠️ Note: Apr 2026 row covers 4/1–4/24 (24 days). 'Change vs LM' for the Apr row compares partial Apr to full Mar — refer to the State Performance table below for an apples-to-apples comparison.")
     cd_filt = channel_detail[channel_detail["Short"].isin(dp_months)].copy()
-    cd_display = cd_filt[["Month", "Total Depletions", "Depl Change vs LM", "% Change vs LM", "On-Premise", "Off-Premise"]].copy()
+    cd_display = cd_filt[["Month", "Total Depletions", "Total PODs", "Depl Change vs LM", "% Change vs LM", "On-Premise", "Off-Premise"]].copy()
     st.markdown(styled_table(cd_display, fmt={
         "Total Depletions": lambda v: f"{v:,.2f}",
+        "Total PODs": lambda v: f"{int(v):,}",
         "Depl Change vs LM": lambda v: change_fmt(v),
         "% Change vs LM": lambda v: pct_change_fmt(v),
         "On-Premise": lambda v: f"{v:,.2f}",
