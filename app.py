@@ -1065,30 +1065,17 @@ elif active_tab == "Depletions":
         "Mar 1-27": "Mar 1-27 Depl",
     })
 
-    def pct_growth(curr, prev):
-        if prev == 0:
-            return float("inf") if curr > 0 else (float("-inf") if curr < 0 else 0)
-        return (curr - prev) / abs(prev) * 100
-
-    sp["% Depl Growth"] = sp.apply(lambda r: pct_growth(r["Apr 1-24 Depl"], r["Mar 1-27 Depl"]), axis=1)
-    # POD Growth: New Apr PODs as a % of the existing pre-April POD base.
-    # Pre-April POD base = YTD PODs - New Apr PODs.
-    sp["Pre-Apr PODs"] = sp["YTD PODs"] - sp["New Apr PODs"]
-    sp["% POD Growth"] = sp.apply(
-        lambda r: (r["New Apr PODs"] / r["Pre-Apr PODs"] * 100) if r["Pre-Apr PODs"] > 0 else (float("inf") if r["New Apr PODs"] > 0 else 0),
-        axis=1,
-    )
+    sp["Depl Chg"] = sp["Apr 1-24 Depl"] - sp["Mar 1-27 Depl"]
     sp = sp.sort_values("Apr 1-24 Depl", ascending=False).reset_index(drop=True)
 
-    sp_display = sp[["State", "Apr 1-24 Depl", "Mar 1-27 Depl", "% Depl Growth", "YTD PODs", "New Apr PODs", "% POD Growth"]].copy()
+    sp_display = sp[["State", "Apr 1-24 Depl", "Mar 1-27 Depl", "Depl Chg", "YTD PODs", "New Apr PODs"]].copy()
 
     st.markdown(styled_table(sp_display, fmt={
         "Apr 1-24 Depl": lambda v: f"{v:,.2f}",
         "Mar 1-27 Depl": lambda v: f"{v:,.2f}",
-        "% Depl Growth": lambda v: pct_change_fmt(v),
+        "Depl Chg": lambda v: change_fmt(v),
         "YTD PODs": lambda v: f"{int(v)}",
         "New Apr PODs": lambda v: f"+{int(v)}" if v > 0 else "0",
-        "% POD Growth": lambda v: pct_change_fmt(v),
     }), unsafe_allow_html=True)
 
     # ── State Drill-Down: Top accounts within key 5 states ──
