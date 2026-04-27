@@ -680,40 +680,40 @@ top_accounts = pd.DataFrame([
 # State-level top accounts for key 5 states (CA, TX, FL, NY, NJ) — from 04.24.26 tab (samples removed)
 state_top_accounts = pd.DataFrame([
     # CA
-    {"State": "CA", "Account": "BevMo!", "Premise": "Off", "YTD Cases": 157.00, "Mar Cases": 50.00, "Apr Cases": 6.00},
-    {"State": "CA", "Account": "Albertsons Warehouse", "Premise": "Off", "YTD Cases": 56.00, "Mar Cases": 0, "Apr Cases": 11.00},
-    {"State": "CA", "Account": "Eataly", "Premise": "On", "YTD Cases": 21.00, "Mar Cases": 13.00, "Apr Cases": 3.00},
-    {"State": "CA", "Account": "Total Wine & More", "Premise": "Off", "YTD Cases": 15.00, "Mar Cases": 1.00, "Apr Cases": 4.00},
-    {"State": "CA", "Account": "Oliver's Market", "Premise": "Off", "YTD Cases": 11.00, "Mar Cases": 11.00, "Apr Cases": 0},
-    {"State": "CA", "Account": "Wine.com", "Premise": "Off", "YTD Cases": 10.00, "Mar Cases": 0, "Apr Cases": 3.00},
+    {"State": "CA", "Account": "BevMo!", "Premise": "Off", "YTD Cases": 157.00, "YTD PODs": 145, "Mar Cases": 50.00, "Apr Cases": 6.00},
+    {"State": "CA", "Account": "Albertsons Warehouse", "Premise": "Off", "YTD Cases": 56.00, "YTD PODs": 1, "Mar Cases": 0, "Apr Cases": 11.00},
+    {"State": "CA", "Account": "Eataly", "Premise": "On", "YTD Cases": 21.00, "YTD PODs": 2, "Mar Cases": 13.00, "Apr Cases": 3.00},
+    {"State": "CA", "Account": "Total Wine & More", "Premise": "Off", "YTD Cases": 15.00, "YTD PODs": 10, "Mar Cases": 1.00, "Apr Cases": 4.00},
+    {"State": "CA", "Account": "Oliver's Market", "Premise": "Off", "YTD Cases": 11.00, "YTD PODs": 4, "Mar Cases": 11.00, "Apr Cases": 0},
+    {"State": "CA", "Account": "Wine.com", "Premise": "Off", "YTD Cases": 10.00, "YTD PODs": 1, "Mar Cases": 0, "Apr Cases": 3.00},
     # TX
-    {"State": "TX", "Account": "Eataly", "Premise": "On", "YTD Cases": 11.00, "Mar Cases": 4.00, "Apr Cases": 7.00},
-    {"State": "TX", "Account": "Spec's Wine & Spirits", "Premise": "Off", "YTD Cases": 9.08, "Mar Cases": 7.00, "Apr Cases": 2.08},
-    {"State": "TX", "Account": "Total Wine & More", "Premise": "Off", "YTD Cases": 7.09, "Mar Cases": 4.58, "Apr Cases": 1.08},
-    {"State": "TX", "Account": "Wine.com", "Premise": "Off", "YTD Cases": 7.00, "Mar Cases": 1.00, "Apr Cases": 2.00},
-    {"State": "TX", "Account": "Spec's Wholesale", "Premise": "Off", "YTD Cases": 4.17, "Mar Cases": 3.00, "Apr Cases": 1.00},
-    {"State": "TX", "Account": "H-E-B Central Market", "Premise": "Off", "YTD Cases": 3.42, "Mar Cases": 1.00, "Apr Cases": 2.25},
-    {"State": "TX", "Account": "Miraval", "Premise": "On", "YTD Cases": 2.00, "Mar Cases": 0, "Apr Cases": 2.00},
+    {"State": "TX", "Account": "Eataly", "Premise": "On", "YTD Cases": 11.00, "YTD PODs": 2, "Mar Cases": 4.00, "Apr Cases": 7.00},
+    {"State": "TX", "Account": "Spec's Wine & Spirits", "Premise": "Off", "YTD Cases": 9.08, "YTD PODs": 8, "Mar Cases": 7.00, "Apr Cases": 2.08},
+    {"State": "TX", "Account": "Total Wine & More", "Premise": "Off", "YTD Cases": 7.09, "YTD PODs": 3, "Mar Cases": 4.58, "Apr Cases": 1.08},
+    {"State": "TX", "Account": "Wine.com", "Premise": "Off", "YTD Cases": 7.00, "YTD PODs": 1, "Mar Cases": 1.00, "Apr Cases": 2.00},
+    {"State": "TX", "Account": "Spec's Wholesale", "Premise": "Off", "YTD Cases": 4.17, "YTD PODs": 2, "Mar Cases": 3.00, "Apr Cases": 1.00},
+    {"State": "TX", "Account": "H-E-B Central Market", "Premise": "Off", "YTD Cases": 3.42, "YTD PODs": 4, "Mar Cases": 1.00, "Apr Cases": 2.25},
+    {"State": "TX", "Account": "Miraval", "Premise": "On", "YTD Cases": 2.00, "YTD PODs": 1, "Mar Cases": 0, "Apr Cases": 2.00},
     # FL
-    {"State": "FL", "Account": "Milam's Markets", "Premise": "Off", "YTD Cases": 72.00, "Mar Cases": 0, "Apr Cases": 0},
-    {"State": "FL", "Account": "Total Wine & More", "Premise": "Off", "YTD Cases": 21.68, "Mar Cases": 9.33, "Apr Cases": 4.76},
-    {"State": "FL", "Account": "Gopuff", "Premise": "Off", "YTD Cases": 6.00, "Mar Cases": 0, "Apr Cases": 0},
-    {"State": "FL", "Account": "Eataly", "Premise": "On", "YTD Cases": 3.08, "Mar Cases": 3.00, "Apr Cases": 0.08},
-    {"State": "FL", "Account": "Doris Italian Market", "Premise": "Off", "YTD Cases": 2.00, "Mar Cases": 1.00, "Apr Cases": 1.00},
-    {"State": "FL", "Account": "Soho House", "Premise": "On", "YTD Cases": 1.83, "Mar Cases": 0, "Apr Cases": 0},
+    {"State": "FL", "Account": "Milam's Markets", "Premise": "Off", "YTD Cases": 72.00, "YTD PODs": 6, "Mar Cases": 0, "Apr Cases": 0},
+    {"State": "FL", "Account": "Total Wine & More", "Premise": "Off", "YTD Cases": 21.68, "YTD PODs": 17, "Mar Cases": 9.33, "Apr Cases": 4.76},
+    {"State": "FL", "Account": "Gopuff", "Premise": "Off", "YTD Cases": 6.00, "YTD PODs": 6, "Mar Cases": 0, "Apr Cases": 0},
+    {"State": "FL", "Account": "Eataly", "Premise": "On", "YTD Cases": 3.08, "YTD PODs": 2, "Mar Cases": 3.00, "Apr Cases": 0.08},
+    {"State": "FL", "Account": "Doris Italian Market", "Premise": "Off", "YTD Cases": 2.00, "YTD PODs": 1, "Mar Cases": 1.00, "Apr Cases": 1.00},
+    {"State": "FL", "Account": "Soho House", "Premise": "On", "YTD Cases": 1.83, "YTD PODs": 1, "Mar Cases": 0, "Apr Cases": 0},
     # NY
-    {"State": "NY", "Account": "Stew Leonard's Wines", "Premise": "Off", "YTD Cases": 30.00, "Mar Cases": 0, "Apr Cases": 0},
-    {"State": "NY", "Account": "Eataly", "Premise": "On", "YTD Cases": 19.00, "Mar Cases": 11.00, "Apr Cases": 8.00},
-    {"State": "NY", "Account": "Wine.com", "Premise": "Off", "YTD Cases": 17.00, "Mar Cases": 1.00, "Apr Cases": 3.00},
-    {"State": "NY", "Account": "Total Wine & More", "Premise": "Off", "YTD Cases": 5.00, "Mar Cases": 2.00, "Apr Cases": 2.00},
-    {"State": "NY", "Account": "Hilton", "Premise": "On", "YTD Cases": 1.00, "Mar Cases": 0, "Apr Cases": 0},
+    {"State": "NY", "Account": "Stew Leonard's Wines", "Premise": "Off", "YTD Cases": 30.00, "YTD PODs": 2, "Mar Cases": 0, "Apr Cases": 0},
+    {"State": "NY", "Account": "Eataly", "Premise": "On", "YTD Cases": 19.00, "YTD PODs": 4, "Mar Cases": 11.00, "Apr Cases": 8.00},
+    {"State": "NY", "Account": "Wine.com", "Premise": "Off", "YTD Cases": 17.00, "YTD PODs": 1, "Mar Cases": 1.00, "Apr Cases": 3.00},
+    {"State": "NY", "Account": "Total Wine & More", "Premise": "Off", "YTD Cases": 5.00, "YTD PODs": 1, "Mar Cases": 2.00, "Apr Cases": 2.00},
+    {"State": "NY", "Account": "Hilton", "Premise": "On", "YTD Cases": 1.00, "YTD PODs": 1, "Mar Cases": 0, "Apr Cases": 0},
     # NJ
-    {"State": "NJ", "Account": "Gary's Wine & Marketplace", "Premise": "Off", "YTD Cases": 74.00, "Mar Cases": 1.00, "Apr Cases": 1.00},
-    {"State": "NJ", "Account": "Stew Leonard's", "Premise": "Off", "YTD Cases": 29.00, "Mar Cases": 2.00, "Apr Cases": 0},
-    {"State": "NJ", "Account": "Total Wine & More", "Premise": "Off", "YTD Cases": 12.00, "Mar Cases": 5.00, "Apr Cases": 2.00},
-    {"State": "NJ", "Account": "ShopRite Liquors", "Premise": "Off", "YTD Cases": 11.00, "Mar Cases": 5.00, "Apr Cases": 0},
-    {"State": "NJ", "Account": "Eataly", "Premise": "On", "YTD Cases": 9.00, "Mar Cases": 4.00, "Apr Cases": 1.00},
-    {"State": "NJ", "Account": "Wine.com", "Premise": "Off", "YTD Cases": 4.00, "Mar Cases": 0, "Apr Cases": 0},
+    {"State": "NJ", "Account": "Gary's Wine & Marketplace", "Premise": "Off", "YTD Cases": 74.00, "YTD PODs": 3, "Mar Cases": 1.00, "Apr Cases": 1.00},
+    {"State": "NJ", "Account": "Stew Leonard's", "Premise": "Off", "YTD Cases": 29.00, "YTD PODs": 2, "Mar Cases": 2.00, "Apr Cases": 0},
+    {"State": "NJ", "Account": "Total Wine & More", "Premise": "Off", "YTD Cases": 12.00, "YTD PODs": 4, "Mar Cases": 5.00, "Apr Cases": 2.00},
+    {"State": "NJ", "Account": "ShopRite Liquors", "Premise": "Off", "YTD Cases": 11.00, "YTD PODs": 5, "Mar Cases": 5.00, "Apr Cases": 0},
+    {"State": "NJ", "Account": "Eataly", "Premise": "On", "YTD Cases": 9.00, "YTD PODs": 1, "Mar Cases": 4.00, "Apr Cases": 1.00},
+    {"State": "NJ", "Account": "Wine.com", "Premise": "Off", "YTD Cases": 4.00, "YTD PODs": 1, "Mar Cases": 0, "Apr Cases": 0},
 ])
 
 # State-level WEEKLY ACTUALS (kept for reference but no longer used in main UI)
@@ -1095,9 +1095,10 @@ elif active_tab == "Depletions":
         axis=1,
     )
     st.markdown(styled_table(
-        sda[["Account", "Premise", "YTD Cases", "Mar Cases", "Apr Cases"]],
+        sda[["Account", "Premise", "YTD Cases", "YTD PODs", "Mar Cases", "Apr Cases"]],
         fmt={
             "YTD Cases": lambda v: f"{v:,.2f}",
+            "YTD PODs": lambda v: f"{int(v):,}",
             "Mar Cases": lambda v: f"{v:,.2f}",
             "Apr Cases": lambda v: f"{v:,.2f}",
         }
