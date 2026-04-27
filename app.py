@@ -440,51 +440,52 @@ channel_detail["PODs % Change"] = pod_pct_changes
 
 # ON-PREMISE state data (from Depletions 04.24.26, samples/internal removed)
 # Mar1-27 from 03.27.26 weekly snapshot. Apr1-24 from 04.24.26.
+# "New Apr PODs" = retail accounts with 0 PODs in Nov-Mar but >0 PODs in Apr (first-time activations).
 on_states = pd.DataFrame([
-    {"State": "CA", "YTD Cases": 142.25, "YTD PODs": 79, "Mar Cases": 62.58, "Mar PODs": 37, "Apr Cases": 36.50, "Apr PODs": 27, "Mar 1-27": 50.50, "Mar 1-27 PODs": 25},
-    {"State": "IL", "YTD Cases": 69.06, "YTD PODs": 72, "Mar Cases": 21.76, "Mar PODs": 26, "Apr Cases": 18.32, "Apr PODs": 7, "Mar 1-27": 20.76, "Mar 1-27 PODs": 25},
-    {"State": "FL", "YTD Cases": 58.32, "YTD PODs": 37, "Mar Cases": 8.67, "Mar PODs": 12, "Apr Cases": 35.08, "Apr PODs": 11, "Mar 1-27": 8.67, "Mar 1-27 PODs": 12},
-    {"State": "NY", "YTD Cases": 54.41, "YTD PODs": 26, "Mar Cases": 19.17, "Mar PODs": 12, "Apr Cases": 16.17, "Apr PODs": 10, "Mar 1-27": 16.17, "Mar 1-27 PODs": 10},
-    {"State": "TX", "YTD Cases": 39.92, "YTD PODs": 25, "Mar Cases": 12.25, "Mar PODs": 6, "Apr Cases": 17.59, "Apr PODs": 12, "Mar 1-27": 9.25, "Mar 1-27 PODs": 5},
-    {"State": "AZ", "YTD Cases": 38.06, "YTD PODs": 38, "Mar Cases": 6.75, "Mar PODs": 9, "Apr Cases": 8.25, "Apr PODs": 6, "Mar 1-27": 5.75, "Mar 1-27 PODs": 9},
-    {"State": "NJ", "YTD Cases": 33.75, "YTD PODs": 14, "Mar Cases": 9.00, "Mar PODs": 6, "Apr Cases": 3.75, "Apr PODs": 5, "Mar 1-27": 8.00, "Mar 1-27 PODs": 5},
-    {"State": "MD", "YTD Cases": 9.91, "YTD PODs": 7, "Mar Cases": 3.16, "Mar PODs": 4, "Apr Cases": 6.08, "Apr PODs": 3, "Mar 1-27": 3.16, "Mar 1-27 PODs": 4},
-    {"State": "CO", "YTD Cases": 8.50, "YTD PODs": 4, "Mar Cases": 4.50, "Mar PODs": 2, "Apr Cases": 3.00, "Apr PODs": 3, "Mar 1-27": 3.50, "Mar 1-27 PODs": 2},
-    {"State": "OH", "YTD Cases": 7.81, "YTD PODs": 13, "Mar Cases": 2.50, "Mar PODs": 4, "Apr Cases": 1.66, "Apr PODs": 6, "Mar 1-27": 1.50, "Mar 1-27 PODs": 4},
-    {"State": "VA", "YTD Cases": 7.16, "YTD PODs": 9, "Mar Cases": 4.08, "Mar PODs": 5, "Apr Cases": 2.00, "Apr PODs": 2, "Mar 1-27": 1.08, "Mar 1-27 PODs": 2},
-    {"State": "NV", "YTD Cases": 6.00, "YTD PODs": 1, "Mar Cases": 6.00, "Mar PODs": 1, "Apr Cases": 0, "Apr PODs": 0, "Mar 1-27": 4.00, "Mar 1-27 PODs": 1},
-    {"State": "NC", "YTD Cases": 4.91, "YTD PODs": 7, "Mar Cases": 0.33, "Mar PODs": 2, "Apr Cases": 4.58, "Apr PODs": 5, "Mar 1-27": 0.33, "Mar 1-27 PODs": 2},
-    {"State": "KY", "YTD Cases": 4.00, "YTD PODs": 2, "Mar Cases": 1.00, "Mar PODs": 1, "Apr Cases": 3.00, "Apr PODs": 1, "Mar 1-27": 0, "Mar 1-27 PODs": 0},
-    {"State": "DE", "YTD Cases": 2.08, "YTD PODs": 2, "Mar Cases": 1.00, "Mar PODs": 1, "Apr Cases": 1.00, "Apr PODs": 1, "Mar 1-27": 0, "Mar 1-27 PODs": 0},
-    {"State": "CT", "YTD Cases": 2.00, "YTD PODs": 2, "Mar Cases": 0, "Mar PODs": 0, "Apr Cases": 1.00, "Apr PODs": 1, "Mar 1-27": 0, "Mar 1-27 PODs": 0},
-    {"State": "DC", "YTD Cases": 1.42, "YTD PODs": 4, "Mar Cases": 0.08, "Mar PODs": 1, "Apr Cases": 0, "Apr PODs": 0, "Mar 1-27": 0.08, "Mar 1-27 PODs": 1},
-    {"State": "SC", "YTD Cases": 0.50, "YTD PODs": 1, "Mar Cases": 0, "Mar PODs": 0, "Apr Cases": 0.50, "Apr PODs": 1, "Mar 1-27": 0, "Mar 1-27 PODs": 0},
-    {"State": "NM", "YTD Cases": 0.50, "YTD PODs": 4, "Mar Cases": 0.16, "Mar PODs": 2, "Apr Cases": 0.17, "Apr PODs": 1, "Mar 1-27": 0.16, "Mar 1-27 PODs": 2},
-    {"State": "WA", "YTD Cases": 0.32, "YTD PODs": 4, "Mar Cases": 0, "Mar PODs": 0, "Apr Cases": 0.32, "Apr PODs": 4, "Mar 1-27": 0, "Mar 1-27 PODs": 0},
-    {"State": "GA", "YTD Cases": 0.25, "YTD PODs": 1, "Mar Cases": 0.25, "Mar PODs": 1, "Apr Cases": 0, "Apr PODs": 0, "Mar 1-27": 0, "Mar 1-27 PODs": 0},
+    {"State": "CA", "YTD Cases": 142.25, "YTD PODs": 79, "Mar Cases": 62.58, "Mar PODs": 37, "Apr Cases": 36.50, "Apr PODs": 27, "Mar 1-27": 50.50, "Mar 1-27 PODs": 25, "New Apr PODs": 17},
+    {"State": "IL", "YTD Cases": 69.06, "YTD PODs": 72, "Mar Cases": 21.76, "Mar PODs": 26, "Apr Cases": 18.32, "Apr PODs": 7, "Mar 1-27": 20.76, "Mar 1-27 PODs": 25, "New Apr PODs": 5},
+    {"State": "FL", "YTD Cases": 58.32, "YTD PODs": 37, "Mar Cases": 8.67, "Mar PODs": 12, "Apr Cases": 35.08, "Apr PODs": 11, "Mar 1-27": 8.67, "Mar 1-27 PODs": 12, "New Apr PODs": 10},
+    {"State": "NY", "YTD Cases": 54.41, "YTD PODs": 26, "Mar Cases": 19.17, "Mar PODs": 12, "Apr Cases": 16.17, "Apr PODs": 10, "Mar 1-27": 16.17, "Mar 1-27 PODs": 10, "New Apr PODs": 3},
+    {"State": "TX", "YTD Cases": 39.92, "YTD PODs": 25, "Mar Cases": 12.25, "Mar PODs": 6, "Apr Cases": 17.59, "Apr PODs": 12, "Mar 1-27": 9.25, "Mar 1-27 PODs": 5, "New Apr PODs": 11},
+    {"State": "AZ", "YTD Cases": 38.06, "YTD PODs": 38, "Mar Cases": 6.75, "Mar PODs": 9, "Apr Cases": 8.25, "Apr PODs": 6, "Mar 1-27": 5.75, "Mar 1-27 PODs": 9, "New Apr PODs": 1},
+    {"State": "NJ", "YTD Cases": 33.75, "YTD PODs": 14, "Mar Cases": 9.00, "Mar PODs": 6, "Apr Cases": 3.75, "Apr PODs": 5, "Mar 1-27": 8.00, "Mar 1-27 PODs": 5, "New Apr PODs": 2},
+    {"State": "MD", "YTD Cases": 9.91, "YTD PODs": 7, "Mar Cases": 3.16, "Mar PODs": 4, "Apr Cases": 6.08, "Apr PODs": 3, "Mar 1-27": 3.16, "Mar 1-27 PODs": 4, "New Apr PODs": 1},
+    {"State": "CO", "YTD Cases": 8.50, "YTD PODs": 4, "Mar Cases": 4.50, "Mar PODs": 2, "Apr Cases": 3.00, "Apr PODs": 3, "Mar 1-27": 3.50, "Mar 1-27 PODs": 2, "New Apr PODs": 1},
+    {"State": "OH", "YTD Cases": 7.81, "YTD PODs": 13, "Mar Cases": 2.50, "Mar PODs": 4, "Apr Cases": 1.66, "Apr PODs": 6, "Mar 1-27": 1.50, "Mar 1-27 PODs": 4, "New Apr PODs": 5},
+    {"State": "VA", "YTD Cases": 7.16, "YTD PODs": 9, "Mar Cases": 4.08, "Mar PODs": 5, "Apr Cases": 2.00, "Apr PODs": 2, "Mar 1-27": 1.08, "Mar 1-27 PODs": 2, "New Apr PODs": 2},
+    {"State": "NV", "YTD Cases": 6.00, "YTD PODs": 1, "Mar Cases": 6.00, "Mar PODs": 1, "Apr Cases": 0, "Apr PODs": 0, "Mar 1-27": 4.00, "Mar 1-27 PODs": 1, "New Apr PODs": 0},
+    {"State": "NC", "YTD Cases": 4.91, "YTD PODs": 7, "Mar Cases": 0.33, "Mar PODs": 2, "Apr Cases": 4.58, "Apr PODs": 5, "Mar 1-27": 0.33, "Mar 1-27 PODs": 2, "New Apr PODs": 5},
+    {"State": "KY", "YTD Cases": 4.00, "YTD PODs": 2, "Mar Cases": 1.00, "Mar PODs": 1, "Apr Cases": 3.00, "Apr PODs": 1, "Mar 1-27": 0, "Mar 1-27 PODs": 0, "New Apr PODs": 1},
+    {"State": "DE", "YTD Cases": 2.08, "YTD PODs": 2, "Mar Cases": 1.00, "Mar PODs": 1, "Apr Cases": 1.00, "Apr PODs": 1, "Mar 1-27": 0, "Mar 1-27 PODs": 0, "New Apr PODs": 0},
+    {"State": "CT", "YTD Cases": 2.00, "YTD PODs": 2, "Mar Cases": 0, "Mar PODs": 0, "Apr Cases": 1.00, "Apr PODs": 1, "Mar 1-27": 0, "Mar 1-27 PODs": 0, "New Apr PODs": 1},
+    {"State": "DC", "YTD Cases": 1.42, "YTD PODs": 4, "Mar Cases": 0.08, "Mar PODs": 1, "Apr Cases": 0, "Apr PODs": 0, "Mar 1-27": 0.08, "Mar 1-27 PODs": 1, "New Apr PODs": 0},
+    {"State": "SC", "YTD Cases": 0.50, "YTD PODs": 1, "Mar Cases": 0, "Mar PODs": 0, "Apr Cases": 0.50, "Apr PODs": 1, "Mar 1-27": 0, "Mar 1-27 PODs": 0, "New Apr PODs": 1},
+    {"State": "NM", "YTD Cases": 0.50, "YTD PODs": 4, "Mar Cases": 0.16, "Mar PODs": 2, "Apr Cases": 0.17, "Apr PODs": 1, "Mar 1-27": 0.16, "Mar 1-27 PODs": 2, "New Apr PODs": 1},
+    {"State": "WA", "YTD Cases": 0.32, "YTD PODs": 4, "Mar Cases": 0, "Mar PODs": 0, "Apr Cases": 0.32, "Apr PODs": 4, "Mar 1-27": 0, "Mar 1-27 PODs": 0, "New Apr PODs": 4},
+    {"State": "GA", "YTD Cases": 0.25, "YTD PODs": 1, "Mar Cases": 0.25, "Mar PODs": 1, "Apr Cases": 0, "Apr PODs": 0, "Mar 1-27": 0, "Mar 1-27 PODs": 0, "New Apr PODs": 0},
 ])
 
 # OFF-PREMISE state data (from Depletions 04.24.26, samples/internal removed)
 off_states = pd.DataFrame([
-    {"State": "CA", "YTD Cases": 377.17, "YTD PODs": 236, "Mar Cases": 120.00, "Mar PODs": 97, "Apr Cases": 50.17, "Apr PODs": 32, "Mar 1-27": 97.00, "Mar 1-27 PODs": 87},
-    {"State": "NJ", "YTD Cases": 192.00, "YTD PODs": 66, "Mar Cases": 17.00, "Mar PODs": 11, "Apr Cases": 10.00, "Apr PODs": 6, "Mar 1-27": 16.00, "Mar 1-27 PODs": 10},
-    {"State": "NY", "YTD Cases": 150.51, "YTD PODs": 56, "Mar Cases": 22.17, "Mar PODs": 16, "Apr Cases": 22.17, "Apr PODs": 15, "Mar 1-27": 24.17, "Mar 1-27 PODs": 14},
-    {"State": "FL", "YTD Cases": 125.77, "YTD PODs": 53, "Mar Cases": 14.92, "Mar PODs": 21, "Apr Cases": 13.26, "Apr PODs": 19, "Mar 1-27": 14.59, "Mar 1-27 PODs": 19},
-    {"State": "IL", "YTD Cases": 125.12, "YTD PODs": 81, "Mar Cases": 46.72, "Mar PODs": 29, "Apr Cases": 18.08, "Apr PODs": 15, "Mar 1-27": 41.56, "Mar 1-27 PODs": 24},
-    {"State": "VA", "YTD Cases": 55.08, "YTD PODs": 81, "Mar Cases": 43.50, "Mar PODs": 79, "Apr Cases": 5.00, "Apr PODs": 7, "Mar 1-27": 42.25, "Mar 1-27 PODs": 78},
-    {"State": "CT", "YTD Cases": 40.99, "YTD PODs": 28, "Mar Cases": 30.16, "Mar PODs": 17, "Apr Cases": 7.17, "Apr PODs": 7, "Mar 1-27": 30.16, "Mar 1-27 PODs": 17},
-    {"State": "TX", "YTD Cases": 38.85, "YTD PODs": 25, "Mar Cases": 19.66, "Mar PODs": 17, "Apr Cases": 9.58, "Apr PODs": 12, "Mar 1-27": 15.66, "Mar 1-27 PODs": 16},
-    {"State": "NC", "YTD Cases": 37.87, "YTD PODs": 93, "Mar Cases": 31.31, "Mar PODs": 74, "Apr Cases": 6.56, "Apr PODs": 26, "Mar 1-27": 22.58, "Mar 1-27 PODs": 52},
-    {"State": "DE", "YTD Cases": 21.00, "YTD PODs": 16, "Mar Cases": 13.00, "Mar PODs": 13, "Apr Cases": 0, "Apr PODs": 0, "Mar 1-27": 12.00, "Mar 1-27 PODs": 12},
-    {"State": "OH", "YTD Cases": 18.66, "YTD PODs": 18, "Mar Cases": 4.58, "Mar PODs": 8, "Apr Cases": 2.76, "Apr PODs": 5, "Mar 1-27": 4.58, "Mar 1-27 PODs": 8},
-    {"State": "MD", "YTD Cases": 16.99, "YTD PODs": 16, "Mar Cases": 8.00, "Mar PODs": 8, "Apr Cases": 3.00, "Apr PODs": 3, "Mar 1-27": 7.00, "Mar 1-27 PODs": 7},
-    {"State": "SC", "YTD Cases": 10.33, "YTD PODs": 22, "Mar Cases": 8.33, "Mar PODs": 18, "Apr Cases": 2.00, "Apr PODs": 4, "Mar 1-27": 10.33, "Mar 1-27 PODs": 22},
-    {"State": "CO", "YTD Cases": 8.33, "YTD PODs": 14, "Mar Cases": 1.74, "Mar PODs": 6, "Apr Cases": 2.17, "Apr PODs": 3, "Mar 1-27": 1.58, "Mar 1-27 PODs": 4},
-    {"State": "GA", "YTD Cases": 5.50, "YTD PODs": 7, "Mar Cases": 3.00, "Mar PODs": 3, "Apr Cases": 2.00, "Apr PODs": 2, "Mar 1-27": 1.00, "Mar 1-27 PODs": 1},
-    {"State": "DC", "YTD Cases": 4.00, "YTD PODs": 3, "Mar Cases": 0, "Mar PODs": 0, "Apr Cases": 4.00, "Apr PODs": 3, "Mar 1-27": 0, "Mar 1-27 PODs": 0},
-    {"State": "KY", "YTD Cases": 3.00, "YTD PODs": 1, "Mar Cases": 3.00, "Mar PODs": 1, "Apr Cases": 0, "Apr PODs": 0, "Mar 1-27": 0, "Mar 1-27 PODs": 0},
-    {"State": "AZ", "YTD Cases": 1.25, "YTD PODs": 2, "Mar Cases": 1.00, "Mar PODs": 1, "Apr Cases": 0, "Apr PODs": 0, "Mar 1-27": 0, "Mar 1-27 PODs": 0},
-    {"State": "NM", "YTD Cases": 0.65, "YTD PODs": 5, "Mar Cases": 0.08, "Mar PODs": 1, "Apr Cases": 0.24, "Apr PODs": 3, "Mar 1-27": 0.08, "Mar 1-27 PODs": 1},
+    {"State": "CA", "YTD Cases": 377.17, "YTD PODs": 236, "Mar Cases": 120.00, "Mar PODs": 97, "Apr Cases": 50.17, "Apr PODs": 32, "Mar 1-27": 97.00, "Mar 1-27 PODs": 87, "New Apr PODs": 13},
+    {"State": "NJ", "YTD Cases": 192.00, "YTD PODs": 66, "Mar Cases": 17.00, "Mar PODs": 11, "Apr Cases": 10.00, "Apr PODs": 6, "Mar 1-27": 16.00, "Mar 1-27 PODs": 10, "New Apr PODs": 1},
+    {"State": "NY", "YTD Cases": 150.51, "YTD PODs": 56, "Mar Cases": 22.17, "Mar PODs": 16, "Apr Cases": 22.17, "Apr PODs": 15, "Mar 1-27": 24.17, "Mar 1-27 PODs": 14, "New Apr PODs": 6},
+    {"State": "FL", "YTD Cases": 125.77, "YTD PODs": 53, "Mar Cases": 14.92, "Mar PODs": 21, "Apr Cases": 13.26, "Apr PODs": 19, "Mar 1-27": 14.59, "Mar 1-27 PODs": 19, "New Apr PODs": 10},
+    {"State": "IL", "YTD Cases": 125.12, "YTD PODs": 81, "Mar Cases": 46.72, "Mar PODs": 29, "Apr Cases": 18.08, "Apr PODs": 15, "Mar 1-27": 41.56, "Mar 1-27 PODs": 24, "New Apr PODs": 4},
+    {"State": "VA", "YTD Cases": 55.08, "YTD PODs": 81, "Mar Cases": 43.50, "Mar PODs": 79, "Apr Cases": 5.00, "Apr PODs": 7, "Mar 1-27": 42.25, "Mar 1-27 PODs": 78, "New Apr PODs": 0},
+    {"State": "CT", "YTD Cases": 40.99, "YTD PODs": 28, "Mar Cases": 30.16, "Mar PODs": 17, "Apr Cases": 7.17, "Apr PODs": 7, "Mar 1-27": 30.16, "Mar 1-27 PODs": 17, "New Apr PODs": 4},
+    {"State": "TX", "YTD Cases": 38.85, "YTD PODs": 25, "Mar Cases": 19.66, "Mar PODs": 17, "Apr Cases": 9.58, "Apr PODs": 12, "Mar 1-27": 15.66, "Mar 1-27 PODs": 16, "New Apr PODs": 5},
+    {"State": "NC", "YTD Cases": 37.87, "YTD PODs": 93, "Mar Cases": 31.31, "Mar PODs": 74, "Apr Cases": 6.56, "Apr PODs": 26, "Mar 1-27": 22.58, "Mar 1-27 PODs": 52, "New Apr PODs": 19},
+    {"State": "DE", "YTD Cases": 21.00, "YTD PODs": 16, "Mar Cases": 13.00, "Mar PODs": 13, "Apr Cases": 0, "Apr PODs": 0, "Mar 1-27": 12.00, "Mar 1-27 PODs": 12, "New Apr PODs": 0},
+    {"State": "OH", "YTD Cases": 18.66, "YTD PODs": 18, "Mar Cases": 4.58, "Mar PODs": 8, "Apr Cases": 2.76, "Apr PODs": 5, "Mar 1-27": 4.58, "Mar 1-27 PODs": 8, "New Apr PODs": 0},
+    {"State": "MD", "YTD Cases": 16.99, "YTD PODs": 16, "Mar Cases": 8.00, "Mar PODs": 8, "Apr Cases": 3.00, "Apr PODs": 3, "Mar 1-27": 7.00, "Mar 1-27 PODs": 7, "New Apr PODs": 1},
+    {"State": "SC", "YTD Cases": 10.33, "YTD PODs": 22, "Mar Cases": 8.33, "Mar PODs": 18, "Apr Cases": 2.00, "Apr PODs": 4, "Mar 1-27": 10.33, "Mar 1-27 PODs": 22, "New Apr PODs": 4},
+    {"State": "CO", "YTD Cases": 8.33, "YTD PODs": 14, "Mar Cases": 1.74, "Mar PODs": 6, "Apr Cases": 2.17, "Apr PODs": 3, "Mar 1-27": 1.58, "Mar 1-27 PODs": 4, "New Apr PODs": 3},
+    {"State": "GA", "YTD Cases": 5.50, "YTD PODs": 7, "Mar Cases": 3.00, "Mar PODs": 3, "Apr Cases": 2.00, "Apr PODs": 2, "Mar 1-27": 1.00, "Mar 1-27 PODs": 1, "New Apr PODs": 2},
+    {"State": "DC", "YTD Cases": 4.00, "YTD PODs": 3, "Mar Cases": 0, "Mar PODs": 0, "Apr Cases": 4.00, "Apr PODs": 3, "Mar 1-27": 0, "Mar 1-27 PODs": 0, "New Apr PODs": 3},
+    {"State": "KY", "YTD Cases": 3.00, "YTD PODs": 1, "Mar Cases": 3.00, "Mar PODs": 1, "Apr Cases": 0, "Apr PODs": 0, "Mar 1-27": 0, "Mar 1-27 PODs": 0, "New Apr PODs": 0},
+    {"State": "AZ", "YTD Cases": 1.25, "YTD PODs": 2, "Mar Cases": 1.00, "Mar PODs": 1, "Apr Cases": 0, "Apr PODs": 0, "Mar 1-27": 0, "Mar 1-27 PODs": 0, "New Apr PODs": 0},
+    {"State": "NM", "YTD Cases": 0.65, "YTD PODs": 5, "Mar Cases": 0.08, "Mar PODs": 1, "Apr Cases": 0.24, "Apr PODs": 3, "Mar 1-27": 0.08, "Mar 1-27 PODs": 1, "New Apr PODs": 3},
 ])
 
 # Add change vs last month (Apr vs Mar) to state data
@@ -1031,7 +1032,7 @@ elif active_tab == "Depletions":
 
     # ── State Performance — Same-Period MoM (Apr 1-24 vs Mar 1-27) ──
     section_title(f"State Performance — Same-Period MoM ({APR_PERIOD_LABEL} vs {MAR_PERIOD_LABEL})")
-    st.caption(f"As of {DEPLETION_AS_OF}. Apr period = 4/1–4/24 (24 days, from 04.24.26 snapshot). Mar period = 3/1–3/27 (27 days, from 03.27.26 snapshot). Both are actuals — no pro-rating. Samples / internal accounts excluded.")
+    st.caption(f"As of {DEPLETION_AS_OF}. Depletions: Apr 1–24 (from 04.24.26 snapshot) vs Mar 1–27 (from 03.27.26 snapshot). PODs are cumulative — 'YTD PODs' is total unique distribution points active YTD; 'New Apr PODs' = retail accounts activated for the first time in April. % POD Growth = New Apr PODs ÷ pre-April POD base. All actuals, no pro-rating. Samples / internal accounts excluded.")
 
     state_view = st.radio(
         "View",
@@ -1044,20 +1045,19 @@ elif active_tab == "Depletions":
     on_f = on_states[on_states["State"].isin(dp_states)].copy()
     off_f = off_states[off_states["State"].isin(dp_states)].copy()
 
+    sp_cols = ["Apr Cases", "Mar 1-27", "YTD PODs", "New Apr PODs"]
     if state_view == "On-Premise":
-        sp = on_f[["State", "Apr Cases", "Apr PODs", "Mar 1-27", "Mar 1-27 PODs"]].copy()
+        sp = on_f[["State"] + sp_cols].copy()
     elif state_view == "Off-Premise":
-        sp = off_f[["State", "Apr Cases", "Apr PODs", "Mar 1-27", "Mar 1-27 PODs"]].copy()
+        sp = off_f[["State"] + sp_cols].copy()
     else:
-        on_agg = on_f.groupby("State", as_index=False)[["Apr Cases", "Apr PODs", "Mar 1-27", "Mar 1-27 PODs"]].sum()
-        off_agg = off_f.groupby("State", as_index=False)[["Apr Cases", "Apr PODs", "Mar 1-27", "Mar 1-27 PODs"]].sum()
+        on_agg = on_f.groupby("State", as_index=False)[sp_cols].sum()
+        off_agg = off_f.groupby("State", as_index=False)[sp_cols].sum()
         sp = pd.concat([on_agg, off_agg]).groupby("State", as_index=False).sum()
 
     sp = sp.rename(columns={
         "Apr Cases": "Apr 1-24 Depl",
-        "Apr PODs": "Apr 1-24 PODs",
         "Mar 1-27": "Mar 1-27 Depl",
-        "Mar 1-27 PODs": "Mar 1-27 PODs",
     })
 
     def pct_growth(curr, prev):
@@ -1066,17 +1066,23 @@ elif active_tab == "Depletions":
         return (curr - prev) / abs(prev) * 100
 
     sp["% Depl Growth"] = sp.apply(lambda r: pct_growth(r["Apr 1-24 Depl"], r["Mar 1-27 Depl"]), axis=1)
-    sp["% POD Growth"] = sp.apply(lambda r: pct_growth(r["Apr 1-24 PODs"], r["Mar 1-27 PODs"]), axis=1)
+    # POD Growth: New Apr PODs as a % of the existing pre-April POD base.
+    # Pre-April POD base = YTD PODs - New Apr PODs.
+    sp["Pre-Apr PODs"] = sp["YTD PODs"] - sp["New Apr PODs"]
+    sp["% POD Growth"] = sp.apply(
+        lambda r: (r["New Apr PODs"] / r["Pre-Apr PODs"] * 100) if r["Pre-Apr PODs"] > 0 else (float("inf") if r["New Apr PODs"] > 0 else 0),
+        axis=1,
+    )
     sp = sp.sort_values("Apr 1-24 Depl", ascending=False).reset_index(drop=True)
 
-    sp_display = sp[["State", "Apr 1-24 Depl", "Mar 1-27 Depl", "% Depl Growth", "Apr 1-24 PODs", "Mar 1-27 PODs", "% POD Growth"]].copy()
+    sp_display = sp[["State", "Apr 1-24 Depl", "Mar 1-27 Depl", "% Depl Growth", "YTD PODs", "New Apr PODs", "% POD Growth"]].copy()
 
     st.markdown(styled_table(sp_display, fmt={
         "Apr 1-24 Depl": lambda v: f"{v:,.2f}",
         "Mar 1-27 Depl": lambda v: f"{v:,.2f}",
         "% Depl Growth": lambda v: pct_change_fmt(v),
-        "Apr 1-24 PODs": lambda v: f"{int(v)}",
-        "Mar 1-27 PODs": lambda v: f"{int(v)}",
+        "YTD PODs": lambda v: f"{int(v)}",
+        "New Apr PODs": lambda v: f"+{int(v)}" if v > 0 else "0",
         "% POD Growth": lambda v: pct_change_fmt(v),
     }), unsafe_allow_html=True)
 
