@@ -228,11 +228,17 @@ div[data-testid="stMetricValue"] {{ font-size: 28px !important; }}
 # ── HEADER ───────────────────────────────────────────────────────────────────
 st.markdown(f"""
 <div class="lucci-header">
-    <div style="display:flex; align-items:baseline;">
-        <span class="lucci-title">LUCCI</span>
-        <span class="lucci-subtitle">Lambrusco Reggiano DOC</span>
+    <div style="display:flex; align-items:baseline; justify-content:space-between;">
+        <div style="display:flex; align-items:baseline;">
+            <span class="lucci-title">LUCCI</span>
+            <span class="lucci-subtitle">Lambrusco Reggiano DOC</span>
+        </div>
+        <div style="text-align:right;">
+            <p style="margin:0; font-size:10px; color:rgba(255,255,255,0.55); letter-spacing:0.12em; text-transform:uppercase;">Data as of</p>
+            <p style="margin:0; font-size:13px; color:rgba(255,255,255,0.95); font-weight:700;">Depletions: 4/24/26 &middot; Gopuff: 4/13/26 &middot; ReserveBar: 4/25/26</p>
+        </div>
     </div>
-    <p class="lucci-period">Sales Intelligence Dashboard</p>
+    <p class="lucci-period">Sales Intelligence Dashboard &middot; Samples / internal accounts excluded from depletions</p>
 </div>
 """, unsafe_allow_html=True)
 
@@ -371,37 +377,39 @@ def pct_change_fmt(val):
 # ══════════════════════════════════════════════════════════════════════════════
 
 # Source: Ethica Depletions 04.24.26 tab (data through Apr 24, 2026)
-# Apr is 24 days (partial month). For fair MoM comparison, March is pro-rated to 24 days.
-DAYS_APR_ELAPSED = 24
-DAYS_IN_MAR = 31
-MAR_PRORATE = DAYS_APR_ELAPSED / DAYS_IN_MAR  # ≈ 0.7742
+# IMPORTANT: All numbers below have SAMPLE / INTERNAL accounts removed
+# (excludes accounts containing SAMPLE, F&F FINE WINE, SGWS-, TEAM #).
+# 113.40 YTD cases / 105 PODs were excluded as samples/internal.
+DEPLETION_AS_OF = "4/24/2026"
+MAR_PERIOD_LABEL = "Mar 1–27"   # from 03.27.26 weekly snapshot (27 days)
+APR_PERIOD_LABEL = "Apr 1–24"   # from 04.24.26 weekly snapshot (24 days)
 
 grand_monthly = pd.DataFrame([
-    {"Month": "Nov", "Cases": 1.00, "PODs": 1},
-    {"Month": "Dec", "Cases": 28.67, "PODs": 28},
-    {"Month": "Jan", "Cases": 270.08, "PODs": 222},
-    {"Month": "Feb", "Cases": 639.42, "PODs": 437},
-    {"Month": "Mar", "Cases": 579.92, "PODs": 604},
-    {"Month": "Apr", "Cases": 330.42, "PODs": 306},
+    {"Month": "Nov", "Cases": 0, "PODs": 0},
+    {"Month": "Dec", "Cases": 24.72, "PODs": 27},
+    {"Month": "Jan", "Cases": 242.78, "PODs": 198},
+    {"Month": "Feb", "Cases": 599.28, "PODs": 410},
+    {"Month": "Mar", "Cases": 551.41, "PODs": 552},
+    {"Month": "Apr", "Cases": 317.38, "PODs": 269},
 ])
 
 combined_monthly = pd.DataFrame([
-    {"Month": "Nov", "On-Premise": 0, "Off-Premise": 1},
-    {"Month": "Dec", "On-Premise": 16.33, "Off-Premise": 12.33},
-    {"Month": "Jan", "On-Premise": 30.25, "Off-Premise": 228.92},
-    {"Month": "Feb", "On-Premise": 128.33, "Off-Premise": 510.83},
-    {"Month": "Mar", "On-Premise": 168.42, "Off-Premise": 411.50},
-    {"Month": "Apr", "On-Premise": 160.67, "Off-Premise": 169.50},
+    {"Month": "Nov", "On-Premise": 0, "Off-Premise": 0},
+    {"Month": "Dec", "On-Premise": 16.32, "Off-Premise": 8.40},
+    {"Month": "Jan", "On-Premise": 29.32, "Off-Premise": 202.55},
+    {"Month": "Feb", "On-Premise": 123.27, "Off-Premise": 475.76},
+    {"Month": "Mar", "On-Premise": 163.24, "Off-Premise": 388.17},
+    {"Month": "Apr", "On-Premise": 158.97, "Off-Premise": 158.16},
 ])
 
 # Channel breakdown with change vs last month (newest first)
 channel_detail = pd.DataFrame([
-    {"Month": "Apr 2026*", "Short": "Apr", "Total Depletions": 330.42, "Total PODs": 306, "On-Premise": 160.67, "Off-Premise": 169.50},
-    {"Month": "Mar 2026", "Short": "Mar", "Total Depletions": 579.92, "Total PODs": 604, "On-Premise": 168.42, "Off-Premise": 411.50},
-    {"Month": "Feb 2026", "Short": "Feb", "Total Depletions": 639.42, "Total PODs": 437, "On-Premise": 128.33, "Off-Premise": 510.83},
-    {"Month": "Jan 2026", "Short": "Jan", "Total Depletions": 270.08, "Total PODs": 222, "On-Premise": 30.25, "Off-Premise": 228.92},
-    {"Month": "Dec 2025", "Short": "Dec", "Total Depletions": 28.67, "Total PODs": 28, "On-Premise": 16.33, "Off-Premise": 12.33},
-    {"Month": "Nov 2025", "Short": "Nov", "Total Depletions": 1.00, "Total PODs": 1, "On-Premise": 0, "Off-Premise": 1.00},
+    {"Month": "Apr 2026 (1–24)", "Short": "Apr", "Total Depletions": 317.38, "Total PODs": 269, "On-Premise": 158.97, "Off-Premise": 158.16},
+    {"Month": "Mar 2026 (full)", "Short": "Mar", "Total Depletions": 551.41, "Total PODs": 552, "On-Premise": 163.24, "Off-Premise": 388.17},
+    {"Month": "Feb 2026", "Short": "Feb", "Total Depletions": 599.28, "Total PODs": 410, "On-Premise": 123.27, "Off-Premise": 475.76},
+    {"Month": "Jan 2026", "Short": "Jan", "Total Depletions": 242.78, "Total PODs": 198, "On-Premise": 29.32, "Off-Premise": 202.55},
+    {"Month": "Dec 2025", "Short": "Dec", "Total Depletions": 24.72, "Total PODs": 27, "On-Premise": 16.32, "Off-Premise": 8.40},
+    {"Month": "Nov 2025", "Short": "Nov", "Total Depletions": 0, "Total PODs": 0, "On-Premise": 0, "Off-Premise": 0},
 ])
 
 # Compute change vs last month
@@ -430,59 +438,61 @@ channel_detail["% Change vs LM"] = pct_changes
 channel_detail["PODs Change vs LM"] = pod_changes
 channel_detail["PODs % Change"] = pod_pct_changes
 
-# ON-PREMISE state data (from Depletions 04.24.26)
+# ON-PREMISE state data (from Depletions 04.24.26, samples/internal removed)
+# Mar1-27 from 03.27.26 weekly snapshot. Apr1-24 from 04.24.26.
 on_states = pd.DataFrame([
-    {"State": "CA", "YTD Cases": 145.00, "YTD PODs": 87, "Mar Cases": 63.58, "Mar PODs": 40, "Apr Cases": 36.92, "Apr PODs": 29, "Feb Cases": 20.83},
-    {"State": "IL", "YTD Cases": 69.25, "YTD PODs": 72, "Mar Cases": 21.83, "Mar PODs": 26, "Apr Cases": 18.33, "Apr PODs": 7, "Feb Cases": 25.50},
-    {"State": "FL", "YTD Cases": 64.92, "YTD PODs": 40, "Mar Cases": 11.25, "Mar PODs": 14, "Apr Cases": 35.08, "Apr PODs": 11, "Feb Cases": 16.50},
-    {"State": "NY", "YTD Cases": 54.42, "YTD PODs": 26, "Mar Cases": 19.17, "Mar PODs": 12, "Apr Cases": 16.17, "Apr PODs": 10, "Feb Cases": 5.67},
-    {"State": "TX", "YTD Cases": 39.92, "YTD PODs": 25, "Mar Cases": 12.25, "Mar PODs": 6, "Apr Cases": 17.58, "Apr PODs": 12, "Feb Cases": 9.08},
-    {"State": "AZ", "YTD Cases": 38.08, "YTD PODs": 38, "Mar Cases": 6.75, "Mar PODs": 9, "Apr Cases": 8.25, "Apr PODs": 6, "Feb Cases": 23.00},
-    {"State": "NJ", "YTD Cases": 33.75, "YTD PODs": 14, "Mar Cases": 9.00, "Mar PODs": 6, "Apr Cases": 3.75, "Apr PODs": 5, "Feb Cases": 19.00},
-    {"State": "MD", "YTD Cases": 11.00, "YTD PODs": 13, "Mar Cases": 3.42, "Mar PODs": 7, "Apr Cases": 6.58, "Apr PODs": 7, "Feb Cases": 1.00},
-    {"State": "CO", "YTD Cases": 8.50, "YTD PODs": 4, "Mar Cases": 4.50, "Mar PODs": 2, "Apr Cases": 3.00, "Apr PODs": 3, "Feb Cases": 1.00},
-    {"State": "OH", "YTD Cases": 7.83, "YTD PODs": 13, "Mar Cases": 2.50, "Mar PODs": 4, "Apr Cases": 1.67, "Apr PODs": 6, "Feb Cases": 3.42},
-    {"State": "VA", "YTD Cases": 7.17, "YTD PODs": 9, "Mar Cases": 4.08, "Mar PODs": 5, "Apr Cases": 2.00, "Apr PODs": 2, "Feb Cases": 1.08},
-    {"State": "NV", "YTD Cases": 6.00, "YTD PODs": 1, "Mar Cases": 6.00, "Mar PODs": 1, "Apr Cases": 0, "Apr PODs": 0, "Feb Cases": 0},
-    {"State": "KY", "YTD Cases": 5.58, "YTD PODs": 12, "Mar Cases": 1.92, "Mar PODs": 6, "Apr Cases": 3.67, "Apr PODs": 8, "Feb Cases": 0},
-    {"State": "NC", "YTD Cases": 4.92, "YTD PODs": 7, "Mar Cases": 0.33, "Mar PODs": 2, "Apr Cases": 4.58, "Apr PODs": 5, "Feb Cases": 0},
-    {"State": "DE", "YTD Cases": 2.67, "YTD PODs": 5, "Mar Cases": 1.33, "Mar PODs": 2, "Apr Cases": 1.08, "Apr PODs": 2, "Feb Cases": 0.08},
-    {"State": "CT", "YTD Cases": 2.00, "YTD PODs": 2, "Mar Cases": 0, "Mar PODs": 0, "Apr Cases": 1.00, "Apr PODs": 1, "Feb Cases": 1.00},
-    {"State": "DC", "YTD Cases": 1.42, "YTD PODs": 4, "Mar Cases": 0.08, "Mar PODs": 1, "Apr Cases": 0, "Apr PODs": 0, "Feb Cases": 1.17},
-    {"State": "NM", "YTD Cases": 0.50, "YTD PODs": 4, "Mar Cases": 0.17, "Mar PODs": 2, "Apr Cases": 0.17, "Apr PODs": 1, "Feb Cases": 0},
-    {"State": "SC", "YTD Cases": 0.50, "YTD PODs": 1, "Mar Cases": 0, "Mar PODs": 0, "Apr Cases": 0.50, "Apr PODs": 1, "Feb Cases": 0},
-    {"State": "WA", "YTD Cases": 0.33, "YTD PODs": 4, "Mar Cases": 0, "Mar PODs": 0, "Apr Cases": 0.33, "Apr PODs": 4, "Feb Cases": 0},
-    {"State": "GA", "YTD Cases": 0.25, "YTD PODs": 1, "Mar Cases": 0.25, "Mar PODs": 1, "Apr Cases": 0, "Apr PODs": 0, "Feb Cases": 0},
+    {"State": "CA", "YTD Cases": 142.25, "YTD PODs": 79, "Mar Cases": 62.58, "Mar PODs": 37, "Apr Cases": 36.50, "Apr PODs": 27, "Mar 1-27": 50.50, "Mar 1-27 PODs": 25},
+    {"State": "IL", "YTD Cases": 69.06, "YTD PODs": 72, "Mar Cases": 21.76, "Mar PODs": 26, "Apr Cases": 18.32, "Apr PODs": 7, "Mar 1-27": 20.76, "Mar 1-27 PODs": 25},
+    {"State": "FL", "YTD Cases": 58.32, "YTD PODs": 37, "Mar Cases": 8.67, "Mar PODs": 12, "Apr Cases": 35.08, "Apr PODs": 11, "Mar 1-27": 8.67, "Mar 1-27 PODs": 12},
+    {"State": "NY", "YTD Cases": 54.41, "YTD PODs": 26, "Mar Cases": 19.17, "Mar PODs": 12, "Apr Cases": 16.17, "Apr PODs": 10, "Mar 1-27": 16.17, "Mar 1-27 PODs": 10},
+    {"State": "TX", "YTD Cases": 39.92, "YTD PODs": 25, "Mar Cases": 12.25, "Mar PODs": 6, "Apr Cases": 17.59, "Apr PODs": 12, "Mar 1-27": 9.25, "Mar 1-27 PODs": 5},
+    {"State": "AZ", "YTD Cases": 38.06, "YTD PODs": 38, "Mar Cases": 6.75, "Mar PODs": 9, "Apr Cases": 8.25, "Apr PODs": 6, "Mar 1-27": 5.75, "Mar 1-27 PODs": 9},
+    {"State": "NJ", "YTD Cases": 33.75, "YTD PODs": 14, "Mar Cases": 9.00, "Mar PODs": 6, "Apr Cases": 3.75, "Apr PODs": 5, "Mar 1-27": 8.00, "Mar 1-27 PODs": 5},
+    {"State": "MD", "YTD Cases": 9.91, "YTD PODs": 7, "Mar Cases": 3.16, "Mar PODs": 4, "Apr Cases": 6.08, "Apr PODs": 3, "Mar 1-27": 3.16, "Mar 1-27 PODs": 4},
+    {"State": "CO", "YTD Cases": 8.50, "YTD PODs": 4, "Mar Cases": 4.50, "Mar PODs": 2, "Apr Cases": 3.00, "Apr PODs": 3, "Mar 1-27": 3.50, "Mar 1-27 PODs": 2},
+    {"State": "OH", "YTD Cases": 7.81, "YTD PODs": 13, "Mar Cases": 2.50, "Mar PODs": 4, "Apr Cases": 1.66, "Apr PODs": 6, "Mar 1-27": 1.50, "Mar 1-27 PODs": 4},
+    {"State": "VA", "YTD Cases": 7.16, "YTD PODs": 9, "Mar Cases": 4.08, "Mar PODs": 5, "Apr Cases": 2.00, "Apr PODs": 2, "Mar 1-27": 1.08, "Mar 1-27 PODs": 2},
+    {"State": "NV", "YTD Cases": 6.00, "YTD PODs": 1, "Mar Cases": 6.00, "Mar PODs": 1, "Apr Cases": 0, "Apr PODs": 0, "Mar 1-27": 4.00, "Mar 1-27 PODs": 1},
+    {"State": "NC", "YTD Cases": 4.91, "YTD PODs": 7, "Mar Cases": 0.33, "Mar PODs": 2, "Apr Cases": 4.58, "Apr PODs": 5, "Mar 1-27": 0.33, "Mar 1-27 PODs": 2},
+    {"State": "KY", "YTD Cases": 4.00, "YTD PODs": 2, "Mar Cases": 1.00, "Mar PODs": 1, "Apr Cases": 3.00, "Apr PODs": 1, "Mar 1-27": 0, "Mar 1-27 PODs": 0},
+    {"State": "DE", "YTD Cases": 2.08, "YTD PODs": 2, "Mar Cases": 1.00, "Mar PODs": 1, "Apr Cases": 1.00, "Apr PODs": 1, "Mar 1-27": 0, "Mar 1-27 PODs": 0},
+    {"State": "CT", "YTD Cases": 2.00, "YTD PODs": 2, "Mar Cases": 0, "Mar PODs": 0, "Apr Cases": 1.00, "Apr PODs": 1, "Mar 1-27": 0, "Mar 1-27 PODs": 0},
+    {"State": "DC", "YTD Cases": 1.42, "YTD PODs": 4, "Mar Cases": 0.08, "Mar PODs": 1, "Apr Cases": 0, "Apr PODs": 0, "Mar 1-27": 0.08, "Mar 1-27 PODs": 1},
+    {"State": "SC", "YTD Cases": 0.50, "YTD PODs": 1, "Mar Cases": 0, "Mar PODs": 0, "Apr Cases": 0.50, "Apr PODs": 1, "Mar 1-27": 0, "Mar 1-27 PODs": 0},
+    {"State": "NM", "YTD Cases": 0.50, "YTD PODs": 4, "Mar Cases": 0.16, "Mar PODs": 2, "Apr Cases": 0.17, "Apr PODs": 1, "Mar 1-27": 0.16, "Mar 1-27 PODs": 2},
+    {"State": "WA", "YTD Cases": 0.32, "YTD PODs": 4, "Mar Cases": 0, "Mar PODs": 0, "Apr Cases": 0.32, "Apr PODs": 4, "Mar 1-27": 0, "Mar 1-27 PODs": 0},
+    {"State": "GA", "YTD Cases": 0.25, "YTD PODs": 1, "Mar Cases": 0.25, "Mar PODs": 1, "Apr Cases": 0, "Apr PODs": 0, "Mar 1-27": 0, "Mar 1-27 PODs": 0},
 ])
 
-# OFF-PREMISE state data (from Depletions 04.24.26)
+# OFF-PREMISE state data (from Depletions 04.24.26, samples/internal removed)
 off_states = pd.DataFrame([
-    {"State": "CA", "YTD Cases": 426.83, "YTD PODs": 251, "Mar Cases": 131.92, "Mar PODs": 110, "Apr Cases": 58.92, "Apr PODs": 42, "Feb Cases": 45.75},
-    {"State": "NJ", "YTD Cases": 211.25, "YTD PODs": 69, "Mar Cases": 21.33, "Mar PODs": 14, "Apr Cases": 10.67, "Apr PODs": 8, "Feb Cases": 170.08},
-    {"State": "NY", "YTD Cases": 159.00, "YTD PODs": 77, "Mar Cases": 22.58, "Mar PODs": 18, "Apr Cases": 22.83, "Apr PODs": 17, "Feb Cases": 99.08},
-    {"State": "FL", "YTD Cases": 133.58, "YTD PODs": 61, "Mar Cases": 18.17, "Mar PODs": 26, "Apr Cases": 13.92, "Apr PODs": 21, "Feb Cases": 90.83},
-    {"State": "IL", "YTD Cases": 125.17, "YTD PODs": 81, "Mar Cases": 46.75, "Mar PODs": 29, "Apr Cases": 18.08, "Apr PODs": 15, "Feb Cases": 49.75},
-    {"State": "VA", "YTD Cases": 58.00, "YTD PODs": 97, "Mar Cases": 44.67, "Mar PODs": 89, "Apr Cases": 5.17, "Apr PODs": 9, "Feb Cases": 8.17},
-    {"State": "CT", "YTD Cases": 41.00, "YTD PODs": 28, "Mar Cases": 30.17, "Mar PODs": 17, "Apr Cases": 7.17, "Apr PODs": 7, "Feb Cases": 3.67},
-    {"State": "TX", "YTD Cases": 38.83, "YTD PODs": 25, "Mar Cases": 19.67, "Mar PODs": 17, "Apr Cases": 9.58, "Apr PODs": 12, "Feb Cases": 8.50},
-    {"State": "NC", "YTD Cases": 37.92, "YTD PODs": 93, "Mar Cases": 31.33, "Mar PODs": 74, "Apr Cases": 6.58, "Apr PODs": 26, "Feb Cases": 0},
-    {"State": "MD", "YTD Cases": 24.33, "YTD PODs": 21, "Mar Cases": 8.00, "Mar PODs": 8, "Apr Cases": 3.25, "Apr PODs": 6, "Feb Cases": 12.75},
-    {"State": "DE", "YTD Cases": 22.58, "YTD PODs": 17, "Mar Cases": 14.50, "Mar PODs": 14, "Apr Cases": 0, "Apr PODs": 0, "Feb Cases": 7.00},
-    {"State": "OH", "YTD Cases": 18.67, "YTD PODs": 18, "Mar Cases": 4.58, "Mar PODs": 8, "Apr Cases": 2.75, "Apr PODs": 5, "Feb Cases": 9.83},
-    {"State": "SC", "YTD Cases": 10.67, "YTD PODs": 23, "Mar Cases": 8.67, "Mar PODs": 19, "Apr Cases": 2.00, "Apr PODs": 4, "Feb Cases": 0},
-    {"State": "CO", "YTD Cases": 8.33, "YTD PODs": 14, "Mar Cases": 1.75, "Mar PODs": 6, "Apr Cases": 2.17, "Apr PODs": 3, "Feb Cases": 1.33},
-    {"State": "DC", "YTD Cases": 7.00, "YTD PODs": 4, "Mar Cases": 0, "Mar PODs": 0, "Apr Cases": 4.00, "Apr PODs": 3, "Feb Cases": 3.00},
-    {"State": "GA", "YTD Cases": 5.50, "YTD PODs": 7, "Mar Cases": 3.00, "Mar PODs": 3, "Apr Cases": 2.00, "Apr PODs": 2, "Feb Cases": 0.50},
-    {"State": "KY", "YTD Cases": 3.50, "YTD PODs": 5, "Mar Cases": 3.33, "Mar PODs": 4, "Apr Cases": 0.17, "Apr PODs": 2, "Feb Cases": 0},
-    {"State": "AZ", "YTD Cases": 1.25, "YTD PODs": 2, "Mar Cases": 1.00, "Mar PODs": 1, "Apr Cases": 0, "Apr PODs": 0, "Feb Cases": 0.25},
-    {"State": "NM", "YTD Cases": 0.67, "YTD PODs": 5, "Mar Cases": 0.08, "Mar PODs": 1, "Apr Cases": 0.25, "Apr PODs": 3, "Feb Cases": 0.33},
+    {"State": "CA", "YTD Cases": 377.17, "YTD PODs": 236, "Mar Cases": 120.00, "Mar PODs": 97, "Apr Cases": 50.17, "Apr PODs": 32, "Mar 1-27": 97.00, "Mar 1-27 PODs": 87},
+    {"State": "NJ", "YTD Cases": 192.00, "YTD PODs": 66, "Mar Cases": 17.00, "Mar PODs": 11, "Apr Cases": 10.00, "Apr PODs": 6, "Mar 1-27": 16.00, "Mar 1-27 PODs": 10},
+    {"State": "NY", "YTD Cases": 150.51, "YTD PODs": 56, "Mar Cases": 22.17, "Mar PODs": 16, "Apr Cases": 22.17, "Apr PODs": 15, "Mar 1-27": 24.17, "Mar 1-27 PODs": 14},
+    {"State": "FL", "YTD Cases": 125.77, "YTD PODs": 53, "Mar Cases": 14.92, "Mar PODs": 21, "Apr Cases": 13.26, "Apr PODs": 19, "Mar 1-27": 14.59, "Mar 1-27 PODs": 19},
+    {"State": "IL", "YTD Cases": 125.12, "YTD PODs": 81, "Mar Cases": 46.72, "Mar PODs": 29, "Apr Cases": 18.08, "Apr PODs": 15, "Mar 1-27": 41.56, "Mar 1-27 PODs": 24},
+    {"State": "VA", "YTD Cases": 55.08, "YTD PODs": 81, "Mar Cases": 43.50, "Mar PODs": 79, "Apr Cases": 5.00, "Apr PODs": 7, "Mar 1-27": 42.25, "Mar 1-27 PODs": 78},
+    {"State": "CT", "YTD Cases": 40.99, "YTD PODs": 28, "Mar Cases": 30.16, "Mar PODs": 17, "Apr Cases": 7.17, "Apr PODs": 7, "Mar 1-27": 30.16, "Mar 1-27 PODs": 17},
+    {"State": "TX", "YTD Cases": 38.85, "YTD PODs": 25, "Mar Cases": 19.66, "Mar PODs": 17, "Apr Cases": 9.58, "Apr PODs": 12, "Mar 1-27": 15.66, "Mar 1-27 PODs": 16},
+    {"State": "NC", "YTD Cases": 37.87, "YTD PODs": 93, "Mar Cases": 31.31, "Mar PODs": 74, "Apr Cases": 6.56, "Apr PODs": 26, "Mar 1-27": 22.58, "Mar 1-27 PODs": 52},
+    {"State": "DE", "YTD Cases": 21.00, "YTD PODs": 16, "Mar Cases": 13.00, "Mar PODs": 13, "Apr Cases": 0, "Apr PODs": 0, "Mar 1-27": 12.00, "Mar 1-27 PODs": 12},
+    {"State": "OH", "YTD Cases": 18.66, "YTD PODs": 18, "Mar Cases": 4.58, "Mar PODs": 8, "Apr Cases": 2.76, "Apr PODs": 5, "Mar 1-27": 4.58, "Mar 1-27 PODs": 8},
+    {"State": "MD", "YTD Cases": 16.99, "YTD PODs": 16, "Mar Cases": 8.00, "Mar PODs": 8, "Apr Cases": 3.00, "Apr PODs": 3, "Mar 1-27": 7.00, "Mar 1-27 PODs": 7},
+    {"State": "SC", "YTD Cases": 10.33, "YTD PODs": 22, "Mar Cases": 8.33, "Mar PODs": 18, "Apr Cases": 2.00, "Apr PODs": 4, "Mar 1-27": 10.33, "Mar 1-27 PODs": 22},
+    {"State": "CO", "YTD Cases": 8.33, "YTD PODs": 14, "Mar Cases": 1.74, "Mar PODs": 6, "Apr Cases": 2.17, "Apr PODs": 3, "Mar 1-27": 1.58, "Mar 1-27 PODs": 4},
+    {"State": "GA", "YTD Cases": 5.50, "YTD PODs": 7, "Mar Cases": 3.00, "Mar PODs": 3, "Apr Cases": 2.00, "Apr PODs": 2, "Mar 1-27": 1.00, "Mar 1-27 PODs": 1},
+    {"State": "DC", "YTD Cases": 4.00, "YTD PODs": 3, "Mar Cases": 0, "Mar PODs": 0, "Apr Cases": 4.00, "Apr PODs": 3, "Mar 1-27": 0, "Mar 1-27 PODs": 0},
+    {"State": "KY", "YTD Cases": 3.00, "YTD PODs": 1, "Mar Cases": 3.00, "Mar PODs": 1, "Apr Cases": 0, "Apr PODs": 0, "Mar 1-27": 0, "Mar 1-27 PODs": 0},
+    {"State": "AZ", "YTD Cases": 1.25, "YTD PODs": 2, "Mar Cases": 1.00, "Mar PODs": 1, "Apr Cases": 0, "Apr PODs": 0, "Mar 1-27": 0, "Mar 1-27 PODs": 0},
+    {"State": "NM", "YTD Cases": 0.65, "YTD PODs": 5, "Mar Cases": 0.08, "Mar PODs": 1, "Apr Cases": 0.24, "Apr PODs": 3, "Mar 1-27": 0.08, "Mar 1-27 PODs": 1},
 ])
 
 # Add change vs last month (Apr vs Mar) to state data
 for df in [on_states, off_states]:
-    df["Depl Chg vs LM"] = df["Apr Cases"] - df["Mar Cases"]
-    df["% Growth vs LM"] = df.apply(
-        lambda r: ((r["Apr Cases"] - r["Mar Cases"]) / r["Mar Cases"] * 100) if r["Mar Cases"] > 0 else (float("inf") if r["Apr Cases"] > 0 else 0),
+    # Same-period comparison: Apr 1-24 vs Mar 1-27 (closest comparable cumulative window we have)
+    df["Period Chg"] = df["Apr Cases"] - df["Mar 1-27"]
+    df["% Period Growth"] = df.apply(
+        lambda r: ((r["Apr Cases"] - r["Mar 1-27"]) / r["Mar 1-27"] * 100) if r["Mar 1-27"] > 0 else (float("inf") if r["Apr Cases"] > 0 else 0),
         axis=1,
     )
 
@@ -497,62 +507,66 @@ combined_states["Total PODs"] = combined_states["On PODs"] + combined_states["Of
 combined_states = combined_states.sort_values("Total Cases", ascending=False).reset_index(drop=True)
 top3_states = combined_states.head(3)
 
-# ── GOPUFF DATA (Updated from March 2026 Excel) ─────────────────────────────
+# ── GOPUFF DATA (Updated from Gopuff Lucci 4.25.26 Excel — through 4/13) ────
+GOPUFF_AS_OF = "4/13/2026"
+
 gopuff_monthly = pd.DataFrame([
     {"Month": "Jan", "Units": 11},
     {"Month": "Feb", "Units": 70},
-    {"Month": "Mar", "Units": 59},
+    {"Month": "Mar", "Units": 67},
+    {"Month": "Apr", "Units": 21},
 ])
 
 gopuff_states = pd.DataFrame([
-    {"State": "NY", "Units": 96, "Pct": 68.6, "Locations": 6},
-    {"State": "CA", "Units": 30, "Pct": 21.4, "Locations": 18},
-    {"State": "FL", "Units": 14, "Pct": 10.0, "Locations": 5},
+    {"State": "NY", "Units": 120, "Pct": 71.0, "Locations": 6},
+    {"State": "CA", "Units": 31, "Pct": 18.3, "Locations": 18},
+    {"State": "FL", "Units": 18, "Pct": 10.7, "Locations": 5},
 ])
 
 gopuff_top_locations = pd.DataFrame([
-    {"Location": "JFK New York 880", "State": "NY", "YTD": 28},
-    {"Location": "JFK Brooklyn 554", "State": "NY", "YTD": 27},
+    {"Location": "JFK New York 880", "State": "NY", "YTD": 44},
+    {"Location": "JFK Brooklyn 554", "State": "NY", "YTD": 33},
     {"Location": "JFK New York 975", "State": "NY", "YTD": 24},
-    {"Location": "JFK New York 807", "State": "NY", "YTD": 10},
+    {"Location": "JFK New York 807", "State": "NY", "YTD": 12},
     {"Location": "BUR Pasadena 416", "State": "CA", "YTD": 9},
+    {"Location": "MIA Miami 183", "State": "FL", "YTD": 8},
     {"Location": "JFK Brooklyn 629", "State": "NY", "YTD": 6},
-    {"Location": "MIA Miami 183", "State": "FL", "YTD": 5},
     {"Location": "MIA Miami Beach 911", "State": "FL", "YTD": 4},
     {"Location": "SAN Point Loma 446", "State": "CA", "YTD": 3},
+    {"Location": "SFO San Mateo 496", "State": "CA", "YTD": 3},
     {"Location": "MIA Miami 330", "State": "FL", "YTD": 3},
 ])
 
 gopuff_location_detail = pd.DataFrame([
-    {"Rank": 1, "Location": "JFK_New-York_880", "ST": "NY", "Jan": 0, "Feb": 11, "Mar": 17, "YTD": 28},
-    {"Rank": 2, "Location": "JFK_Brooklyn_554", "ST": "NY", "Jan": 4, "Feb": 10, "Mar": 13, "YTD": 27},
-    {"Rank": 3, "Location": "JFK_New-York_975", "ST": "NY", "Jan": 4, "Feb": 9, "Mar": 11, "YTD": 24},
-    {"Rank": 4, "Location": "JFK_New-York_807", "ST": "NY", "Jan": 0, "Feb": 3, "Mar": 7, "YTD": 10},
-    {"Rank": 5, "Location": "BUR_Pasadena_416", "ST": "CA", "Jan": 0, "Feb": 9, "Mar": 0, "YTD": 9},
-    {"Rank": 6, "Location": "JFK_Brooklyn_629", "ST": "NY", "Jan": 2, "Feb": 4, "Mar": 0, "YTD": 6},
-    {"Rank": 7, "Location": "MIA_Miami_183", "ST": "FL", "Jan": 0, "Feb": 4, "Mar": 1, "YTD": 5},
-    {"Rank": 8, "Location": "MIA_Miami-Beach_911", "ST": "FL", "Jan": 0, "Feb": 3, "Mar": 1, "YTD": 4},
-    {"Rank": 9, "Location": "SAN_Point-Loma_446", "ST": "CA", "Jan": 0, "Feb": 3, "Mar": 0, "YTD": 3},
-    {"Rank": 10, "Location": "MIA_Miami_330", "ST": "FL", "Jan": 0, "Feb": 2, "Mar": 1, "YTD": 3},
-    {"Rank": 11, "Location": "OAK_Danville_487", "ST": "CA", "Jan": 0, "Feb": 2, "Mar": 0, "YTD": 2},
-    {"Rank": 12, "Location": "SAN_La-Mesa_404", "ST": "CA", "Jan": 0, "Feb": 0, "Mar": 2, "YTD": 2},
-    {"Rank": 13, "Location": "MIA_Miami_376", "ST": "FL", "Jan": 1, "Feb": 0, "Mar": 0, "YTD": 1},
-    {"Rank": 14, "Location": "SFO_Colma_405", "ST": "CA", "Jan": 0, "Feb": 1, "Mar": 0, "YTD": 1},
-    {"Rank": 15, "Location": "LAX_Santa-Monica_427", "ST": "CA", "Jan": 0, "Feb": 1, "Mar": 0, "YTD": 1},
-    {"Rank": 16, "Location": "SFO_San-Francisco_434", "ST": "CA", "Jan": 0, "Feb": 1, "Mar": 0, "YTD": 1},
-    {"Rank": 17, "Location": "SMF_Sacramento_445", "ST": "CA", "Jan": 0, "Feb": 1, "Mar": 0, "YTD": 1},
-    {"Rank": 18, "Location": "SJC_San-Jose_459", "ST": "CA", "Jan": 0, "Feb": 1, "Mar": 0, "YTD": 1},
-    {"Rank": 19, "Location": "LAX_Torrance_462", "ST": "CA", "Jan": 0, "Feb": 1, "Mar": 0, "YTD": 1},
-    {"Rank": 20, "Location": "OAK_San-Leandro_497", "ST": "CA", "Jan": 0, "Feb": 1, "Mar": 0, "YTD": 1},
-    {"Rank": 21, "Location": "RDD_Redding_777", "ST": "CA", "Jan": 0, "Feb": 1, "Mar": 0, "YTD": 1},
-    {"Rank": 22, "Location": "SAN_La-Jolla_1016", "ST": "CA", "Jan": 0, "Feb": 1, "Mar": 0, "YTD": 1},
-    {"Rank": 23, "Location": "SJC_Los-Altos_1019", "ST": "CA", "Jan": 0, "Feb": 1, "Mar": 0, "YTD": 1},
-    {"Rank": 24, "Location": "OAK_Oakland_403", "ST": "CA", "Jan": 0, "Feb": 0, "Mar": 1, "YTD": 1},
-    {"Rank": 25, "Location": "LAX_Culver-City_423", "ST": "CA", "Jan": 0, "Feb": 0, "Mar": 1, "YTD": 1},
-    {"Rank": 26, "Location": "BUR_Glendale_495", "ST": "CA", "Jan": 0, "Feb": 0, "Mar": 1, "YTD": 1},
-    {"Rank": 27, "Location": "SFO_San-Mateo_496", "ST": "CA", "Jan": 0, "Feb": 0, "Mar": 1, "YTD": 1},
-    {"Rank": 28, "Location": "MIA_Miami_602", "ST": "FL", "Jan": 0, "Feb": 0, "Mar": 1, "YTD": 1},
-    {"Rank": 29, "Location": "JFK_New-York_839", "ST": "NY", "Jan": 0, "Feb": 0, "Mar": 1, "YTD": 1},
+    {"Rank": 1, "Location": "JFK_New-York_880", "ST": "NY", "Jan": 0, "Feb": 11, "Mar": 17, "Apr": 16, "YTD": 44},
+    {"Rank": 2, "Location": "JFK_Brooklyn_554", "ST": "NY", "Jan": 4, "Feb": 10, "Mar": 14, "Apr": 5, "YTD": 33},
+    {"Rank": 3, "Location": "JFK_New-York_975", "ST": "NY", "Jan": 4, "Feb": 9, "Mar": 11, "Apr": 0, "YTD": 24},
+    {"Rank": 4, "Location": "JFK_New-York_807", "ST": "NY", "Jan": 0, "Feb": 3, "Mar": 5, "Apr": 4, "YTD": 12},
+    {"Rank": 5, "Location": "BUR_Pasadena_416", "ST": "CA", "Jan": 0, "Feb": 9, "Mar": 0, "Apr": 0, "YTD": 9},
+    {"Rank": 6, "Location": "MIA_Miami_183", "ST": "FL", "Jan": 0, "Feb": 4, "Mar": 1, "Apr": 3, "YTD": 8},
+    {"Rank": 7, "Location": "JFK_Brooklyn_629", "ST": "NY", "Jan": 2, "Feb": 4, "Mar": 0, "Apr": 0, "YTD": 6},
+    {"Rank": 8, "Location": "MIA_Miami-Beach_911", "ST": "FL", "Jan": 0, "Feb": 3, "Mar": 1, "Apr": 0, "YTD": 4},
+    {"Rank": 9, "Location": "SAN_Point-Loma_446", "ST": "CA", "Jan": 0, "Feb": 3, "Mar": 0, "Apr": 0, "YTD": 3},
+    {"Rank": 10, "Location": "SFO_San-Mateo_496", "ST": "CA", "Jan": 0, "Feb": 0, "Mar": 1, "Apr": 2, "YTD": 3},
+    {"Rank": 11, "Location": "MIA_Miami_330", "ST": "FL", "Jan": 0, "Feb": 2, "Mar": 1, "Apr": 0, "YTD": 3},
+    {"Rank": 12, "Location": "OAK_Danville_487", "ST": "CA", "Jan": 0, "Feb": 2, "Mar": 0, "Apr": 0, "YTD": 2},
+    {"Rank": 13, "Location": "SAN_La-Mesa_404", "ST": "CA", "Jan": 0, "Feb": 0, "Mar": 2, "Apr": 0, "YTD": 2},
+    {"Rank": 14, "Location": "MIA_Miami_376", "ST": "FL", "Jan": 1, "Feb": 0, "Mar": 0, "Apr": 0, "YTD": 1},
+    {"Rank": 15, "Location": "SFO_San-Francisco_434", "ST": "CA", "Jan": 0, "Feb": 1, "Mar": 0, "Apr": 0, "YTD": 1},
+    {"Rank": 16, "Location": "OAK_San-Leandro_497", "ST": "CA", "Jan": 0, "Feb": 1, "Mar": 0, "Apr": 0, "YTD": 1},
+    {"Rank": 17, "Location": "SFO_Colma_405", "ST": "CA", "Jan": 0, "Feb": 1, "Mar": 0, "Apr": 0, "YTD": 1},
+    {"Rank": 18, "Location": "LAX_Santa-Monica_427", "ST": "CA", "Jan": 0, "Feb": 1, "Mar": 0, "Apr": 0, "YTD": 1},
+    {"Rank": 19, "Location": "SMF_Sacramento_445", "ST": "CA", "Jan": 0, "Feb": 1, "Mar": 0, "Apr": 0, "YTD": 1},
+    {"Rank": 20, "Location": "SJC_San-Jose_459", "ST": "CA", "Jan": 0, "Feb": 1, "Mar": 0, "Apr": 0, "YTD": 1},
+    {"Rank": 21, "Location": "LAX_Torrance_462", "ST": "CA", "Jan": 0, "Feb": 1, "Mar": 0, "Apr": 0, "YTD": 1},
+    {"Rank": 22, "Location": "RDD_Redding_777", "ST": "CA", "Jan": 0, "Feb": 1, "Mar": 0, "Apr": 0, "YTD": 1},
+    {"Rank": 23, "Location": "SJC_Los-Altos_1019", "ST": "CA", "Jan": 0, "Feb": 1, "Mar": 0, "Apr": 0, "YTD": 1},
+    {"Rank": 24, "Location": "SAN_La-Jolla_1016", "ST": "CA", "Jan": 0, "Feb": 0, "Mar": 1, "Apr": 0, "YTD": 1},
+    {"Rank": 25, "Location": "OAK_Oakland_403", "ST": "CA", "Jan": 0, "Feb": 0, "Mar": 1, "Apr": 0, "YTD": 1},
+    {"Rank": 26, "Location": "LAX_Culver-City_423", "ST": "CA", "Jan": 0, "Feb": 0, "Mar": 1, "Apr": 0, "YTD": 1},
+    {"Rank": 27, "Location": "BUR_Glendale_495", "ST": "CA", "Jan": 0, "Feb": 0, "Mar": 1, "Apr": 0, "YTD": 1},
+    {"Rank": 28, "Location": "MIA_Miami_602", "ST": "FL", "Jan": 0, "Feb": 0, "Mar": 1, "Apr": 0, "YTD": 1},
+    {"Rank": 29, "Location": "JFK_New-York_839", "ST": "NY", "Jan": 0, "Feb": 0, "Mar": 1, "Apr": 0, "YTD": 1},
 ])
 
 # ── RESERVEBAR DATA ──────────────────────────────────────────────────────────
@@ -632,72 +646,76 @@ ship_monthly_net = pd.DataFrame([
     {"Month": "Mar '26", "Net Revenue": -1.60},
 ])
 
-# Top accounts — REAL chain data from Ethica depletion report (thru 4/24/2026)
+# Top accounts — chain data from Ethica depletion report 04.24.26 (samples/internal removed)
 top_accounts = pd.DataFrame([
-    {"Account": "BevMo!", "Premise": "Off", "States": "CA", "YTD Cases": 314.00, "YTD PODs": 290, "Mar Cases": 100.00, "Apr Cases": 12.00},
-    {"Account": "Eataly", "Premise": "On", "States": "CA, IL, NJ, NY, TX, FL", "YTD Cases": 220.16, "YTD PODs": 24, "Mar Cases": 100.00, "Apr Cases": 68.16},
-    {"Account": "Total Wine & More", "Premise": "Off", "States": "Multi", "YTD Cases": 178.84, "YTD PODs": 112, "Mar Cases": 68.32, "Apr Cases": 40.17},
-    {"Account": "Food Lion", "Premise": "Off", "States": "Multi", "YTD Cases": 154.48, "YTD PODs": 324, "Mar Cases": 144.48, "Apr Cases": 10.00},
-    {"Account": "Gary's Wine", "Premise": "Off", "States": "NJ", "YTD Cases": 148.00, "YTD PODs": 6, "Mar Cases": 2.00, "Apr Cases": 2.00},
-    {"Account": "Milam's Markets", "Premise": "Off", "States": "FL", "YTD Cases": 144.00, "YTD PODs": 12, "Mar Cases": 0, "Apr Cases": 0},
-    {"Account": "Albertsons", "Premise": "Off", "States": "CA", "YTD Cases": 112.00, "YTD PODs": 2, "Mar Cases": 0, "Apr Cases": 22.00},
-    {"Account": "Binny's", "Premise": "Off", "States": "IL", "YTD Cases": 109.49, "YTD PODs": 78, "Mar Cases": 16.82, "Apr Cases": 24.16},
-    {"Account": "Stew Leonard's Wines", "Premise": "Off", "States": "NJ, NY, CT", "YTD Cases": 94.00, "YTD PODs": 8, "Mar Cases": 34.00, "Apr Cases": 0},
-    {"Account": "Wine.com", "Premise": "Off", "States": "Multi", "YTD Cases": 84.00, "YTD PODs": 10, "Mar Cases": 8.00, "Apr Cases": 16.00},
-    {"Account": "Stew Leonard's", "Premise": "Off", "States": "NJ", "YTD Cases": 58.00, "YTD PODs": 4, "Mar Cases": 4.00, "Apr Cases": 0},
-    {"Account": "VIN Chicago", "Premise": "Off", "States": "IL", "YTD Cases": 40.33, "YTD PODs": 4, "Mar Cases": 40.00, "Apr Cases": 0},
-    {"Account": "Armanetti", "Premise": "Off", "States": "IL", "YTD Cases": 24.00, "YTD PODs": 6, "Mar Cases": 2.00, "Apr Cases": 0},
-    {"Account": "BevMax", "Premise": "Off", "States": "CT", "YTD Cases": 22.00, "YTD PODs": 18, "Mar Cases": 16.00, "Apr Cases": 4.00},
-    {"Account": "Oliver's Market", "Premise": "Off", "States": "CA", "YTD Cases": 22.00, "YTD PODs": 8, "Mar Cases": 22.00, "Apr Cases": 0},
-    {"Account": "ShopRite Liquors", "Premise": "Off", "States": "NJ", "YTD Cases": 22.00, "YTD PODs": 10, "Mar Cases": 10.00, "Apr Cases": 0},
-    {"Account": "Spec's", "Premise": "Off", "States": "TX", "YTD Cases": 18.16, "YTD PODs": 16, "Mar Cases": 14.00, "Apr Cases": 4.16},
-    {"Account": "Gopuff", "Premise": "Off", "States": "FL", "YTD Cases": 12.00, "YTD PODs": 12, "Mar Cases": 0, "Apr Cases": 0},
-    {"Account": "Curio Collection by Hilton", "Premise": "On", "States": "Multi", "YTD Cases": 8.34, "YTD PODs": 2, "Mar Cases": 0.34, "Apr Cases": 4.00},
-    {"Account": "Spec's Wholesale", "Premise": "Off", "States": "TX", "YTD Cases": 8.34, "YTD PODs": 4, "Mar Cases": 6.00, "Apr Cases": 2.00},
-    {"Account": "ClubProcure", "Premise": "On", "States": "Multi", "YTD Cases": 6.83, "YTD PODs": 12, "Mar Cases": 2.16, "Apr Cases": 0},
-    {"Account": "H-E-B Central Market", "Premise": "Off", "States": "TX", "YTD Cases": 6.84, "YTD PODs": 8, "Mar Cases": 2.00, "Apr Cases": 4.50},
-    {"Account": "ShopRite Wines & Spirits", "Premise": "Off", "States": "NJ", "YTD Cases": 6.00, "YTD PODs": 6, "Mar Cases": 0, "Apr Cases": 0},
+    {"Account": "BevMo!", "Premise": "Off", "States": "CA", "YTD Cases": 157.00, "YTD PODs": 145, "Mar Cases": 50.00, "Apr Cases": 6.00},
+    {"Account": "Eataly", "Premise": "On", "States": "CA, IL, NJ, NY, TX, FL", "YTD Cases": 110.08, "YTD PODs": 12, "Mar Cases": 50.00, "Apr Cases": 34.08},
+    {"Account": "Total Wine & More", "Premise": "Off", "States": "Multi", "YTD Cases": 89.43, "YTD PODs": 56, "Mar Cases": 34.16, "Apr Cases": 20.09},
+    {"Account": "Food Lion", "Premise": "Off", "States": "Multi", "YTD Cases": 77.23, "YTD PODs": 162, "Mar Cases": 72.23, "Apr Cases": 5.00},
+    {"Account": "Gary's Wine", "Premise": "Off", "States": "NJ", "YTD Cases": 74.00, "YTD PODs": 3, "Mar Cases": 1.00, "Apr Cases": 1.00},
+    {"Account": "Milam's Markets", "Premise": "Off", "States": "FL", "YTD Cases": 72.00, "YTD PODs": 6, "Mar Cases": 0, "Apr Cases": 0},
+    {"Account": "Albertsons Warehouse", "Premise": "Off", "States": "CA", "YTD Cases": 56.00, "YTD PODs": 1, "Mar Cases": 0, "Apr Cases": 11.00},
+    {"Account": "Binny's", "Premise": "Off", "States": "IL", "YTD Cases": 54.74, "YTD PODs": 39, "Mar Cases": 8.40, "Apr Cases": 12.08},
+    {"Account": "Stew Leonard's Wines", "Premise": "Off", "States": "NJ, NY, CT", "YTD Cases": 47.00, "YTD PODs": 4, "Mar Cases": 17.00, "Apr Cases": 0},
+    {"Account": "Wine.com", "Premise": "Off", "States": "Multi", "YTD Cases": 42.00, "YTD PODs": 5, "Mar Cases": 4.00, "Apr Cases": 8.00},
+    {"Account": "Stew Leonard's", "Premise": "Off", "States": "NJ", "YTD Cases": 29.00, "YTD PODs": 2, "Mar Cases": 2.00, "Apr Cases": 0},
+    {"Account": "VIN Chicago", "Premise": "Off", "States": "IL", "YTD Cases": 20.16, "YTD PODs": 2, "Mar Cases": 20.00, "Apr Cases": 0},
+    {"Account": "Armanetti", "Premise": "Off", "States": "IL", "YTD Cases": 12.00, "YTD PODs": 3, "Mar Cases": 1.00, "Apr Cases": 0},
+    {"Account": "BevMax", "Premise": "Off", "States": "CT", "YTD Cases": 11.00, "YTD PODs": 9, "Mar Cases": 8.00, "Apr Cases": 2.00},
+    {"Account": "Oliver's Market", "Premise": "Off", "States": "CA", "YTD Cases": 11.00, "YTD PODs": 4, "Mar Cases": 11.00, "Apr Cases": 0},
+    {"Account": "ShopRite Liquors", "Premise": "Off", "States": "NJ", "YTD Cases": 11.00, "YTD PODs": 5, "Mar Cases": 5.00, "Apr Cases": 0},
+    {"Account": "Spec's Wine & Spirits", "Premise": "Off", "States": "TX", "YTD Cases": 9.08, "YTD PODs": 8, "Mar Cases": 7.00, "Apr Cases": 2.08},
+    {"Account": "Gopuff", "Premise": "Off", "States": "FL", "YTD Cases": 6.00, "YTD PODs": 6, "Mar Cases": 0, "Apr Cases": 0},
+    {"Account": "Spec's Wholesale", "Premise": "Off", "States": "TX", "YTD Cases": 4.17, "YTD PODs": 2, "Mar Cases": 3.00, "Apr Cases": 1.00},
+    {"Account": "Curio Collection by Hilton", "Premise": "On", "States": "Multi", "YTD Cases": 4.17, "YTD PODs": 1, "Mar Cases": 0.17, "Apr Cases": 2.00},
+    {"Account": "H-E-B Central Market", "Premise": "Off", "States": "TX", "YTD Cases": 3.42, "YTD PODs": 4, "Mar Cases": 1.00, "Apr Cases": 2.25},
+    {"Account": "ClubProcure", "Premise": "On", "States": "Multi", "YTD Cases": 3.41, "YTD PODs": 6, "Mar Cases": 1.08, "Apr Cases": 0},
+    {"Account": "ShopRite Wines & Spirits", "Premise": "Off", "States": "NJ", "YTD Cases": 3.00, "YTD PODs": 3, "Mar Cases": 0, "Apr Cases": 0},
+    {"Account": "Invited", "Premise": "On", "States": "CA", "YTD Cases": 2.00, "YTD PODs": 1, "Mar Cases": 2.00, "Apr Cases": 0},
+    {"Account": "Miraval", "Premise": "On", "States": "TX", "YTD Cases": 2.00, "YTD PODs": 1, "Mar Cases": 0, "Apr Cases": 2.00},
 ])
 
-# State-level top accounts for key 5 states (CA, TX, FL, NY, NJ) — from 04.24.26 tab
+# State-level top accounts for key 5 states (CA, TX, FL, NY, NJ) — from 04.24.26 tab (samples removed)
 state_top_accounts = pd.DataFrame([
     # CA
-    {"State": "CA", "Account": "BevMo!", "Premise": "Off", "YTD Cases": 314.00, "Mar Cases": 100.00, "Apr Cases": 12.00},
-    {"State": "CA", "Account": "Albertsons Warehouse", "Premise": "Off", "YTD Cases": 112.00, "Mar Cases": 0, "Apr Cases": 22.00},
-    {"State": "CA", "Account": "Eataly", "Premise": "On", "YTD Cases": 42.00, "Mar Cases": 26.00, "Apr Cases": 6.00},
-    {"State": "CA", "Account": "Total Wine & More", "Premise": "Off", "YTD Cases": 30.00, "Mar Cases": 2.00, "Apr Cases": 8.00},
-    {"State": "CA", "Account": "Oliver's Market", "Premise": "Off", "YTD Cases": 22.00, "Mar Cases": 22.00, "Apr Cases": 0},
-    {"State": "CA", "Account": "Wine.com", "Premise": "Off", "YTD Cases": 20.00, "Mar Cases": 0, "Apr Cases": 6.00},
+    {"State": "CA", "Account": "BevMo!", "Premise": "Off", "YTD Cases": 157.00, "Mar Cases": 50.00, "Apr Cases": 6.00},
+    {"State": "CA", "Account": "Albertsons Warehouse", "Premise": "Off", "YTD Cases": 56.00, "Mar Cases": 0, "Apr Cases": 11.00},
+    {"State": "CA", "Account": "Eataly", "Premise": "On", "YTD Cases": 21.00, "Mar Cases": 13.00, "Apr Cases": 3.00},
+    {"State": "CA", "Account": "Total Wine & More", "Premise": "Off", "YTD Cases": 15.00, "Mar Cases": 1.00, "Apr Cases": 4.00},
+    {"State": "CA", "Account": "Oliver's Market", "Premise": "Off", "YTD Cases": 11.00, "Mar Cases": 11.00, "Apr Cases": 0},
+    {"State": "CA", "Account": "Wine.com", "Premise": "Off", "YTD Cases": 10.00, "Mar Cases": 0, "Apr Cases": 3.00},
     # TX
-    {"State": "TX", "Account": "Eataly", "Premise": "On", "YTD Cases": 22.00, "Mar Cases": 8.00, "Apr Cases": 14.00},
-    {"State": "TX", "Account": "Spec's Wine & Spirits", "Premise": "Off", "YTD Cases": 18.16, "Mar Cases": 14.00, "Apr Cases": 4.16},
-    {"State": "TX", "Account": "Total Wine & More", "Premise": "Off", "YTD Cases": 14.17, "Mar Cases": 9.16, "Apr Cases": 2.16},
-    {"State": "TX", "Account": "Wine.com", "Premise": "Off", "YTD Cases": 14.00, "Mar Cases": 2.00, "Apr Cases": 4.00},
-    {"State": "TX", "Account": "Spec's Wholesale", "Premise": "Off", "YTD Cases": 8.34, "Mar Cases": 6.00, "Apr Cases": 2.00},
-    {"State": "TX", "Account": "H-E-B Central Market", "Premise": "Off", "YTD Cases": 6.84, "Mar Cases": 2.00, "Apr Cases": 4.50},
+    {"State": "TX", "Account": "Eataly", "Premise": "On", "YTD Cases": 11.00, "Mar Cases": 4.00, "Apr Cases": 7.00},
+    {"State": "TX", "Account": "Spec's Wine & Spirits", "Premise": "Off", "YTD Cases": 9.08, "Mar Cases": 7.00, "Apr Cases": 2.08},
+    {"State": "TX", "Account": "Total Wine & More", "Premise": "Off", "YTD Cases": 7.09, "Mar Cases": 4.58, "Apr Cases": 1.08},
+    {"State": "TX", "Account": "Wine.com", "Premise": "Off", "YTD Cases": 7.00, "Mar Cases": 1.00, "Apr Cases": 2.00},
+    {"State": "TX", "Account": "Spec's Wholesale", "Premise": "Off", "YTD Cases": 4.17, "Mar Cases": 3.00, "Apr Cases": 1.00},
+    {"State": "TX", "Account": "H-E-B Central Market", "Premise": "Off", "YTD Cases": 3.42, "Mar Cases": 1.00, "Apr Cases": 2.25},
+    {"State": "TX", "Account": "Miraval", "Premise": "On", "YTD Cases": 2.00, "Mar Cases": 0, "Apr Cases": 2.00},
     # FL
-    {"State": "FL", "Account": "Milam's Markets", "Premise": "Off", "YTD Cases": 144.00, "Mar Cases": 0, "Apr Cases": 0},
-    {"State": "FL", "Account": "Total Wine & More", "Premise": "Off", "YTD Cases": 43.35, "Mar Cases": 18.66, "Apr Cases": 9.51},
-    {"State": "FL", "Account": "Gopuff", "Premise": "Off", "YTD Cases": 12.00, "Mar Cases": 0, "Apr Cases": 0},
-    {"State": "FL", "Account": "Eataly", "Premise": "On", "YTD Cases": 6.16, "Mar Cases": 6.00, "Apr Cases": 0.16},
-    {"State": "FL", "Account": "Doris Italian Market", "Premise": "Off", "YTD Cases": 4.00, "Mar Cases": 2.00, "Apr Cases": 2.00},
-    {"State": "FL", "Account": "Soho House", "Premise": "On", "YTD Cases": 3.66, "Mar Cases": 0, "Apr Cases": 0},
+    {"State": "FL", "Account": "Milam's Markets", "Premise": "Off", "YTD Cases": 72.00, "Mar Cases": 0, "Apr Cases": 0},
+    {"State": "FL", "Account": "Total Wine & More", "Premise": "Off", "YTD Cases": 21.68, "Mar Cases": 9.33, "Apr Cases": 4.76},
+    {"State": "FL", "Account": "Gopuff", "Premise": "Off", "YTD Cases": 6.00, "Mar Cases": 0, "Apr Cases": 0},
+    {"State": "FL", "Account": "Eataly", "Premise": "On", "YTD Cases": 3.08, "Mar Cases": 3.00, "Apr Cases": 0.08},
+    {"State": "FL", "Account": "Doris Italian Market", "Premise": "Off", "YTD Cases": 2.00, "Mar Cases": 1.00, "Apr Cases": 1.00},
+    {"State": "FL", "Account": "Soho House", "Premise": "On", "YTD Cases": 1.83, "Mar Cases": 0, "Apr Cases": 0},
     # NY
-    {"State": "NY", "Account": "Stew Leonard's Wines", "Premise": "Off", "YTD Cases": 60.00, "Mar Cases": 0, "Apr Cases": 0},
-    {"State": "NY", "Account": "Eataly", "Premise": "On", "YTD Cases": 38.00, "Mar Cases": 22.00, "Apr Cases": 16.00},
-    {"State": "NY", "Account": "Wine.com", "Premise": "Off", "YTD Cases": 34.00, "Mar Cases": 2.00, "Apr Cases": 6.00},
-    {"State": "NY", "Account": "Total Wine & More", "Premise": "Off", "YTD Cases": 10.00, "Mar Cases": 4.00, "Apr Cases": 4.00},
-    {"State": "NY", "Account": "Hilton", "Premise": "On", "YTD Cases": 2.00, "Mar Cases": 0, "Apr Cases": 0},
+    {"State": "NY", "Account": "Stew Leonard's Wines", "Premise": "Off", "YTD Cases": 30.00, "Mar Cases": 0, "Apr Cases": 0},
+    {"State": "NY", "Account": "Eataly", "Premise": "On", "YTD Cases": 19.00, "Mar Cases": 11.00, "Apr Cases": 8.00},
+    {"State": "NY", "Account": "Wine.com", "Premise": "Off", "YTD Cases": 17.00, "Mar Cases": 1.00, "Apr Cases": 3.00},
+    {"State": "NY", "Account": "Total Wine & More", "Premise": "Off", "YTD Cases": 5.00, "Mar Cases": 2.00, "Apr Cases": 2.00},
+    {"State": "NY", "Account": "Hilton", "Premise": "On", "YTD Cases": 1.00, "Mar Cases": 0, "Apr Cases": 0},
     # NJ
-    {"State": "NJ", "Account": "Gary's Wine & Marketplace", "Premise": "Off", "YTD Cases": 148.00, "Mar Cases": 2.00, "Apr Cases": 2.00},
-    {"State": "NJ", "Account": "Stew Leonard's", "Premise": "Off", "YTD Cases": 58.00, "Mar Cases": 4.00, "Apr Cases": 0},
-    {"State": "NJ", "Account": "Total Wine & More", "Premise": "Off", "YTD Cases": 24.00, "Mar Cases": 10.00, "Apr Cases": 4.00},
-    {"State": "NJ", "Account": "ShopRite Liquors", "Premise": "Off", "YTD Cases": 22.00, "Mar Cases": 10.00, "Apr Cases": 0},
-    {"State": "NJ", "Account": "Eataly", "Premise": "On", "YTD Cases": 18.00, "Mar Cases": 8.00, "Apr Cases": 2.00},
-    {"State": "NJ", "Account": "Wine.com", "Premise": "Off", "YTD Cases": 8.00, "Mar Cases": 0, "Apr Cases": 0},
+    {"State": "NJ", "Account": "Gary's Wine & Marketplace", "Premise": "Off", "YTD Cases": 74.00, "Mar Cases": 1.00, "Apr Cases": 1.00},
+    {"State": "NJ", "Account": "Stew Leonard's", "Premise": "Off", "YTD Cases": 29.00, "Mar Cases": 2.00, "Apr Cases": 0},
+    {"State": "NJ", "Account": "Total Wine & More", "Premise": "Off", "YTD Cases": 12.00, "Mar Cases": 5.00, "Apr Cases": 2.00},
+    {"State": "NJ", "Account": "ShopRite Liquors", "Premise": "Off", "YTD Cases": 11.00, "Mar Cases": 5.00, "Apr Cases": 0},
+    {"State": "NJ", "Account": "Eataly", "Premise": "On", "YTD Cases": 9.00, "Mar Cases": 4.00, "Apr Cases": 1.00},
+    {"State": "NJ", "Account": "Wine.com", "Premise": "Off", "YTD Cases": 4.00, "Mar Cases": 0, "Apr Cases": 0},
 ])
 
-# State-level WEEKLY ACTUALS (last 7d = 4/18-4/24, prior 7d = 4/11-4/17) from snapshot diffs
+# State-level WEEKLY ACTUALS (kept for reference but no longer used in main UI)
+# State Performance now uses same-period comparison: Apr 1-24 vs Mar 1-27 from on_states/off_states.
 state_weekly = pd.DataFrame([
     # ON-PREMISE
     {"Premise": "ON", "State": "AZ", "L7d Cases": 3.00, "P7d Cases": 3.00, "L7d PODs": 2, "P7d PODs": 1},
@@ -804,15 +822,15 @@ if active_tab == "Overview":
 
     c1, c2, c3, c4, c5 = st.columns(5)
     with c1:
-        st.markdown(kpi("Gross Revenue YTD", "$148,106", "Net: $134,582 after credits", dark=True), unsafe_allow_html=True)
+        st.markdown(kpi("Gross Revenue YTD", "$148,106", "Net: $134,582 · as of 3/31/26", dark=True), unsafe_allow_html=True)
     with c2:
         st.markdown(kpi("Cases Shipped YTD", "4,811", "Dec '25 - Mar '26", dark=True), unsafe_allow_html=True)
     with c3:
-        st.markdown(kpi("Total Depletions", f"{total_cases:,.2f}", "Cases - filtered period"), unsafe_allow_html=True)
+        st.markdown(kpi("Total Depletions", f"{total_cases:,.2f}", f"Cases · samples excl · as of {DEPLETION_AS_OF}"), unsafe_allow_html=True)
     with c4:
-        st.markdown(kpi("Gopuff YTD Units", "140", "29 locations, 3 states"), unsafe_allow_html=True)
+        st.markdown(kpi("Gopuff YTD Units", "169", f"29 locations · as of {GOPUFF_AS_OF}"), unsafe_allow_html=True)
     with c5:
-        st.markdown(kpi("ReserveBar Units", "86", "27 orders, $1.74K revenue"), unsafe_allow_html=True)
+        st.markdown(kpi("ReserveBar Units", "86", "27 orders, $1.74K · as of 4/25/26"), unsafe_allow_html=True)
 
     st.markdown("<br>", unsafe_allow_html=True)
     col1, col2 = st.columns(2)
@@ -857,9 +875,9 @@ if active_tab == "Overview":
     st.markdown(f"""
     <div class="highlight-banner">
         <div>
-            <p style="margin:0; font-size:11px; color:rgba(255,255,255,0.6); letter-spacing:0.15em; text-transform:uppercase;">Filtered Period Summary</p>
+            <p style="margin:0; font-size:11px; color:rgba(255,255,255,0.6); letter-spacing:0.15em; text-transform:uppercase;">Filtered Period Summary &middot; Depletions as of {DEPLETION_AS_OF}</p>
             <p style="margin:8px 0 0; font-size:18px; color:white; font-weight:900; letter-spacing:0.02em;">Lucci performance across all channels</p>
-            <p style="margin:4px 0 0; font-size:13px; color:rgba(255,255,255,0.7);">{total_cases:,.2f} depletion cases &middot; {total_on:,.2f} on-premise &middot; {total_off:,.2f} off-premise</p>
+            <p style="margin:4px 0 0; font-size:13px; color:rgba(255,255,255,0.7);">{total_cases:,.2f} depletion cases (samples excluded) &middot; {total_on:,.2f} on-premise &middot; {total_off:,.2f} off-premise</p>
         </div>
         <div style="display:flex; gap:32px; flex-shrink:0;">
             <div style="text-align:center;">
@@ -867,7 +885,7 @@ if active_tab == "Overview":
                 <p style="margin:4px 0 0; font-size:11px; color:rgba(255,255,255,0.6); letter-spacing:0.1em;">TOTAL CASES</p>
             </div>
             <div style="text-align:center;">
-                <p style="margin:0; font-size:30px; font-weight:900; color:white; line-height:1;">1,283</p>
+                <p style="margin:0; font-size:30px; font-weight:900; color:white; line-height:1;">1,178</p>
                 <p style="margin:4px 0 0; font-size:11px; color:rgba(255,255,255,0.6); letter-spacing:0.1em;">TOTAL PODS</p>
             </div>
             <div style="text-align:center;">
@@ -956,6 +974,7 @@ elif active_tab == "Shipments & Revenue":
 # DEPLETIONS — merged On + Off Premise
 # ══════════════════════════════════════════════════════════════════════════════
 elif active_tab == "Depletions":
+    st.caption(f"📅 Depletion data as of **{DEPLETION_AS_OF}** · Samples / internal accounts excluded · Source: Ethica weekly snapshots")
     fc1, fc2 = st.columns(2)
     with fc1:
         dp_months = st.multiselect("Filter by Month", DEPL_MONTHS, default=DEPL_MONTHS, key="dp_months")
@@ -977,13 +996,13 @@ elif active_tab == "Depletions":
 
     c1, c2, c3, c4 = st.columns(4)
     with c1:
-        st.markdown(kpi("Total YTD (Cases)", f"{total_all:,.2f}", "Filtered period", dark=True), unsafe_allow_html=True)
+        st.markdown(kpi("Total YTD (Cases)", f"{total_all:,.2f}", f"as of {DEPLETION_AS_OF}", dark=True), unsafe_allow_html=True)
     with c2:
-        st.markdown(kpi("Total PODs", f"{total_pods:,}", "Points of distribution"), unsafe_allow_html=True)
+        st.markdown(kpi("Total PODs", f"{total_pods:,}", f"as of {DEPLETION_AS_OF}"), unsafe_allow_html=True)
     with c3:
-        st.markdown(kpi("On-Premise YTD", f"{total_on:,.2f}", f"{total_on_pods} PODs - {on_pct}% of total"), unsafe_allow_html=True)
+        st.markdown(kpi("On-Premise YTD", f"{total_on:,.2f}", f"{total_on_pods} PODs · {on_pct}% of total"), unsafe_allow_html=True)
     with c4:
-        st.markdown(kpi("Off-Premise YTD", f"{total_off:,.2f}", f"{total_off_pods} PODs - {off_pct}% of total"), unsafe_allow_html=True)
+        st.markdown(kpi("Off-Premise YTD", f"{total_off:,.2f}", f"{total_off_pods} PODs · {off_pct}% of total"), unsafe_allow_html=True)
 
     st.markdown("<br>", unsafe_allow_html=True)
 
@@ -1007,9 +1026,9 @@ elif active_tab == "Depletions":
 
     st.markdown("<br>", unsafe_allow_html=True)
 
-    # ── State Performance — Toggleable (Total / On-Premise / Off-Premise) ──
-    section_title("State Performance — Week-over-Week (Last 7d vs Prior 7d)")
-    st.caption("Last 7d = Apr 18-24 actuals · Prior 7d = Apr 11-17 actuals (from weekly Ethica snapshots)")
+    # ── State Performance — Same-Period MoM (Apr 1-24 vs Mar 1-27) ──
+    section_title(f"State Performance — Same-Period MoM ({APR_PERIOD_LABEL} vs {MAR_PERIOD_LABEL})")
+    st.caption(f"As of {DEPLETION_AS_OF}. Apr period = 4/1–4/24 (24 days, from 04.24.26 snapshot). Mar period = 3/1–3/27 (27 days, from 03.27.26 snapshot). Both are actuals — no pro-rating. Samples / internal accounts excluded.")
 
     state_view = st.radio(
         "View",
@@ -1019,45 +1038,49 @@ elif active_tab == "Depletions":
         label_visibility="collapsed",
     )
 
-    # Filter weekly state data based on toggle and state filter
-    sw = state_weekly[state_weekly["State"].isin(dp_states)].copy()
-    if state_view == "On-Premise":
-        sw_filt = sw[sw["Premise"] == "ON"].copy()
-    elif state_view == "Off-Premise":
-        sw_filt = sw[sw["Premise"] == "OFF"].copy()
-    else:
-        sw_filt = sw.groupby("State", as_index=False).agg({
-            "L7d Cases": "sum", "P7d Cases": "sum",
-            "L7d PODs": "sum", "P7d PODs": "sum",
-        })
+    on_f = on_states[on_states["State"].isin(dp_states)].copy()
+    off_f = off_states[off_states["State"].isin(dp_states)].copy()
 
-    # Compute % growth using actuals
+    if state_view == "On-Premise":
+        sp = on_f[["State", "Apr Cases", "Apr PODs", "Mar 1-27", "Mar 1-27 PODs"]].copy()
+    elif state_view == "Off-Premise":
+        sp = off_f[["State", "Apr Cases", "Apr PODs", "Mar 1-27", "Mar 1-27 PODs"]].copy()
+    else:
+        on_agg = on_f.groupby("State", as_index=False)[["Apr Cases", "Apr PODs", "Mar 1-27", "Mar 1-27 PODs"]].sum()
+        off_agg = off_f.groupby("State", as_index=False)[["Apr Cases", "Apr PODs", "Mar 1-27", "Mar 1-27 PODs"]].sum()
+        sp = pd.concat([on_agg, off_agg]).groupby("State", as_index=False).sum()
+
+    sp = sp.rename(columns={
+        "Apr Cases": "Apr 1-24 Depl",
+        "Apr PODs": "Apr 1-24 PODs",
+        "Mar 1-27": "Mar 1-27 Depl",
+        "Mar 1-27 PODs": "Mar 1-27 PODs",
+    })
+
     def pct_growth(curr, prev):
         if prev == 0:
             return float("inf") if curr > 0 else (float("-inf") if curr < 0 else 0)
         return (curr - prev) / abs(prev) * 100
 
-    sw_filt["% Depl Growth"] = sw_filt.apply(lambda r: pct_growth(r["L7d Cases"], r["P7d Cases"]), axis=1)
-    sw_filt["% POD Growth"] = sw_filt.apply(lambda r: pct_growth(r["L7d PODs"], r["P7d PODs"]), axis=1)
-    sw_filt = sw_filt.sort_values("L7d Cases", ascending=False).reset_index(drop=True)
+    sp["% Depl Growth"] = sp.apply(lambda r: pct_growth(r["Apr 1-24 Depl"], r["Mar 1-27 Depl"]), axis=1)
+    sp["% POD Growth"] = sp.apply(lambda r: pct_growth(r["Apr 1-24 PODs"], r["Mar 1-27 PODs"]), axis=1)
+    sp = sp.sort_values("Apr 1-24 Depl", ascending=False).reset_index(drop=True)
 
-    # Rename columns to match requested headers: State / Depletions / % depl growth / PODs / % POD growth
-    sw_display = sw_filt.rename(columns={
-        "L7d Cases": "Depletions",
-        "L7d PODs": "PODs",
-    })[["State", "Depletions", "% Depl Growth", "PODs", "% POD Growth"]].copy()
+    sp_display = sp[["State", "Apr 1-24 Depl", "Mar 1-27 Depl", "% Depl Growth", "Apr 1-24 PODs", "Mar 1-27 PODs", "% POD Growth"]].copy()
 
-    st.markdown(styled_table(sw_display, fmt={
-        "Depletions": lambda v: f"{v:,.2f}",
+    st.markdown(styled_table(sp_display, fmt={
+        "Apr 1-24 Depl": lambda v: f"{v:,.2f}",
+        "Mar 1-27 Depl": lambda v: f"{v:,.2f}",
         "% Depl Growth": lambda v: pct_change_fmt(v),
-        "PODs": lambda v: f"{int(v)}",
+        "Apr 1-24 PODs": lambda v: f"{int(v)}",
+        "Mar 1-27 PODs": lambda v: f"{int(v)}",
         "% POD Growth": lambda v: pct_change_fmt(v),
     }), unsafe_allow_html=True)
 
     # ── State Drill-Down: Top accounts within key 5 states ──
     st.markdown("<br>", unsafe_allow_html=True)
     section_title("Top Accounts by Key State")
-    st.caption("Top performing accounts within CA, TX, FL, NY, NJ — sorted by YTD cases")
+    st.caption(f"Top accounts within CA, TX, FL, NY, NJ — sorted by YTD cases · as of {DEPLETION_AS_OF} · Samples excluded")
 
     drill_state = st.radio(
         "Drill-down state",
@@ -1115,7 +1138,7 @@ elif active_tab == "Depletions":
     # Top 15 accounts - toggleable (Overall / On / Off)
     st.markdown("<br>", unsafe_allow_html=True)
     section_title("Top 15 Accounts by YTD Depletions")
-    st.caption("Source: Ethica depletion report through 4/24/2026")
+    st.caption(f"As of {DEPLETION_AS_OF} · Samples / internal accounts excluded · Source: Ethica depletion report")
 
     acct_view = st.radio(
         "Account view",
@@ -1153,6 +1176,7 @@ elif active_tab == "Depletions":
 # GOPUFF (Updated with March 2026 Excel data)
 # ══════════════════════════════════════════════════════════════════════════════
 elif active_tab == "Gopuff":
+    st.caption(f"📅 Gopuff data as of **{GOPUFF_AS_OF}** · Source: Gopuff weekly Lucci report")
     gp_all_states = gopuff_states["State"].tolist()
     gp_states = st.multiselect("Filter by State", gp_all_states, default=gp_all_states, key="gp_states")
 
@@ -1165,14 +1189,14 @@ elif active_tab == "Gopuff":
 
     c1, c2, c3, c4 = st.columns(4)
     with c1:
-        st.markdown(kpi("YTD Units Sold", str(filt_units), "Jan - Mar 2026", dark=True), unsafe_allow_html=True)
+        st.markdown(kpi("YTD Units Sold", str(filt_units), f"Jan - Apr 2026 · as of {GOPUFF_AS_OF}", dark=True), unsafe_allow_html=True)
     with c2:
         st.markdown(kpi("Active Locations", str(filt_locs), f"Across {len(gp_states)} state(s)"), unsafe_allow_html=True)
     with c3:
-        st.markdown(kpi("Mar Units", "59", "vs 70 in Feb (-15.7%)"), unsafe_allow_html=True)
+        st.markdown(kpi("Apr MTD Units", "21", "Through 4/13 (2 weeks)"), unsafe_allow_html=True)
     with c4:
         top_st = gs_filt.iloc[0] if len(gs_filt) > 0 else {"State": "-", "Units": 0, "Pct": 0}
-        st.markdown(kpi("Top State", str(top_st["State"]), f"{int(top_st['Units'])} units - {top_st['Pct']}%"), unsafe_allow_html=True)
+        st.markdown(kpi("Top State", str(top_st["State"]), f"{int(top_st['Units'])} units · {top_st['Pct']}%"), unsafe_allow_html=True)
 
     st.markdown("<br>", unsafe_allow_html=True)
     col1, col2 = st.columns([1.65, 1])
@@ -1206,14 +1230,15 @@ elif active_tab == "Gopuff":
         fig.update_layout(height=220)
         st.plotly_chart(fig, use_container_width=True)
 
-    section_title("Location Detail — Monthly Units")
-    detail_display = gl_filt[["Rank", "Location", "ST", "Jan", "Feb", "Mar", "YTD"]].copy()
+    section_title(f"Location Detail — Monthly Units (as of {GOPUFF_AS_OF})")
+    detail_display = gl_filt[["Rank", "Location", "ST", "Jan", "Feb", "Mar", "Apr", "YTD"]].copy()
     detail_display = detail_display.replace(0, "-")
     st.markdown(styled_table(detail_display, fmt={
         "Rank": lambda v: str(v),
         "Jan": lambda v: str(v),
         "Feb": lambda v: str(v),
         "Mar": lambda v: str(v),
+        "Apr": lambda v: str(v),
         "YTD": lambda v: f"<strong>{v}</strong>" if v != "-" else "-",
     }), unsafe_allow_html=True)
 
@@ -1222,6 +1247,7 @@ elif active_tab == "Gopuff":
 # RESERVEBAR
 # ══════════════════════════════════════════════════════════════════════════════
 elif active_tab == "ReserveBar":
+    st.caption("📅 ReserveBar data as of **4/25/2026** · Source: ReserveBar partner dashboard")
     c1, c2, c3, c4, c5, c6 = st.columns(6)
     with c1:
         st.markdown(kpi("Revenue", "$1.74K", "Feb-Apr 2026", dark=True), unsafe_allow_html=True)
@@ -1317,4 +1343,4 @@ elif active_tab == "ReserveBar":
 
 
 # ── FOOTER ───────────────────────────────────────────────────────────────────
-st.markdown('<p class="footer-text">Data Period: Nov 2025 - Apr 2026 &middot; Lucci Sales Intelligence</p>', unsafe_allow_html=True)
+st.markdown(f'<p class="footer-text">Data Period: Dec 2025 – Apr 2026 &middot; Depletions thru {DEPLETION_AS_OF} &middot; Gopuff thru {GOPUFF_AS_OF} &middot; Samples / internal accounts excluded &middot; Lucci Sales Intelligence</p>', unsafe_allow_html=True)
