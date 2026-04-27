@@ -402,28 +402,28 @@ combined_monthly = pd.DataFrame([
     {"Month": "Apr", "On-Premise": 158.97, "Off-Premise": 158.16},
 ])
 
-# Channel breakdown with change vs last month (newest first)
+# Channel breakdown — chronological (oldest → newest)
 channel_detail = pd.DataFrame([
-    {"Month": "Apr 2026 (1–24)", "Short": "Apr", "Total Depletions": 317.38, "Total PODs": 269, "On-Premise": 158.97, "Off-Premise": 158.16},
-    {"Month": "Mar 2026 (full)", "Short": "Mar", "Total Depletions": 551.41, "Total PODs": 552, "On-Premise": 163.24, "Off-Premise": 388.17},
-    {"Month": "Feb 2026", "Short": "Feb", "Total Depletions": 599.28, "Total PODs": 410, "On-Premise": 123.27, "Off-Premise": 475.76},
-    {"Month": "Jan 2026", "Short": "Jan", "Total Depletions": 242.78, "Total PODs": 198, "On-Premise": 29.32, "Off-Premise": 202.55},
-    {"Month": "Dec 2025", "Short": "Dec", "Total Depletions": 24.72, "Total PODs": 27, "On-Premise": 16.32, "Off-Premise": 8.40},
     {"Month": "Nov 2025", "Short": "Nov", "Total Depletions": 0, "Total PODs": 0, "On-Premise": 0, "Off-Premise": 0},
+    {"Month": "Dec 2025", "Short": "Dec", "Total Depletions": 24.72, "Total PODs": 27, "On-Premise": 16.32, "Off-Premise": 8.40},
+    {"Month": "Jan 2026", "Short": "Jan", "Total Depletions": 242.78, "Total PODs": 198, "On-Premise": 29.32, "Off-Premise": 202.55},
+    {"Month": "Feb 2026", "Short": "Feb", "Total Depletions": 599.28, "Total PODs": 410, "On-Premise": 123.27, "Off-Premise": 475.76},
+    {"Month": "Mar 2026 (full)", "Short": "Mar", "Total Depletions": 551.41, "Total PODs": 552, "On-Premise": 163.24, "Off-Premise": 388.17},
+    {"Month": "Apr 2026 (1–24)", "Short": "Apr", "Total Depletions": 317.38, "Total PODs": 269, "On-Premise": 158.97, "Off-Premise": 158.16},
 ])
 
-# Compute change vs last month
+# Compute change vs last month (chronological order: prior month is row i-1)
 depl_vals = channel_detail["Total Depletions"].tolist()
 pod_vals = channel_detail["Total PODs"].tolist()
 changes, pct_changes, pod_changes, pod_pct_changes = [], [], [], []
 for i in range(len(depl_vals)):
-    if i < len(depl_vals) - 1:
-        prev = depl_vals[i + 1]
+    if i > 0:
+        prev = depl_vals[i - 1]
         chg = depl_vals[i] - prev
         pct = (chg / prev * 100) if prev > 0 else float("inf")
         changes.append(chg)
         pct_changes.append(pct)
-        pprev = pod_vals[i + 1]
+        pprev = pod_vals[i - 1]
         pchg = pod_vals[i] - pprev
         ppct = (pchg / pprev * 100) if pprev > 0 else float("inf")
         pod_changes.append(pchg)
@@ -1067,11 +1067,11 @@ elif active_tab == "Depletions":
 
     sp = sp.sort_values("Apr 1-24 Depl", ascending=False).reset_index(drop=True)
 
-    sp_display = sp[["State", "Apr 1-24 Depl", "Mar 1-27 Depl", "YTD PODs", "New Apr PODs"]].copy()
+    sp_display = sp[["State", "Mar 1-27 Depl", "Apr 1-24 Depl", "YTD PODs", "New Apr PODs"]].copy()
 
     st.markdown(styled_table(sp_display, fmt={
-        "Apr 1-24 Depl": lambda v: f"{v:,.2f}",
         "Mar 1-27 Depl": lambda v: f"{v:,.2f}",
+        "Apr 1-24 Depl": lambda v: f"{v:,.2f}",
         "YTD PODs": lambda v: f"{int(v)}",
         "New Apr PODs": lambda v: f"+{int(v)}" if v > 0 else "0",
     }), unsafe_allow_html=True)
