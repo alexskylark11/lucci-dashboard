@@ -235,7 +235,7 @@ st.markdown(f"""
         </div>
         <div style="text-align:right;">
             <p style="margin:0; font-size:10px; color:rgba(255,255,255,0.55); letter-spacing:0.12em; text-transform:uppercase;">Data as of</p>
-            <p style="margin:0; font-size:13px; color:rgba(255,255,255,0.95); font-weight:700;">Depletions: 4/24/26 &middot; Gopuff: 4/13/26 &middot; ReserveBar: 4/25/26</p>
+            <p style="margin:0; font-size:13px; color:rgba(255,255,255,0.95); font-weight:700;">Depletions: 4/24/26 &middot; Gopuff: 4/25/26 &middot; ReserveBar: 4/25/26</p>
         </div>
     </div>
     <p class="lucci-period">Sales Intelligence Dashboard &middot; Samples / internal accounts excluded from depletions</p>
@@ -507,8 +507,9 @@ combined_states["Total PODs"] = combined_states["On PODs"] + combined_states["Of
 combined_states = combined_states.sort_values("Total Cases", ascending=False).reset_index(drop=True)
 top3_states = combined_states.head(3)
 
-# ── GOPUFF DATA (Updated from Gopuff Lucci 4.25.26 Excel — through 4/13) ────
-GOPUFF_AS_OF = "4/13/2026"
+# ── GOPUFF DATA (from Gopuff Lucci 4.25.26 file; latest weekly bucket = week ending 4/13) ──
+GOPUFF_AS_OF = "4/25/2026"
+GOPUFF_LATEST_WEEK = "4/13/2026"
 
 gopuff_monthly = pd.DataFrame([
     {"Month": "Jan", "Units": 11},
@@ -829,6 +830,7 @@ if active_tab == "Overview":
         st.markdown(kpi("Total Depletions", f"{total_cases:,.2f}", f"Cases · samples excl · as of {DEPLETION_AS_OF}"), unsafe_allow_html=True)
     with c4:
         st.markdown(kpi("Gopuff YTD Units", "169", f"29 locations · as of {GOPUFF_AS_OF}"), unsafe_allow_html=True)
+
     with c5:
         st.markdown(kpi("ReserveBar Units", "86", "27 orders, $1.74K · as of 4/25/26"), unsafe_allow_html=True)
 
@@ -1014,6 +1016,7 @@ elif active_tab == "Depletions":
 
     # Monthly detail table — redesigned with change vs LM
     section_title("Monthly Depletion Detail")
+    st.caption("⚠️ Note: Apr 2026 row covers 4/1–4/24 (24 days). 'Change vs LM' for the Apr row compares partial Apr to full Mar — refer to the State Performance table below for an apples-to-apples comparison.")
     cd_filt = channel_detail[channel_detail["Short"].isin(dp_months)].copy()
     cd_display = cd_filt[["Month", "Total Depletions", "Depl Change vs LM", "% Change vs LM", "On-Premise", "Off-Premise"]].copy()
     st.markdown(styled_table(cd_display, fmt={
@@ -1080,7 +1083,7 @@ elif active_tab == "Depletions":
     # ── State Drill-Down: Top accounts within key 5 states ──
     st.markdown("<br>", unsafe_allow_html=True)
     section_title("Top Accounts by Key State")
-    st.caption(f"Top accounts within CA, TX, FL, NY, NJ — sorted by YTD cases · as of {DEPLETION_AS_OF} · Samples excluded")
+    st.caption(f"Top accounts within CA, TX, FL, NY, NJ — sorted by YTD cases · as of {DEPLETION_AS_OF} · Samples excluded · Note: Apr Cases = 4/1–4/24, Mar Cases = full March (chain-level Mar 1-27 not available)")
 
     drill_state = st.radio(
         "Drill-down state",
@@ -1138,7 +1141,7 @@ elif active_tab == "Depletions":
     # Top 15 accounts - toggleable (Overall / On / Off)
     st.markdown("<br>", unsafe_allow_html=True)
     section_title("Top 15 Accounts by YTD Depletions")
-    st.caption(f"As of {DEPLETION_AS_OF} · Samples / internal accounts excluded · Source: Ethica depletion report")
+    st.caption(f"As of {DEPLETION_AS_OF} · Samples / internal accounts excluded · Source: Ethica depletion report · Note: Apr Cases = 4/1–4/24, Mar Cases = full March (chain-level Mar 1-27 not available, so Apr-vs-Mar % growth is partial-vs-full)")
 
     acct_view = st.radio(
         "Account view",
@@ -1176,7 +1179,7 @@ elif active_tab == "Depletions":
 # GOPUFF (Updated with March 2026 Excel data)
 # ══════════════════════════════════════════════════════════════════════════════
 elif active_tab == "Gopuff":
-    st.caption(f"📅 Gopuff data as of **{GOPUFF_AS_OF}** · Source: Gopuff weekly Lucci report")
+    st.caption(f"📅 Gopuff data as of **{GOPUFF_AS_OF}** · Latest weekly bucket: week ending {GOPUFF_LATEST_WEEK} · Source: Gopuff weekly Lucci report")
     gp_all_states = gopuff_states["State"].tolist()
     gp_states = st.multiselect("Filter by State", gp_all_states, default=gp_all_states, key="gp_states")
 
@@ -1193,7 +1196,7 @@ elif active_tab == "Gopuff":
     with c2:
         st.markdown(kpi("Active Locations", str(filt_locs), f"Across {len(gp_states)} state(s)"), unsafe_allow_html=True)
     with c3:
-        st.markdown(kpi("Apr MTD Units", "21", "Through 4/13 (2 weeks)"), unsafe_allow_html=True)
+        st.markdown(kpi("Apr MTD Units", "21", f"Through week ending {GOPUFF_LATEST_WEEK}"), unsafe_allow_html=True)
     with c4:
         top_st = gs_filt.iloc[0] if len(gs_filt) > 0 else {"State": "-", "Units": 0, "Pct": 0}
         st.markdown(kpi("Top State", str(top_st["State"]), f"{int(top_st['Units'])} units · {top_st['Pct']}%"), unsafe_allow_html=True)
@@ -1230,7 +1233,7 @@ elif active_tab == "Gopuff":
         fig.update_layout(height=220)
         st.plotly_chart(fig, use_container_width=True)
 
-    section_title(f"Location Detail — Monthly Units (as of {GOPUFF_AS_OF})")
+    section_title(f"Location Detail — Monthly Units (as of {GOPUFF_AS_OF}; thru week ending {GOPUFF_LATEST_WEEK})")
     detail_display = gl_filt[["Rank", "Location", "ST", "Jan", "Feb", "Mar", "Apr", "YTD"]].copy()
     detail_display = detail_display.replace(0, "-")
     st.markdown(styled_table(detail_display, fmt={
