@@ -1110,13 +1110,12 @@ elif active_tab == "Depletions":
         axis=1,
     )
     st.markdown(styled_table(
-        sda[["Account", "Premise", "YTD Cases", "Mar Cases", "Apr Cases", "Chg vs LM", "% Growth"]],
+        sda[["Account", "Premise", "YTD Cases", "Mar Cases", "Apr Cases", "Chg vs LM"]],
         fmt={
             "YTD Cases": lambda v: f"{v:,.2f}",
             "Mar Cases": lambda v: f"{v:,.2f}",
             "Apr Cases": lambda v: f"{v:,.2f}",
             "Chg vs LM": lambda v: change_fmt(v),
-            "% Growth": lambda v: pct_change_fmt(v),
         }
     ), unsafe_allow_html=True)
 
@@ -1176,14 +1175,13 @@ elif active_tab == "Depletions":
         use_container_width=True,
     )
 
-    acct_display = ta_filt[["Account", "Premise", "States", "YTD Cases", "YTD PODs", "Mar Cases", "Apr Cases", "Chg vs LM", "% Growth"]].copy()
+    acct_display = ta_filt[["Account", "Premise", "States", "YTD Cases", "YTD PODs", "Mar Cases", "Apr Cases", "Chg vs LM"]].copy()
     st.markdown(styled_table(acct_display, fmt={
         "YTD Cases": lambda v: f"{v:,.2f}",
         "YTD PODs": lambda v: f"{int(v):,}",
         "Mar Cases": lambda v: f"{v:,.2f}",
         "Apr Cases": lambda v: f"{v:,.2f}",
         "Chg vs LM": lambda v: change_fmt(v),
-        "% Growth": lambda v: pct_change_fmt(v),
     }), unsafe_allow_html=True)
 
 
