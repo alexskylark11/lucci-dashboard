@@ -1065,15 +1065,13 @@ elif active_tab == "Depletions":
         "Mar 1-27": "Mar 1-27 Depl",
     })
 
-    sp["Depl Chg"] = sp["Apr 1-24 Depl"] - sp["Mar 1-27 Depl"]
     sp = sp.sort_values("Apr 1-24 Depl", ascending=False).reset_index(drop=True)
 
-    sp_display = sp[["State", "Apr 1-24 Depl", "Mar 1-27 Depl", "Depl Chg", "YTD PODs", "New Apr PODs"]].copy()
+    sp_display = sp[["State", "Apr 1-24 Depl", "Mar 1-27 Depl", "YTD PODs", "New Apr PODs"]].copy()
 
     st.markdown(styled_table(sp_display, fmt={
         "Apr 1-24 Depl": lambda v: f"{v:,.2f}",
         "Mar 1-27 Depl": lambda v: f"{v:,.2f}",
-        "Depl Chg": lambda v: change_fmt(v),
         "YTD PODs": lambda v: f"{int(v)}",
         "New Apr PODs": lambda v: f"+{int(v)}" if v > 0 else "0",
     }), unsafe_allow_html=True)
@@ -1097,12 +1095,11 @@ elif active_tab == "Depletions":
         axis=1,
     )
     st.markdown(styled_table(
-        sda[["Account", "Premise", "YTD Cases", "Mar Cases", "Apr Cases", "Chg vs LM"]],
+        sda[["Account", "Premise", "YTD Cases", "Mar Cases", "Apr Cases"]],
         fmt={
             "YTD Cases": lambda v: f"{v:,.2f}",
             "Mar Cases": lambda v: f"{v:,.2f}",
             "Apr Cases": lambda v: f"{v:,.2f}",
-            "Chg vs LM": lambda v: change_fmt(v),
         }
     ), unsafe_allow_html=True)
 
@@ -1162,13 +1159,12 @@ elif active_tab == "Depletions":
         use_container_width=True,
     )
 
-    acct_display = ta_filt[["Account", "Premise", "States", "YTD Cases", "YTD PODs", "Mar Cases", "Apr Cases", "Chg vs LM"]].copy()
+    acct_display = ta_filt[["Account", "Premise", "States", "YTD Cases", "YTD PODs", "Mar Cases", "Apr Cases"]].copy()
     st.markdown(styled_table(acct_display, fmt={
         "YTD Cases": lambda v: f"{v:,.2f}",
         "YTD PODs": lambda v: f"{int(v):,}",
         "Mar Cases": lambda v: f"{v:,.2f}",
         "Apr Cases": lambda v: f"{v:,.2f}",
-        "Chg vs LM": lambda v: change_fmt(v),
     }), unsafe_allow_html=True)
 
 
