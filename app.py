@@ -378,37 +378,39 @@ def pct_change_fmt(val):
 
 # Source: Ethica Depletions 05.01.26 tab (data through May 1, 2026)
 # Apr is now a complete month (full 30 days). May data is just 5/1 (1 day, minimal).
-# IMPORTANT: All numbers below have SAMPLE / INTERNAL accounts removed
-# (excludes accounts containing SAMPLE, F&F FINE WINE, SGWS-, TEAM #).
-# 115.80 YTD cases / 111 PODs excluded as samples/internal.
+# TIGHTENED SAMPLE EXCLUSION applied — pattern catches:
+#   SAMPLE / SAMPL, F&F Fine Wine (Ethica internal), SGWS-HOUSE/SGWS-TEAM,
+#   TEAM #, REP # / SALES REP / REP <number>, ETHICA WINES (self-reference),
+#   UNCLASSIFIED ACCOUNT placeholders, BERKELEY BOWL - WAREHOUSE (UNVERIFIABLE).
+# 118 rows / 129.13 YTD cases / 118 PODs excluded as samples/internal.
 DEPLETION_AS_OF = "5/1/2026"
 
 grand_monthly = pd.DataFrame([
     {"Month": "Nov", "Cases": 0, "PODs": 0},
     {"Month": "Dec", "Cases": 24.72, "PODs": 23},
-    {"Month": "Jan", "Cases": 242.78, "PODs": 199},
-    {"Month": "Feb", "Cases": 599.28, "PODs": 391},
-    {"Month": "Mar", "Cases": 551.41, "PODs": 552},
-    {"Month": "Apr", "Cases": 430.94, "PODs": 328},
+    {"Month": "Jan", "Cases": 231.87, "PODs": 196},
+    {"Month": "Feb", "Cases": 598.87, "PODs": 387},
+    {"Month": "Mar", "Cases": 550.08, "PODs": 549},
+    {"Month": "Apr", "Cases": 430.28, "PODs": 325},
 ])
 
 combined_monthly = pd.DataFrame([
     {"Month": "Nov", "On-Premise": 0, "Off-Premise": 0},
     {"Month": "Dec", "On-Premise": 16.32, "Off-Premise": 8.40},
     {"Month": "Jan", "On-Premise": 29.32, "Off-Premise": 202.55},
-    {"Month": "Feb", "On-Premise": 123.27, "Off-Premise": 475.76},
-    {"Month": "Mar", "On-Premise": 163.24, "Off-Premise": 388.17},
-    {"Month": "Apr", "On-Premise": 197.87, "Off-Premise": 232.82},
+    {"Month": "Feb", "On-Premise": 123.19, "Off-Premise": 475.68},
+    {"Month": "Mar", "On-Premise": 163.16, "Off-Premise": 386.92},
+    {"Month": "Apr", "On-Premise": 197.79, "Off-Premise": 232.49},
 ])
 
 # Channel breakdown — chronological (oldest → newest)
 channel_detail = pd.DataFrame([
     {"Month": "Nov 2025", "Short": "Nov", "Total Depletions": 0, "Total PODs": 0, "On-Premise": 0, "Off-Premise": 0},
     {"Month": "Dec 2025", "Short": "Dec", "Total Depletions": 24.72, "Total PODs": 23, "On-Premise": 16.32, "Off-Premise": 8.40},
-    {"Month": "Jan 2026", "Short": "Jan", "Total Depletions": 242.78, "Total PODs": 199, "On-Premise": 29.32, "Off-Premise": 202.55},
-    {"Month": "Feb 2026", "Short": "Feb", "Total Depletions": 599.28, "Total PODs": 391, "On-Premise": 123.27, "Off-Premise": 475.76},
-    {"Month": "Mar 2026", "Short": "Mar", "Total Depletions": 551.41, "Total PODs": 552, "On-Premise": 163.24, "Off-Premise": 388.17},
-    {"Month": "Apr 2026", "Short": "Apr", "Total Depletions": 430.94, "Total PODs": 328, "On-Premise": 197.87, "Off-Premise": 232.82},
+    {"Month": "Jan 2026", "Short": "Jan", "Total Depletions": 231.87, "Total PODs": 196, "On-Premise": 29.32, "Off-Premise": 202.55},
+    {"Month": "Feb 2026", "Short": "Feb", "Total Depletions": 598.87, "Total PODs": 387, "On-Premise": 123.19, "Off-Premise": 475.68},
+    {"Month": "Mar 2026", "Short": "Mar", "Total Depletions": 550.08, "Total PODs": 549, "On-Premise": 163.16, "Off-Premise": 386.92},
+    {"Month": "Apr 2026", "Short": "Apr", "Total Depletions": 430.28, "Total PODs": 325, "On-Premise": 197.79, "Off-Premise": 232.49},
 ])
 
 # Compute change vs last month (chronological order: prior month is row i-1)
@@ -448,7 +450,7 @@ on_states = pd.DataFrame([
     {"State": "AZ", "YTD Cases": 40.06, "YTD PODs": 38, "Mar Cases": 6.75, "Mar PODs": 9, "Apr Cases": 10.25, "Apr PODs": 7, "New Apr PODs": 1},
     {"State": "NJ", "YTD Cases": 36.25, "YTD PODs": 15, "Mar Cases": 9.00, "Mar PODs": 6, "Apr Cases": 6.25, "Apr PODs": 6, "New Apr PODs": 3},
     {"State": "CO", "YTD Cases": 10.50, "YTD PODs": 4, "Mar Cases": 4.50, "Mar PODs": 2, "Apr Cases": 5.00, "Apr PODs": 3, "New Apr PODs": 1},
-    {"State": "MD", "YTD Cases": 9.08, "YTD PODs": 8, "Mar Cases": 3.16, "Mar PODs": 4, "Apr Cases": 5.25, "Apr PODs": 4, "New Apr PODs": 2},
+    {"State": "MD", "YTD Cases": 8.83, "YTD PODs": 7, "Mar Cases": 3.08, "Mar PODs": 3, "Apr Cases": 5.17, "Apr PODs": 3, "New Apr PODs": 2},
     {"State": "VA", "YTD Cases": 8.16, "YTD PODs": 9, "Mar Cases": 4.08, "Mar PODs": 5, "Apr Cases": 3.00, "Apr PODs": 2, "New Apr PODs": 2},
     {"State": "OH", "YTD Cases": 7.81, "YTD PODs": 13, "Mar Cases": 2.50, "Mar PODs": 4, "Apr Cases": 1.66, "Apr PODs": 6, "New Apr PODs": 5},
     {"State": "NC", "YTD Cases": 6.24, "YTD PODs": 7, "Mar Cases": 0.33, "Mar PODs": 2, "Apr Cases": 5.91, "Apr PODs": 5, "New Apr PODs": 5},
@@ -465,10 +467,10 @@ on_states = pd.DataFrame([
 
 # OFF-PREMISE state data (from Depletions 05.01.26, samples/internal removed; Apr is full month)
 off_states = pd.DataFrame([
-    {"State": "CA", "YTD Cases": 407.17, "YTD PODs": 244, "Mar Cases": 120.00, "Mar PODs": 97, "Apr Cases": 80.17, "Apr PODs": 45, "New Apr PODs": 21},
+    {"State": "CA", "YTD Cases": 406.17, "YTD PODs": 243, "Mar Cases": 119.00, "Mar PODs": 96, "Apr Cases": 80.17, "Apr PODs": 45, "New Apr PODs": 21},
     {"State": "NJ", "YTD Cases": 194.00, "YTD PODs": 66, "Mar Cases": 17.00, "Mar PODs": 11, "Apr Cases": 12.00, "Apr PODs": 7, "New Apr PODs": 1},
     {"State": "NY", "YTD Cases": 158.51, "YTD PODs": 59, "Mar Cases": 22.17, "Mar PODs": 16, "Apr Cases": 28.17, "Apr PODs": 17, "New Apr PODs": 7},
-    {"State": "FL", "YTD Cases": 142.02, "YTD PODs": 53, "Mar Cases": 14.92, "Mar PODs": 21, "Apr Cases": 26.26, "Apr PODs": 19, "New Apr PODs": 10},
+    {"State": "FL", "YTD Cases": 141.44, "YTD PODs": 52, "Mar Cases": 14.67, "Mar PODs": 20, "Apr Cases": 25.93, "Apr PODs": 18, "New Apr PODs": 10},
     {"State": "IL", "YTD Cases": 133.29, "YTD PODs": 85, "Mar Cases": 46.72, "Mar PODs": 29, "Apr Cases": 24.24, "Apr PODs": 23, "New Apr PODs": 8},
     {"State": "VA", "YTD Cases": 55.58, "YTD PODs": 81, "Mar Cases": 43.50, "Mar PODs": 79, "Apr Cases": 5.50, "Apr PODs": 9, "New Apr PODs": 0},
     {"State": "CT", "YTD Cases": 41.99, "YTD PODs": 28, "Mar Cases": 30.16, "Mar PODs": 17, "Apr Cases": 8.17, "Apr PODs": 8, "New Apr PODs": 4},
@@ -775,8 +777,8 @@ state_weekly = pd.DataFrame([
 # Trade channel breakdown (Ethica 05.01.26, samples / internal accounts removed; Apr full month)
 off_trade_channels = pd.DataFrame([
     {"Trade Channel": "Liquor / Package Store", "YTD Cases": 674.40, "Dec": 3.40, "Jan": 132.81, "Feb": 192.62, "Mar": 224.97, "Apr": 110.33},
-    {"Trade Channel": "Supermarket", "YTD Cases": 330.72, "Dec": 0, "Jan": 51.50, "Feb": 86.66, "Mar": 122.72, "Apr": 69.84},
-    {"Trade Channel": "Other Off Premise", "YTD Cases": 226.47, "Dec": 4.00, "Jan": 5.24, "Feb": 170.65, "Mar": 20.99, "Apr": 25.58},
+    {"Trade Channel": "Supermarket", "YTD Cases": 329.72, "Dec": 0, "Jan": 51.50, "Feb": 86.66, "Mar": 121.72, "Apr": 69.84},
+    {"Trade Channel": "Other Off Premise", "YTD Cases": 226.39, "Dec": 4.00, "Jan": 5.24, "Feb": 170.57, "Mar": 20.99, "Apr": 25.58},
     {"Trade Channel": "General Merchandise", "YTD Cases": 49.00, "Dec": 0, "Jan": 13.00, "Feb": 19.00, "Mar": 4.00, "Apr": 13.00},
     {"Trade Channel": "Wholesale Club", "YTD Cases": 15.17, "Dec": 0, "Jan": 0, "Feb": 4.00, "Mar": 8.00, "Apr": 3.17},
     {"Trade Channel": "Convenience / Gas", "YTD Cases": 8.67, "Dec": 1.00, "Jan": 0, "Feb": 1.25, "Mar": 4.83, "Apr": 1.59},
@@ -789,7 +791,7 @@ off_trade_channels = pd.DataFrame([
 on_trade_channels = pd.DataFrame([
     {"Trade Channel": "Restaurant", "YTD Cases": 396.31, "Dec": 14.24, "Jan": 18.82, "Feb": 87.07, "Mar": 122.13, "Apr": 151.97},
     {"Trade Channel": "Bar / Tavern", "YTD Cases": 53.19, "Dec": 0.08, "Jan": 5.08, "Feb": 10.31, "Mar": 16.23, "Apr": 21.49},
-    {"Trade Channel": "Other On Premise", "YTD Cases": 38.41, "Dec": 1.00, "Jan": 2.00, "Feb": 19.16, "Mar": 9.41, "Apr": 6.83},
+    {"Trade Channel": "Other On Premise", "YTD Cases": 38.16, "Dec": 1.00, "Jan": 2.00, "Feb": 19.08, "Mar": 9.33, "Apr": 6.75},
     {"Trade Channel": "Golf / Country Club", "YTD Cases": 22.56, "Dec": 1.00, "Jan": 3.00, "Feb": 1.99, "Mar": 11.57, "Apr": 5.00},
     {"Trade Channel": "Hotel / Motel", "YTD Cases": 21.81, "Dec": 0, "Jan": 0.42, "Feb": 4.49, "Mar": 3.57, "Apr": 10.33},
     {"Trade Channel": "Special Event / Temp License", "YTD Cases": 2.00, "Dec": 0, "Jan": 0, "Feb": 0, "Mar": 0, "Apr": 2.00},
@@ -902,7 +904,7 @@ if active_tab == "Overview":
                 <p style="margin:4px 0 0; font-size:11px; color:rgba(255,255,255,0.6); letter-spacing:0.1em;">TOTAL CASES</p>
             </div>
             <div style="text-align:center;">
-                <p style="margin:0; font-size:30px; font-weight:900; color:white; line-height:1;">1,223</p>
+                <p style="margin:0; font-size:30px; font-weight:900; color:white; line-height:1;">1,216</p>
                 <p style="margin:4px 0 0; font-size:11px; color:rgba(255,255,255,0.6); letter-spacing:0.1em;">TOTAL PODS</p>
             </div>
             <div style="text-align:center;">
