@@ -235,7 +235,7 @@ st.markdown(f"""
         </div>
         <div style="text-align:right;">
             <p style="margin:0; font-size:10px; color:rgba(255,255,255,0.55); letter-spacing:0.12em; text-transform:uppercase;">Data as of</p>
-            <p style="margin:0; font-size:13px; color:rgba(255,255,255,0.95); font-weight:700;">Depletions: 5/11/26 &middot; Gopuff: 4/25/26 &middot; ReserveBar: 4/25/26</p>
+            <p style="margin:0; font-size:13px; color:rgba(255,255,255,0.95); font-weight:700;">Depletions: 5/22/26 &middot; Gopuff: 4/25/26 &middot; ReserveBar: 4/25/26</p>
         </div>
     </div>
     <p class="lucci-period">Sales Intelligence Dashboard &middot; Samples / internal accounts excluded from depletions</p>
@@ -376,48 +376,48 @@ def pct_change_fmt(val):
 # DATA
 # ══════════════════════════════════════════════════════════════════════════════
 
-# Source: Ethica Depletions 05.11.26 tab (data through May 11, 2026)
-# April is complete (full 30 days). May is partial (11 days).
+# Source: Ethica Depletions 05.22.26 tab (data through May 22, 2026)
+# April is complete (full 30 days). May is partial (22 days).
 # TIGHTENED EXCLUSIONS — A POD must represent REAL distribution. Excluded:
 #   1) Samples: SAMPLE, F&F Fine Wine, SGWS-HOUSE/SGWS-TEAM, TEAM #, REP # / SALES REP,
 #      ETHICA WINES, UNCLASSIFIED ACCOUNT, BERKELEY BOWL - WAREHOUSE, CORPORATE WITHDRAWAL.
 #   2) Person-name accounts (Mixed Case names like "Doug Rose") — DTC samples.
 #   3) Zero-bottle YTD accounts (cancelled/reversed orders that left a POD trace
 #      but have no actual depletion).
-# Total excluded: 282 rows / 146.65 cases / 282 PODs.
+# Total excluded: 294 rows / 327.07 cases / 294 PODs.
 # PODs are unique distribution points (no double-counting repeat purchases).
 # "New Apr/May PODs" = accounts activated for the FIRST time that month.
-DEPLETION_AS_OF = "5/11/2026"
+DEPLETION_AS_OF = "5/22/2026"
 
 grand_monthly = pd.DataFrame([
     {"Month": "Nov", "Cases": 0, "PODs": 0},
     {"Month": "Dec", "Cases": 24.24, "PODs": 17},
-    {"Month": "Jan", "Cases": 230.31, "PODs": 188},
+    {"Month": "Jan", "Cases": 230.39, "PODs": 189},
     {"Month": "Feb", "Cases": 592.63, "PODs": 332},
-    {"Month": "Mar", "Cases": 546.55, "PODs": 504},
-    {"Month": "Apr", "Cases": 435.63, "PODs": 294},
-    {"Month": "May", "Cases": 151.49, "PODs": 166},
+    {"Month": "Mar", "Cases": 546.71, "PODs": 506},
+    {"Month": "Apr", "Cases": 435.79, "PODs": 296},
+    {"Month": "May", "Cases": 489.15, "PODs": 393},
 ])
 
 combined_monthly = pd.DataFrame([
     {"Month": "Nov", "On-Premise": 0, "Off-Premise": 0},
     {"Month": "Dec", "On-Premise": 16.00, "Off-Premise": 8.24},
-    {"Month": "Jan", "On-Premise": 27.92, "Off-Premise": 202.39},
+    {"Month": "Jan", "On-Premise": 27.92, "Off-Premise": 202.47},
     {"Month": "Feb", "On-Premise": 117.67, "Off-Premise": 474.96},
-    {"Month": "Mar", "On-Premise": 161.76, "Off-Premise": 384.79},
-    {"Month": "Apr", "On-Premise": 198.68, "Off-Premise": 236.95},
-    {"Month": "May", "On-Premise": 80.08, "Off-Premise": 71.41},
+    {"Month": "Mar", "On-Premise": 161.76, "Off-Premise": 384.95},
+    {"Month": "Apr", "On-Premise": 198.68, "Off-Premise": 237.11},
+    {"Month": "May", "On-Premise": 211.26, "Off-Premise": 277.89},
 ])
 
 # Channel breakdown — chronological (oldest → newest)
 channel_detail = pd.DataFrame([
     {"Month": "Nov 2025", "Short": "Nov", "Total Depletions": 0, "Total PODs": 0, "On-Premise": 0, "Off-Premise": 0},
     {"Month": "Dec 2025", "Short": "Dec", "Total Depletions": 24.24, "Total PODs": 17, "On-Premise": 16.00, "Off-Premise": 8.24},
-    {"Month": "Jan 2026", "Short": "Jan", "Total Depletions": 230.31, "Total PODs": 188, "On-Premise": 27.92, "Off-Premise": 202.39},
+    {"Month": "Jan 2026", "Short": "Jan", "Total Depletions": 230.39, "Total PODs": 189, "On-Premise": 27.92, "Off-Premise": 202.47},
     {"Month": "Feb 2026", "Short": "Feb", "Total Depletions": 592.63, "Total PODs": 332, "On-Premise": 117.67, "Off-Premise": 474.96},
-    {"Month": "Mar 2026", "Short": "Mar", "Total Depletions": 546.55, "Total PODs": 504, "On-Premise": 161.76, "Off-Premise": 384.79},
-    {"Month": "Apr 2026", "Short": "Apr", "Total Depletions": 435.63, "Total PODs": 294, "On-Premise": 198.68, "Off-Premise": 236.95},
-    {"Month": "May 2026 (1–11)", "Short": "May", "Total Depletions": 151.49, "Total PODs": 166, "On-Premise": 80.08, "Off-Premise": 71.41},
+    {"Month": "Mar 2026", "Short": "Mar", "Total Depletions": 546.71, "Total PODs": 506, "On-Premise": 161.76, "Off-Premise": 384.95},
+    {"Month": "Apr 2026", "Short": "Apr", "Total Depletions": 435.79, "Total PODs": 296, "On-Premise": 198.68, "Off-Premise": 237.11},
+    {"Month": "May 2026 (1–22)", "Short": "May", "Total Depletions": 489.15, "Total PODs": 393, "On-Premise": 211.26, "Off-Premise": 277.89},
 ])
 
 # Compute change vs last month (chronological order: prior month is row i-1)
@@ -446,53 +446,56 @@ channel_detail["% Change vs LM"] = pct_changes
 channel_detail["PODs Change vs LM"] = pod_changes
 channel_detail["PODs % Change"] = pod_pct_changes
 
-# ON-PREMISE state data (Depletions 05.11.26, tight scrub applied — see header)
+# ON-PREMISE state data (Depletions 05.22.26, tight scrub applied — see header)
 on_states = pd.DataFrame([
-    {"State": "CA", "YTD Cases": 195.43, "YTD PODs": 97, "Mar Cases": 60.50, "Mar PODs": 34, "Apr Cases": 56.42, "Apr PODs": 34, "May Cases": 35.42, "May PODs": 23, "New Apr PODs": 23, "New May PODs": 17},
-    {"State": "IL", "YTD Cases": 87.42, "YTD PODs": 16, "Mar Cases": 20.08, "Mar PODs": 5, "Apr Cases": 24.00, "Apr PODs": 4, "May Cases": 17.00, "May PODs": 3, "New Apr PODs": 2, "New May PODs": 1},
-    {"State": "NY", "YTD Cases": 64.17, "YTD PODs": 24, "Mar Cases": 19.17, "Mar PODs": 12, "Apr Cases": 19.17, "Apr PODs": 11, "May Cases": 7.00, "May PODs": 3, "New Apr PODs": 4, "New May PODs": 0},
-    {"State": "FL", "YTD Cases": 59.01, "YTD PODs": 32, "Mar Cases": 8.51, "Mar PODs": 10, "Apr Cases": 35.00, "Apr PODs": 10, "May Cases": 1.17, "May PODs": 2, "New Apr PODs": 9, "New May PODs": 1},
-    {"State": "TX", "YTD Cases": 45.17, "YTD PODs": 24, "Mar Cases": 12.25, "Mar PODs": 6, "Apr Cases": 18.67, "Apr PODs": 12, "May Cases": 4.25, "May PODs": 4, "New Apr PODs": 10, "New May PODs": 1},
+    {"State": "CA", "YTD Cases": 238.77, "YTD PODs": 112, "Mar Cases": 60.50, "Mar PODs": 34, "Apr Cases": 56.42, "Apr PODs": 34, "May Cases": 78.76, "May PODs": 42, "New Apr PODs": 23, "New May PODs": 32},
+    {"State": "IL", "YTD Cases": 88.42, "YTD PODs": 15, "Mar Cases": 20.08, "Mar PODs": 5, "Apr Cases": 24.00, "Apr PODs": 4, "May Cases": 18.00, "May PODs": 4, "New Apr PODs": 2, "New May PODs": 0},
+    {"State": "NY", "YTD Cases": 83.92, "YTD PODs": 28, "Mar Cases": 19.17, "Mar PODs": 12, "Apr Cases": 19.17, "Apr PODs": 11, "May Cases": 26.75, "May PODs": 12, "New Apr PODs": 4, "New May PODs": 4},
+    {"State": "FL", "YTD Cases": 67.18, "YTD PODs": 36, "Mar Cases": 8.51, "Mar PODs": 10, "Apr Cases": 35.00, "Apr PODs": 10, "May Cases": 9.34, "May PODs": 8, "New Apr PODs": 9, "New May PODs": 5},
+    {"State": "TX", "YTD Cases": 53.92, "YTD PODs": 26, "Mar Cases": 12.25, "Mar PODs": 6, "Apr Cases": 18.67, "Apr PODs": 12, "May Cases": 13.00, "May PODs": 12, "New Apr PODs": 10, "New May PODs": 3},
+    {"State": "NJ", "YTD Cases": 53.41, "YTD PODs": 22, "Mar Cases": 9.00, "Mar PODs": 6, "Apr Cases": 6.25, "Apr PODs": 6, "May Cases": 17.17, "May PODs": 11, "New Apr PODs": 3, "New May PODs": 7},
     {"State": "AZ", "YTD Cases": 39.59, "YTD PODs": 29, "Mar Cases": 8.67, "Mar PODs": 8, "Apr Cases": 10.25, "Apr PODs": 7, "May Cases": 0.25, "May PODs": 1, "New Apr PODs": 1, "New May PODs": 1},
-    {"State": "NJ", "YTD Cases": 38.25, "YTD PODs": 17, "Mar Cases": 9.00, "Mar PODs": 6, "Apr Cases": 6.25, "Apr PODs": 6, "May Cases": 2.00, "May PODs": 2, "New Apr PODs": 3, "New May PODs": 2},
-    {"State": "CO", "YTD Cases": 12.83, "YTD PODs": 7, "Mar Cases": 4.50, "Mar PODs": 2, "Apr Cases": 5.00, "Apr PODs": 3, "May Cases": 2.33, "May PODs": 3, "New Apr PODs": 1, "New May PODs": 3},
-    {"State": "NV", "YTD Cases": 10.00, "YTD PODs": 1, "Mar Cases": 6.00, "Mar PODs": 1, "Apr Cases": 0, "Apr PODs": 0, "May Cases": 4.00, "May PODs": 1, "New Apr PODs": 0, "New May PODs": 0},
-    {"State": "MD", "YTD Cases": 9.08, "YTD PODs": 7, "Mar Cases": 3.08, "Mar PODs": 3, "Apr Cases": 5.17, "Apr PODs": 3, "May Cases": 0.33, "May PODs": 1, "New Apr PODs": 2, "New May PODs": 1},
-    {"State": "VA", "YTD Cases": 9.00, "YTD PODs": 8, "Mar Cases": 5.00, "Mar PODs": 5, "Apr Cases": 3.00, "Apr PODs": 2, "May Cases": 1.00, "May PODs": 1, "New Apr PODs": 2, "New May PODs": 1},
+    {"State": "NV", "YTD Cases": 27.00, "YTD PODs": 3, "Mar Cases": 6.00, "Mar PODs": 1, "Apr Cases": 0, "Apr PODs": 0, "May Cases": 21.00, "May PODs": 3, "New Apr PODs": 0, "New May PODs": 2},
+    {"State": "CO", "YTD Cases": 17.83, "YTD PODs": 8, "Mar Cases": 4.50, "Mar PODs": 2, "Apr Cases": 5.00, "Apr PODs": 3, "May Cases": 7.33, "May PODs": 6, "New Apr PODs": 1, "New May PODs": 4},
+    {"State": "VA", "YTD Cases": 15.50, "YTD PODs": 10, "Mar Cases": 5.00, "Mar PODs": 5, "Apr Cases": 3.00, "Apr PODs": 2, "May Cases": 7.50, "May PODs": 4, "New Apr PODs": 2, "New May PODs": 3},
+    {"State": "MD", "YTD Cases": 10.08, "YTD PODs": 7, "Mar Cases": 3.08, "Mar PODs": 3, "Apr Cases": 5.17, "Apr PODs": 3, "May Cases": 1.33, "May PODs": 2, "New Apr PODs": 2, "New May PODs": 1},
+    {"State": "NC", "YTD Cases": 8.33, "YTD PODs": 8, "Mar Cases": 0.25, "Mar PODs": 1, "Apr Cases": 6.00, "Apr PODs": 4, "May Cases": 2.08, "May PODs": 5, "New Apr PODs": 4, "New May PODs": 3},
     {"State": "OH", "YTD Cases": 8.15, "YTD PODs": 10, "Mar Cases": 2.50, "Mar PODs": 4, "Apr Cases": 1.50, "Apr PODs": 4, "May Cases": 0.58, "May PODs": 2, "New Apr PODs": 3, "New May PODs": 0},
-    {"State": "NC", "YTD Cases": 7.00, "YTD PODs": 7, "Mar Cases": 0.25, "Mar PODs": 1, "Apr Cases": 6.00, "Apr PODs": 4, "May Cases": 0.75, "May PODs": 3, "New Apr PODs": 4, "New May PODs": 2},
-    {"State": "KY", "YTD Cases": 4.00, "YTD PODs": 2, "Mar Cases": 1.00, "Mar PODs": 1, "Apr Cases": 3.00, "Apr PODs": 1, "May Cases": 0, "May PODs": 0, "New Apr PODs": 1, "New May PODs": 0},
+    {"State": "KY", "YTD Cases": 5.00, "YTD PODs": 3, "Mar Cases": 1.00, "Mar PODs": 1, "Apr Cases": 3.00, "Apr PODs": 1, "May Cases": 1.00, "May PODs": 1, "New Apr PODs": 1, "New May PODs": 1},
+    {"State": "WA", "YTD Cases": 3.08, "YTD PODs": 3, "Mar Cases": 0, "Mar PODs": 0, "Apr Cases": 0.08, "Apr PODs": 1, "May Cases": 3.00, "May PODs": 3, "New Apr PODs": 1, "New May PODs": 2},
     {"State": "CT", "YTD Cases": 3.00, "YTD PODs": 3, "Mar Cases": 0, "Mar PODs": 0, "Apr Cases": 2.00, "Apr PODs": 2, "May Cases": 0, "May PODs": 0, "New Apr PODs": 2, "New May PODs": 0},
+    {"State": "DE", "YTD Cases": 3.00, "YTD PODs": 1, "Mar Cases": 1.00, "Mar PODs": 1, "Apr Cases": 1.00, "Apr PODs": 1, "May Cases": 1.00, "May PODs": 1, "New Apr PODs": 0, "New May PODs": 0},
+    {"State": "DC", "YTD Cases": 2.34, "YTD PODs": 3, "Mar Cases": 0, "Mar PODs": 0, "Apr Cases": 0, "Apr PODs": 0, "May Cases": 1.00, "May PODs": 1, "New Apr PODs": 0, "New May PODs": 0},
     {"State": "NM", "YTD Cases": 2.34, "YTD PODs": 3, "Mar Cases": 0, "Mar PODs": 0, "Apr Cases": 1.17, "Apr PODs": 2, "May Cases": 1.00, "May PODs": 1, "New Apr PODs": 2, "New May PODs": 0},
-    {"State": "WA", "YTD Cases": 2.08, "YTD PODs": 2, "Mar Cases": 0, "Mar PODs": 0, "Apr Cases": 0.08, "Apr PODs": 1, "May Cases": 2.00, "May PODs": 2, "New Apr PODs": 1, "New May PODs": 1},
-    {"State": "DE", "YTD Cases": 2.00, "YTD PODs": 1, "Mar Cases": 1.00, "Mar PODs": 1, "Apr Cases": 1.00, "Apr PODs": 1, "May Cases": 0, "May PODs": 0, "New Apr PODs": 0, "New May PODs": 0},
     {"State": "GA", "YTD Cases": 1.75, "YTD PODs": 3, "Mar Cases": 0.25, "Mar PODs": 1, "Apr Cases": 0.50, "Apr PODs": 1, "May Cases": 1.00, "May PODs": 1, "New Apr PODs": 1, "New May PODs": 1},
-    {"State": "DC", "YTD Cases": 1.34, "YTD PODs": 3, "Mar Cases": 0, "Mar PODs": 0, "Apr Cases": 0, "Apr PODs": 0, "May Cases": 0, "May PODs": 0, "New Apr PODs": 0, "New May PODs": 0},
     {"State": "SC", "YTD Cases": 0.50, "YTD PODs": 1, "Mar Cases": 0, "Mar PODs": 0, "Apr Cases": 0.50, "Apr PODs": 1, "May Cases": 0, "May PODs": 0, "New Apr PODs": 1, "New May PODs": 0},
+    {"State": "IN", "YTD Cases": 0.17, "YTD PODs": 1, "Mar Cases": 0, "Mar PODs": 0, "Apr Cases": 0, "Apr PODs": 0, "May Cases": 0.17, "May PODs": 1, "New Apr PODs": 0, "New May PODs": 1},
 ])
 
-# OFF-PREMISE state data (Depletions 05.11.26, tight scrub applied)
+# OFF-PREMISE state data (Depletions 05.22.26, tight scrub applied)
 off_states = pd.DataFrame([
-    {"State": "CA", "YTD Cases": 422.17, "YTD PODs": 245, "Mar Cases": 118.00, "Mar PODs": 95, "Apr Cases": 81.17, "Apr PODs": 45, "May Cases": 16.00, "May PODs": 13, "New Apr PODs": 21, "New May PODs": 3},
-    {"State": "NJ", "YTD Cases": 205.00, "YTD PODs": 70, "Mar Cases": 17.00, "Mar PODs": 11, "Apr Cases": 17.00, "Apr PODs": 9, "May Cases": 6.00, "May PODs": 6, "New Apr PODs": 2, "New May PODs": 3},
-    {"State": "NY", "YTD Cases": 161.51, "YTD PODs": 60, "Mar Cases": 22.17, "Mar PODs": 16, "Apr Cases": 28.17, "Apr PODs": 17, "May Cases": 5.00, "May PODs": 5, "New Apr PODs": 7, "New May PODs": 3},
-    {"State": "FL", "YTD Cases": 148.90, "YTD PODs": 62, "Mar Cases": 14.50, "Mar PODs": 19, "Apr Cases": 25.85, "Apr PODs": 17, "May Cases": 10.96, "May PODs": 23, "New Apr PODs": 9, "New May PODs": 12},
-    {"State": "IL", "YTD Cases": 134.17, "YTD PODs": 71, "Mar Cases": 46.32, "Mar PODs": 24, "Apr Cases": 24.08, "Apr PODs": 21, "May Cases": 4.00, "May PODs": 4, "New Apr PODs": 6, "New May PODs": 0},
-    {"State": "VA", "YTD Cases": 57.25, "YTD PODs": 82, "Mar Cases": 43.50, "Mar PODs": 79, "Apr Cases": 5.50, "Apr PODs": 9, "May Cases": 1.67, "May PODs": 6, "New Apr PODs": 0, "New May PODs": 1},
-    {"State": "NC", "YTD Cases": 46.06, "YTD PODs": 96, "Mar Cases": 31.15, "Mar PODs": 72, "Apr Cases": 7.42, "Apr PODs": 20, "May Cases": 7.49, "May PODs": 24, "New Apr PODs": 11, "New May PODs": 13},
-    {"State": "TX", "YTD Cases": 43.98, "YTD PODs": 37, "Mar Cases": 19.66, "Mar PODs": 17, "Apr Cases": 11.50, "Apr PODs": 12, "May Cases": 3.21, "May PODs": 14, "New Apr PODs": 4, "New May PODs": 13},
-    {"State": "CT", "YTD Cases": 43.67, "YTD PODs": 25, "Mar Cases": 30.08, "Mar PODs": 16, "Apr Cases": 8.17, "Apr PODs": 8, "May Cases": 2.00, "May PODs": 2, "New Apr PODs": 4, "New May PODs": 1},
+    {"State": "CA", "YTD Cases": 450.17, "YTD PODs": 249, "Mar Cases": 118.00, "Mar PODs": 95, "Apr Cases": 81.17, "Apr PODs": 45, "May Cases": 44.00, "May PODs": 35, "New Apr PODs": 21, "New May PODs": 7},
+    {"State": "NJ", "YTD Cases": 216.00, "YTD PODs": 72, "Mar Cases": 17.00, "Mar PODs": 11, "Apr Cases": 17.00, "Apr PODs": 9, "May Cases": 17.00, "May PODs": 16, "New Apr PODs": 2, "New May PODs": 5},
+    {"State": "FL", "YTD Cases": 215.84, "YTD PODs": 64, "Mar Cases": 14.50, "Mar PODs": 19, "Apr Cases": 25.85, "Apr PODs": 17, "May Cases": 77.91, "May PODs": 31, "New Apr PODs": 9, "New May PODs": 14},
+    {"State": "NY", "YTD Cases": 176.51, "YTD PODs": 63, "Mar Cases": 22.17, "Mar PODs": 16, "Apr Cases": 28.17, "Apr PODs": 17, "May Cases": 20.00, "May PODs": 15, "New Apr PODs": 7, "New May PODs": 6},
+    {"State": "IL", "YTD Cases": 145.17, "YTD PODs": 72, "Mar Cases": 46.32, "Mar PODs": 24, "Apr Cases": 24.08, "Apr PODs": 21, "May Cases": 15.00, "May PODs": 14, "New Apr PODs": 6, "New May PODs": 1},
+    {"State": "NC", "YTD Cases": 66.82, "YTD PODs": 110, "Mar Cases": 31.15, "Mar PODs": 72, "Apr Cases": 7.42, "Apr PODs": 20, "May Cases": 28.25, "May PODs": 55, "New Apr PODs": 11, "New May PODs": 27},
+    {"State": "VA", "YTD Cases": 65.75, "YTD PODs": 82, "Mar Cases": 43.50, "Mar PODs": 79, "Apr Cases": 5.50, "Apr PODs": 9, "May Cases": 10.17, "May PODs": 16, "New Apr PODs": 0, "New May PODs": 1},
+    {"State": "TX", "YTD Cases": 51.92, "YTD PODs": 38, "Mar Cases": 19.66, "Mar PODs": 17, "Apr Cases": 11.50, "Apr PODs": 12, "May Cases": 11.15, "May PODs": 19, "New Apr PODs": 4, "New May PODs": 14},
+    {"State": "CT", "YTD Cases": 45.67, "YTD PODs": 26, "Mar Cases": 30.08, "Mar PODs": 16, "Apr Cases": 8.17, "Apr PODs": 8, "May Cases": 4.00, "May PODs": 4, "New Apr PODs": 4, "New May PODs": 2},
+    {"State": "SC", "YTD Cases": 38.57, "YTD PODs": 53, "Mar Cases": 8.33, "Mar PODs": 18, "Apr Cases": 5.25, "Apr PODs": 6, "May Cases": 24.99, "May PODs": 38, "New Apr PODs": 6, "New May PODs": 29},
+    {"State": "OH", "YTD Cases": 22.67, "YTD PODs": 21, "Mar Cases": 4.58, "Mar PODs": 8, "Apr Cases": 4.25, "Apr PODs": 6, "May Cases": 2.51, "May PODs": 5, "New Apr PODs": 1, "New May PODs": 2},
     {"State": "DE", "YTD Cases": 22.00, "YTD PODs": 16, "Mar Cases": 13.00, "Mar PODs": 13, "Apr Cases": 0, "Apr PODs": 0, "May Cases": 1.00, "May PODs": 1, "New Apr PODs": 0, "New May PODs": 0},
-    {"State": "OH", "YTD Cases": 21.08, "YTD PODs": 18, "Mar Cases": 4.50, "Mar PODs": 7, "Apr Cases": 4.25, "Apr PODs": 6, "May Cases": 1.00, "May PODs": 1, "New Apr PODs": 1, "New May PODs": 0},
-    {"State": "SC", "YTD Cases": 18.58, "YTD PODs": 29, "Mar Cases": 8.33, "Mar PODs": 18, "Apr Cases": 5.25, "Apr PODs": 6, "May Cases": 5.00, "May PODs": 6, "New Apr PODs": 6, "New May PODs": 5},
-    {"State": "MD", "YTD Cases": 17.75, "YTD PODs": 13, "Mar Cases": 8.00, "Mar PODs": 8, "Apr Cases": 4.00, "Apr PODs": 4, "May Cases": 0, "May PODs": 0, "New Apr PODs": 1, "New May PODs": 0},
-    {"State": "GA", "YTD Cases": 10.50, "YTD PODs": 7, "Mar Cases": 3.00, "Mar PODs": 3, "Apr Cases": 7.00, "Apr PODs": 2, "May Cases": 0, "May PODs": 0, "New Apr PODs": 2, "New May PODs": 0},
-    {"State": "CO", "YTD Cases": 8.33, "YTD PODs": 11, "Mar Cases": 1.58, "Mar PODs": 4, "Apr Cases": 2.34, "Apr PODs": 4, "May Cases": 0.08, "May PODs": 1, "New Apr PODs": 3, "New May PODs": 0},
-    {"State": "KY", "YTD Cases": 7.00, "YTD PODs": 4, "Mar Cases": 3.00, "Mar PODs": 1, "Apr Cases": 1.00, "Apr PODs": 1, "May Cases": 3.00, "May PODs": 2, "New Apr PODs": 1, "New May PODs": 2},
-    {"State": "DC", "YTD Cases": 4.00, "YTD PODs": 3, "Mar Cases": 0, "Mar PODs": 0, "Apr Cases": 4.00, "Apr PODs": 3, "May Cases": 0, "May PODs": 0, "New Apr PODs": 3, "New May PODs": 0},
+    {"State": "MD", "YTD Cases": 18.75, "YTD PODs": 13, "Mar Cases": 8.00, "Mar PODs": 8, "Apr Cases": 4.00, "Apr PODs": 4, "May Cases": 1.00, "May PODs": 1, "New Apr PODs": 1, "New May PODs": 0},
+    {"State": "CO", "YTD Cases": 12.75, "YTD PODs": 15, "Mar Cases": 1.66, "Mar PODs": 5, "Apr Cases": 2.42, "Apr PODs": 5, "May Cases": 4.24, "May PODs": 6, "New Apr PODs": 3, "New May PODs": 1},
+    {"State": "GA", "YTD Cases": 10.75, "YTD PODs": 8, "Mar Cases": 3.00, "Mar PODs": 3, "Apr Cases": 7.00, "Apr PODs": 2, "May Cases": 0.25, "May PODs": 1, "New Apr PODs": 2, "New May PODs": 1},
+    {"State": "KY", "YTD Cases": 9.00, "YTD PODs": 4, "Mar Cases": 3.00, "Mar PODs": 1, "Apr Cases": 1.00, "Apr PODs": 1, "May Cases": 5.00, "May PODs": 3, "New Apr PODs": 1, "New May PODs": 2},
+    {"State": "DC", "YTD Cases": 6.00, "YTD PODs": 4, "Mar Cases": 0, "Mar PODs": 0, "Apr Cases": 4.00, "Apr PODs": 3, "May Cases": 2.00, "May PODs": 2, "New Apr PODs": 3, "New May PODs": 1},
+    {"State": "WA", "YTD Cases": 4.00, "YTD PODs": 3, "Mar Cases": 0, "Mar PODs": 0, "Apr Cases": 0, "Apr PODs": 0, "May Cases": 4.00, "May PODs": 3, "New Apr PODs": 0, "New May PODs": 3},
     {"State": "AZ", "YTD Cases": 3.50, "YTD PODs": 5, "Mar Cases": 1.00, "Mar PODs": 1, "Apr Cases": 0.25, "Apr PODs": 1, "May Cases": 2.00, "May PODs": 2, "New Apr PODs": 1, "New May PODs": 2},
-    {"State": "WA", "YTD Cases": 3.00, "YTD PODs": 3, "Mar Cases": 0, "Mar PODs": 0, "Apr Cases": 0, "Apr PODs": 0, "May Cases": 3.00, "May PODs": 3, "New Apr PODs": 0, "New May PODs": 3},
-    {"State": "NM", "YTD Cases": 0.33, "YTD PODs": 1, "Mar Cases": 0, "Mar PODs": 0, "Apr Cases": 0, "Apr PODs": 0, "May Cases": 0, "May PODs": 0, "New Apr PODs": 0, "New May PODs": 0},
+    {"State": "NV", "YTD Cases": 2.00, "YTD PODs": 2, "Mar Cases": 0, "Mar PODs": 0, "Apr Cases": 0, "Apr PODs": 0, "May Cases": 2.00, "May PODs": 2, "New Apr PODs": 0, "New May PODs": 2},
+    {"State": "IN", "YTD Cases": 1.25, "YTD PODs": 2, "Mar Cases": 0, "Mar PODs": 0, "Apr Cases": 0, "Apr PODs": 0, "May Cases": 1.25, "May PODs": 2, "New Apr PODs": 0, "New May PODs": 2},
+    {"State": "NM", "YTD Cases": 0.58, "YTD PODs": 2, "Mar Cases": 0, "Mar PODs": 0, "Apr Cases": 0.08, "Apr PODs": 1, "May Cases": 0.17, "May PODs": 1, "New Apr PODs": 0, "New May PODs": 0},
 ])
 
 # Add change vs last month (Apr vs Mar) to state data
@@ -658,85 +661,88 @@ ship_monthly_net = pd.DataFrame([
 
 # Top accounts — chain data from Ethica 05.11.26 (samples removed)
 top_accounts = pd.DataFrame([
-    {"Account": "BevMo!", "Premise": "Off", "States": "CA", "YTD Cases": 161.00, "YTD PODs": 145, "Mar Cases": 50.00, "Apr Cases": 9.00, "May Cases": 1.00},
-    {"Account": "Eataly", "Premise": "On", "States": "CA, IL, NJ, NY, TX, FL", "YTD Cases": 148.08, "YTD PODs": 12, "Mar Cases": 50.00, "Apr Cases": 42.08, "May Cases": 30.00},
-    {"Account": "Total Wine & More", "Premise": "Off", "States": "Multi", "YTD Cases": 127.85, "YTD PODs": 98, "Mar Cases": 34.16, "Apr Cases": 26.01, "May Cases": 32.50},
-    {"Account": "Food Lion", "Premise": "Off", "States": "Multi", "YTD Cases": 85.81, "YTD PODs": 173, "Mar Cases": 72.48, "Apr Cases": 6.25, "May Cases": 7.08},
+    {"Account": "Eataly", "Premise": "On", "States": "CA, IL, NJ, NY, TX, FL", "YTD Cases": 175.00, "YTD PODs": 11, "Mar Cases": 50.00, "Apr Cases": 42.00, "May Cases": 57.00},
+    {"Account": "BevMo!", "Premise": "Off", "States": "CA", "YTD Cases": 172.00, "YTD PODs": 145, "Mar Cases": 50.00, "Apr Cases": 9.00, "May Cases": 12.00},
+    {"Account": "Total Wine & More", "Premise": "Off", "States": "Multi", "YTD Cases": 151.24, "YTD PODs": 98, "Mar Cases": 34.16, "Apr Cases": 25.93, "May Cases": 56.05},
+    {"Account": "Food Lion", "Premise": "Off", "States": "Multi", "YTD Cases": 113.31, "YTD PODs": 203, "Mar Cases": 72.48, "Apr Cases": 6.25, "May Cases": 34.58},
     {"Account": "Gary's Wine", "Premise": "Off", "States": "NJ", "YTD Cases": 74.00, "YTD PODs": 3, "Mar Cases": 1.00, "Apr Cases": 1.00, "May Cases": 0},
     {"Account": "Milam's Markets", "Premise": "Off", "States": "FL", "YTD Cases": 72.00, "YTD PODs": 6, "Mar Cases": 0, "Apr Cases": 0, "May Cases": 0},
+    {"Account": "Binny's", "Premise": "Off", "States": "IL", "YTD Cases": 71.59, "YTD PODs": 37, "Mar Cases": 8.24, "Apr Cases": 14.08, "May Cases": 15.00},
     {"Account": "Albertsons Warehouse", "Premise": "Off", "States": "CA", "YTD Cases": 67.00, "YTD PODs": 1, "Mar Cases": 0, "Apr Cases": 22.00, "May Cases": 0},
-    {"Account": "Binny's", "Premise": "Off", "States": "IL", "YTD Cases": 60.91, "YTD PODs": 40, "Mar Cases": 8.40, "Apr Cases": 14.24, "May Cases": 4.00},
+    {"Account": "Trader Joe's Warehouse", "Premise": "Off", "States": "FL", "YTD Cases": 56.00, "YTD PODs": 1, "Mar Cases": 0, "Apr Cases": 0, "May Cases": 56.00},
+    {"Account": "Wine.com", "Premise": "Off", "States": "Multi", "YTD Cases": 53.00, "YTD PODs": 5, "Mar Cases": 4.00, "Apr Cases": 13.00, "May Cases": 6.00},
     {"Account": "Stew Leonard's Wines", "Premise": "Off", "States": "NJ, NY, CT", "YTD Cases": 50.00, "YTD PODs": 5, "Mar Cases": 17.00, "Apr Cases": 2.00, "May Cases": 1.00},
-    {"Account": "Wine.com", "Premise": "Off", "States": "Multi", "YTD Cases": 48.00, "YTD PODs": 5, "Mar Cases": 4.00, "Apr Cases": 13.00, "May Cases": 1.00},
     {"Account": "Stew Leonard's", "Premise": "Off", "States": "NJ", "YTD Cases": 33.00, "YTD PODs": 2, "Mar Cases": 2.00, "Apr Cases": 4.00, "May Cases": 0},
     {"Account": "VIN Chicago", "Premise": "Off", "States": "IL", "YTD Cases": 20.16, "YTD PODs": 2, "Mar Cases": 20.00, "Apr Cases": 0, "May Cases": 0},
-    {"Account": "BevMax", "Premise": "Off", "States": "CT", "YTD Cases": 12.00, "YTD PODs": 10, "Mar Cases": 8.00, "Apr Cases": 3.00, "May Cases": 0},
-    {"Account": "Oliver's Market", "Premise": "Off", "States": "CA", "YTD Cases": 11.00, "YTD PODs": 4, "Mar Cases": 11.00, "Apr Cases": 0, "May Cases": 0},
-    {"Account": "ShopRite Liquors", "Premise": "Off", "States": "NJ", "YTD Cases": 11.00, "YTD PODs": 5, "Mar Cases": 5.00, "Apr Cases": 0, "May Cases": 0},
-    {"Account": "Spec's Wine & Spirits", "Premise": "Off", "States": "TX", "YTD Cases": 9.08, "YTD PODs": 8, "Mar Cases": 7.00, "Apr Cases": 2.08, "May Cases": 0},
+    {"Account": "Trader Joe's", "Premise": "Off", "States": "Multi", "YTD Cases": 18.00, "YTD PODs": 10, "Mar Cases": 0, "Apr Cases": 2.00, "May Cases": 16.00},
+    {"Account": "BevMax", "Premise": "Off", "States": "CT", "YTD Cases": 13.00, "YTD PODs": 10, "Mar Cases": 8.00, "Apr Cases": 3.00, "May Cases": 1.00},
+    {"Account": "Oliver's Market", "Premise": "Off", "States": "CA", "YTD Cases": 12.00, "YTD PODs": 4, "Mar Cases": 11.00, "Apr Cases": 0, "May Cases": 1.00},
+    {"Account": "ShopRite Liquors", "Premise": "Off", "States": "NJ", "YTD Cases": 12.00, "YTD PODs": 6, "Mar Cases": 5.00, "Apr Cases": 0, "May Cases": 1.00},
+    {"Account": "Buona Forchetta", "Premise": "On", "States": "CA", "YTD Cases": 9.00, "YTD PODs": 4, "Mar Cases": 0, "Apr Cases": 0, "May Cases": 9.00},
+    {"Account": "Spec's Wine & Spirits", "Premise": "Off", "States": "TX", "YTD Cases": 9.00, "YTD PODs": 7, "Mar Cases": 7.00, "Apr Cases": 2.00, "May Cases": 0},
     {"Account": "Gopuff", "Premise": "Off", "States": "FL", "YTD Cases": 7.00, "YTD PODs": 6, "Mar Cases": 0, "Apr Cases": 0, "May Cases": 1.00},
+    {"Account": "H-E-B Central Market", "Premise": "Off", "States": "TX", "YTD Cases": 6.42, "YTD PODs": 5, "Mar Cases": 1.00, "Apr Cases": 2.25, "May Cases": 3.00},
+    {"Account": "ShopRite Wines & Spirits", "Premise": "Off", "States": "NJ", "YTD Cases": 6.00, "YTD PODs": 4, "Mar Cases": 0, "Apr Cases": 0, "May Cases": 3.00},
     {"Account": "Spec's Wholesale", "Premise": "Off", "States": "TX", "YTD Cases": 5.17, "YTD PODs": 2, "Mar Cases": 3.00, "Apr Cases": 2.00, "May Cases": 0},
-    {"Account": "Trader Joe's", "Premise": "Off", "States": "Multi", "YTD Cases": 5.00, "YTD PODs": 4, "Mar Cases": 0, "Apr Cases": 2.00, "May Cases": 3.00},
-    {"Account": "Buona Forchetta", "Premise": "On", "States": "CA", "YTD Cases": 5.00, "YTD PODs": 2, "Mar Cases": 0, "Apr Cases": 0, "May Cases": 5.00},
     {"Account": "Curio Collection by Hilton", "Premise": "On", "States": "Multi", "YTD Cases": 4.17, "YTD PODs": 1, "Mar Cases": 0.17, "Apr Cases": 2.00, "May Cases": 0},
-    {"Account": "H-E-B Central Market", "Premise": "Off", "States": "TX", "YTD Cases": 3.42, "YTD PODs": 4, "Mar Cases": 1.00, "Apr Cases": 2.25, "May Cases": 0},
-    {"Account": "ClubProcure", "Premise": "On", "States": "Multi", "YTD Cases": 3.41, "YTD PODs": 6, "Mar Cases": 1.08, "Apr Cases": 0, "May Cases": 0},
-    {"Account": "ShopRite Wines & Spirits", "Premise": "Off", "States": "NJ", "YTD Cases": 3.00, "YTD PODs": 3, "Mar Cases": 0, "Apr Cases": 0, "May Cases": 0},
-    {"Account": "Trader Joe's Liquor", "Premise": "Off", "States": "Multi", "YTD Cases": 3.00, "YTD PODs": 2, "Mar Cases": 0, "Apr Cases": 0, "May Cases": 3.00},
+    {"Account": "Trader Joe's Liquor", "Premise": "Off", "States": "Multi", "YTD Cases": 4.00, "YTD PODs": 2, "Mar Cases": 0, "Apr Cases": 0, "May Cases": 4.00},
 ])
 
 # State-level top accounts for key 5 states (CA, TX, FL, NY, NJ) — from 04.24.26 tab (samples removed)
 state_top_accounts = pd.DataFrame([
     # CA
-    {"State": "CA", "Account": "BevMo!", "Premise": "Off", "YTD Cases": 161.00, "YTD PODs": 145, "Mar Cases": 50.00, "Apr Cases": 9.00, "May Cases": 1.00},
+    {"State": "CA", "Account": "BevMo!", "Premise": "Off", "YTD Cases": 172.00, "YTD PODs": 145, "Mar Cases": 50.00, "Apr Cases": 9.00, "May Cases": 12.00},
     {"State": "CA", "Account": "Albertsons Warehouse", "Premise": "Off", "YTD Cases": 67.00, "YTD PODs": 1, "Mar Cases": 0, "Apr Cases": 22.00, "May Cases": 0},
-    {"State": "CA", "Account": "Eataly", "Premise": "On", "YTD Cases": 30.00, "YTD PODs": 2, "Mar Cases": 13.00, "Apr Cases": 4.00, "May Cases": 8.00},
-    {"State": "CA", "Account": "Total Wine & More", "Premise": "Off", "YTD Cases": 22.00, "YTD PODs": 13, "Mar Cases": 1.00, "Apr Cases": 5.00, "May Cases": 6.00},
-    {"State": "CA", "Account": "Wine.com", "Premise": "Off", "YTD Cases": 12.00, "YTD PODs": 1, "Mar Cases": 0, "Apr Cases": 5.00, "May Cases": 0},
-    {"State": "CA", "Account": "Oliver's Market", "Premise": "Off", "YTD Cases": 11.00, "YTD PODs": 4, "Mar Cases": 11.00, "Apr Cases": 0, "May Cases": 0},
-    {"State": "CA", "Account": "Buona Forchetta", "Premise": "On", "YTD Cases": 5.00, "YTD PODs": 2, "Mar Cases": 0, "Apr Cases": 0, "May Cases": 5.00},
+    {"State": "CA", "Account": "Eataly", "Premise": "On", "YTD Cases": 36.00, "YTD PODs": 2, "Mar Cases": 13.00, "Apr Cases": 4.00, "May Cases": 14.00},
+    {"State": "CA", "Account": "Total Wine & More", "Premise": "Off", "YTD Cases": 24.00, "YTD PODs": 13, "Mar Cases": 1.00, "Apr Cases": 5.00, "May Cases": 8.00},
+    {"State": "CA", "Account": "Wine.com", "Premise": "Off", "YTD Cases": 14.00, "YTD PODs": 1, "Mar Cases": 0, "Apr Cases": 5.00, "May Cases": 2.00},
+    {"State": "CA", "Account": "Oliver's Market", "Premise": "Off", "YTD Cases": 12.00, "YTD PODs": 4, "Mar Cases": 11.00, "Apr Cases": 0, "May Cases": 1.00},
+    {"State": "CA", "Account": "Buona Forchetta", "Premise": "On", "YTD Cases": 9.00, "YTD PODs": 4, "Mar Cases": 0, "Apr Cases": 0, "May Cases": 9.00},
+    {"State": "CA", "Account": "Sodexo Live!", "Premise": "On", "YTD Cases": 3.00, "YTD PODs": 1, "Mar Cases": 0, "Apr Cases": 0, "May Cases": 3.00},
     # TX
-    {"State": "TX", "Account": "Eataly", "Premise": "On", "YTD Cases": 12.00, "YTD PODs": 2, "Mar Cases": 4.00, "Apr Cases": 7.00, "May Cases": 1.00},
-    {"State": "TX", "Account": "Total Wine & More", "Premise": "Off", "YTD Cases": 10.30, "YTD PODs": 16, "Mar Cases": 4.58, "Apr Cases": 1.08, "May Cases": 3.21},
-    {"State": "TX", "Account": "Spec's Wine & Spirits", "Premise": "Off", "YTD Cases": 9.08, "YTD PODs": 8, "Mar Cases": 7.00, "Apr Cases": 2.08, "May Cases": 0},
-    {"State": "TX", "Account": "Wine.com", "Premise": "Off", "YTD Cases": 8.00, "YTD PODs": 1, "Mar Cases": 1.00, "Apr Cases": 3.00, "May Cases": 0},
+    {"State": "TX", "Account": "Eataly", "Premise": "On", "YTD Cases": 15.00, "YTD PODs": 2, "Mar Cases": 4.00, "Apr Cases": 7.00, "May Cases": 4.00},
+    {"State": "TX", "Account": "Total Wine & More", "Premise": "Off", "YTD Cases": 14.24, "YTD PODs": 16, "Mar Cases": 4.58, "Apr Cases": 1.08, "May Cases": 7.15},
+    {"State": "TX", "Account": "Spec's Wine & Spirits", "Premise": "Off", "YTD Cases": 9.00, "YTD PODs": 7, "Mar Cases": 7.00, "Apr Cases": 2.00, "May Cases": 0},
+    {"State": "TX", "Account": "Wine.com", "Premise": "Off", "YTD Cases": 9.00, "YTD PODs": 1, "Mar Cases": 1.00, "Apr Cases": 3.00, "May Cases": 1.00},
+    {"State": "TX", "Account": "H-E-B Central Market", "Premise": "Off", "YTD Cases": 6.42, "YTD PODs": 5, "Mar Cases": 1.00, "Apr Cases": 2.25, "May Cases": 3.00},
     {"State": "TX", "Account": "Spec's Wholesale", "Premise": "Off", "YTD Cases": 5.17, "YTD PODs": 2, "Mar Cases": 3.00, "Apr Cases": 2.00, "May Cases": 0},
-    {"State": "TX", "Account": "H-E-B Central Market", "Premise": "Off", "YTD Cases": 3.42, "YTD PODs": 4, "Mar Cases": 1.00, "Apr Cases": 2.25, "May Cases": 0},
     {"State": "TX", "Account": "Miraval", "Premise": "On", "YTD Cases": 2.00, "YTD PODs": 1, "Mar Cases": 0, "Apr Cases": 2.00, "May Cases": 0},
     # FL
     {"State": "FL", "Account": "Milam's Markets", "Premise": "Off", "YTD Cases": 72.00, "YTD PODs": 6, "Mar Cases": 0, "Apr Cases": 0, "May Cases": 0},
-    {"State": "FL", "Account": "Total Wine & More", "Premise": "Off", "YTD Cases": 30.39, "YTD PODs": 29, "Mar Cases": 9.33, "Apr Cases": 4.76, "May Cases": 8.71},
+    {"State": "FL", "Account": "Trader Joe's Warehouse", "Premise": "Off", "YTD Cases": 56.00, "YTD PODs": 1, "Mar Cases": 0, "Apr Cases": 0, "May Cases": 56.00},
+    {"State": "FL", "Account": "Total Wine & More", "Premise": "Off", "YTD Cases": 34.09, "YTD PODs": 28, "Mar Cases": 9.33, "Apr Cases": 4.68, "May Cases": 12.49},
     {"State": "FL", "Account": "Gopuff", "Premise": "Off", "YTD Cases": 7.00, "YTD PODs": 6, "Mar Cases": 0, "Apr Cases": 0, "May Cases": 1.00},
-    {"State": "FL", "Account": "Eataly", "Premise": "On", "YTD Cases": 3.08, "YTD PODs": 2, "Mar Cases": 3.00, "Apr Cases": 0.08, "May Cases": 0},
+    {"State": "FL", "Account": "Eataly", "Premise": "On", "YTD Cases": 5.00, "YTD PODs": 1, "Mar Cases": 3.00, "Apr Cases": 0, "May Cases": 2.00},
     {"State": "FL", "Account": "Doris Italian Market", "Premise": "Off", "YTD Cases": 2.00, "YTD PODs": 1, "Mar Cases": 1.00, "Apr Cases": 1.00, "May Cases": 0},
     {"State": "FL", "Account": "Soho House", "Premise": "On", "YTD Cases": 1.83, "YTD PODs": 1, "Mar Cases": 0, "Apr Cases": 0, "May Cases": 0},
     # NY
+    {"State": "NY", "Account": "Eataly", "Premise": "On", "YTD Cases": 39.00, "YTD PODs": 4, "Mar Cases": 11.00, "Apr Cases": 9.00, "May Cases": 19.00},
     {"State": "NY", "Account": "Stew Leonard's Wines", "Premise": "Off", "YTD Cases": 30.00, "YTD PODs": 2, "Mar Cases": 0, "Apr Cases": 0, "May Cases": 0},
-    {"State": "NY", "Account": "Eataly", "Premise": "On", "YTD Cases": 26.00, "YTD PODs": 4, "Mar Cases": 11.00, "Apr Cases": 9.00, "May Cases": 6.00},
-    {"State": "NY", "Account": "Wine.com", "Premise": "Off", "YTD Cases": 20.00, "YTD PODs": 1, "Mar Cases": 1.00, "Apr Cases": 5.00, "May Cases": 1.00},
-    {"State": "NY", "Account": "Total Wine & More", "Premise": "Off", "YTD Cases": 6.00, "YTD PODs": 1, "Mar Cases": 2.00, "Apr Cases": 3.00, "May Cases": 0},
+    {"State": "NY", "Account": "Wine.com", "Premise": "Off", "YTD Cases": 21.00, "YTD PODs": 1, "Mar Cases": 1.00, "Apr Cases": 5.00, "May Cases": 2.00},
+    {"State": "NY", "Account": "Total Wine & More", "Premise": "Off", "YTD Cases": 7.00, "YTD PODs": 1, "Mar Cases": 2.00, "Apr Cases": 3.00, "May Cases": 1.00},
     {"State": "NY", "Account": "Hilton", "Premise": "On", "YTD Cases": 1.00, "YTD PODs": 1, "Mar Cases": 0, "Apr Cases": 0, "May Cases": 0},
     # NJ
     {"State": "NJ", "Account": "Gary's Wine & Marketplace", "Premise": "Off", "YTD Cases": 74.00, "YTD PODs": 3, "Mar Cases": 1.00, "Apr Cases": 1.00, "May Cases": 0},
     {"State": "NJ", "Account": "Stew Leonard's", "Premise": "Off", "YTD Cases": 33.00, "YTD PODs": 2, "Mar Cases": 2.00, "Apr Cases": 4.00, "May Cases": 0},
-    {"State": "NJ", "Account": "Total Wine & More", "Premise": "Off", "YTD Cases": 17.00, "YTD PODs": 7, "Mar Cases": 5.00, "Apr Cases": 2.00, "May Cases": 5.00},
-    {"State": "NJ", "Account": "ShopRite Liquors", "Premise": "Off", "YTD Cases": 11.00, "YTD PODs": 5, "Mar Cases": 5.00, "Apr Cases": 0, "May Cases": 0},
-    {"State": "NJ", "Account": "Eataly", "Premise": "On", "YTD Cases": 10.00, "YTD PODs": 1, "Mar Cases": 4.00, "Apr Cases": 2.00, "May Cases": 0},
+    {"State": "NJ", "Account": "Total Wine & More", "Premise": "Off", "YTD Cases": 19.00, "YTD PODs": 7, "Mar Cases": 5.00, "Apr Cases": 2.00, "May Cases": 7.00},
+    {"State": "NJ", "Account": "Eataly", "Premise": "On", "YTD Cases": 13.00, "YTD PODs": 1, "Mar Cases": 4.00, "Apr Cases": 2.00, "May Cases": 3.00},
+    {"State": "NJ", "Account": "ShopRite Liquors", "Premise": "Off", "YTD Cases": 12.00, "YTD PODs": 6, "Mar Cases": 5.00, "Apr Cases": 0, "May Cases": 1.00},
+    {"State": "NJ", "Account": "ShopRite Wines & Spirits", "Premise": "Off", "YTD Cases": 6.00, "YTD PODs": 4, "Mar Cases": 0, "Apr Cases": 0, "May Cases": 3.00},
     {"State": "NJ", "Account": "Wine.com", "Premise": "Off", "YTD Cases": 4.00, "YTD PODs": 1, "Mar Cases": 0, "Apr Cases": 0, "May Cases": 0},
 ])
 
-# Top 10 Restaurants/Bars (clean — samples removed) from 05.11.26 tab
+# Top 10 Restaurants/Bars (clean — samples removed) from 05.22.26 tab
 top_restaurants_bars = pd.DataFrame([
     {"Rank": 1, "Restaurant": "Eataly (Brew Pub)", "City": "Chicago", "State": "IL", "Chain": "Eataly", "Channel": "Restaurant", "YTD Cases": 67.00, "Mar": 15.00, "Apr": 20.00, "May": 15.00},
-    {"Rank": 2, "Restaurant": "Eataly", "City": "Santa Clara", "State": "CA", "Chain": "Eataly", "Channel": "Restaurant", "YTD Cases": 21.00, "Mar": 10.00, "Apr": 0, "May": 6.00},
-    {"Rank": 3, "Restaurant": "Marvito", "City": "West Hollywood", "State": "CA", "Chain": "(independent)", "Channel": "Restaurant", "YTD Cases": 13.00, "Mar": 5.00, "Apr": 5.00, "May": 0},
-    {"Rank": 4, "Restaurant": "Lucia Pizzeria", "City": "Miami", "State": "FL", "Chain": "(independent)", "Channel": "Restaurant", "YTD Cases": 10.00, "Mar": 0, "Apr": 10.00, "May": 0},
-    {"Rank": 5, "Restaurant": "Eataly", "City": "New York", "State": "NY", "Chain": "Eataly", "Channel": "Restaurant", "YTD Cases": 10.00, "Mar": 5.00, "Apr": 0, "May": 5.00},
-    {"Rank": 6, "Restaurant": "Eataly", "City": "Los Angeles", "State": "CA", "Chain": "Eataly", "Channel": "Restaurant", "YTD Cases": 9.00, "Mar": 3.00, "Apr": 4.00, "May": 2.00},
-    {"Rank": 7, "Restaurant": "In Cucina / Sam's Italian Deli", "City": "Fresno", "State": "CA", "Chain": "(independent)", "Channel": "Restaurant", "YTD Cases": 9.00, "Mar": 7.00, "Apr": 0, "May": 0},
-    {"Rank": 8, "Restaurant": "Colony Wine Merchant", "City": "Anaheim", "State": "CA", "Chain": "(independent)", "Channel": "Bar/Tavern", "YTD Cases": 7.00, "Mar": 3.00, "Apr": 2.00, "May": 2.00},
-    {"Rank": 9, "Restaurant": "Eataly NYC Flatiron", "City": "New York", "State": "NY", "Chain": "Eataly", "Channel": "Restaurant", "YTD Cases": 7.00, "Mar": 3.00, "Apr": 4.00, "May": 0},
-    {"Rank": 10, "Restaurant": "Fino All Is Well Good As Gold", "City": "Denver", "State": "CO", "Chain": "(independent)", "Channel": "Restaurant", "YTD Cases": 6.50, "Mar": 3.50, "Apr": 3.00, "May": 0},
+    {"Rank": 2, "Restaurant": "Eataly", "City": "Santa Clara", "State": "CA", "Chain": "Eataly", "Channel": "Restaurant", "YTD Cases": 24.00, "Mar": 10.00, "Apr": 0, "May": 9.00},
+    {"Rank": 3, "Restaurant": "Eataly Vino NYC", "City": "New York", "State": "NY", "Chain": "Eataly", "Channel": "Restaurant", "YTD Cases": 14.00, "Mar": 2.00, "Apr": 3.00, "May": 9.00},
+    {"Rank": 4, "Restaurant": "Marvito", "City": "West Hollywood", "State": "CA", "Chain": "(independent)", "Channel": "Restaurant", "YTD Cases": 13.00, "Mar": 5.00, "Apr": 5.00, "May": 0},
+    {"Rank": 5, "Restaurant": "Eataly", "City": "Los Angeles", "State": "CA", "Chain": "Eataly", "Channel": "Restaurant", "YTD Cases": 12.00, "Mar": 3.00, "Apr": 4.00, "May": 5.00},
+    {"Rank": 6, "Restaurant": "Eataly NYC Flatiron", "City": "New York", "State": "NY", "Chain": "Eataly", "Channel": "Restaurant", "YTD Cases": 10.00, "Mar": 3.00, "Apr": 4.00, "May": 3.00},
+    {"Rank": 7, "Restaurant": "Eataly", "City": "New York", "State": "NY", "Chain": "Eataly", "Channel": "Restaurant", "YTD Cases": 10.00, "Mar": 5.00, "Apr": 0, "May": 5.00},
+    {"Rank": 8, "Restaurant": "Lucia Pizzeria", "City": "Miami", "State": "FL", "Chain": "(independent)", "Channel": "Restaurant", "YTD Cases": 10.00, "Mar": 0, "Apr": 10.00, "May": 0},
+    {"Rank": 9, "Restaurant": "Eataly (Shop)", "City": "Dallas", "State": "TX", "Chain": "Eataly", "Channel": "Restaurant", "YTD Cases": 9.00, "Mar": 0, "Apr": 6.00, "May": 3.00},
+    {"Rank": 10, "Restaurant": "In Cucina / Sam's Italian Deli", "City": "Fresno", "State": "CA", "Chain": "(independent)", "Channel": "Restaurant", "YTD Cases": 9.00, "Mar": 7.00, "Apr": 0, "May": 0},
 ])
 
 # State-level WEEKLY ACTUALS (kept for reference but no longer used in main UI)
@@ -786,30 +792,27 @@ state_weekly = pd.DataFrame([
     {"Premise": "OFF", "State": "VA", "L7d Cases": 3.34, "P7d Cases": 0.08, "L7d PODs": 4, "P7d PODs": 1},
 ])
 
-# Trade channel breakdown (Ethica 05.11.26, samples / internal accounts removed)
+# Trade channel breakdown (Ethica 05.22.26, samples / internal accounts removed)
 off_trade_channels = pd.DataFrame([
-    {"Trade Channel": "Liquor / Package Store", "YTD Cases": 709.57, "Dec": 3.40, "Jan": 132.81, "Feb": 192.62, "Mar": 224.97, "Apr": 110.33, "May": 45.42},
-    {"Trade Channel": "Supermarket", "YTD Cases": 345.22, "Dec": 0, "Jan": 51.50, "Feb": 86.66, "Mar": 121.72, "Apr": 70.00, "May": 15.33},
-    {"Trade Channel": "Other Off Premise", "YTD Cases": 238.47, "Dec": 4.00, "Jan": 5.24, "Feb": 170.57, "Mar": 20.99, "Apr": 30.58, "May": 7.08},
-    {"Trade Channel": "General Merchandise", "YTD Cases": 50.00, "Dec": 0, "Jan": 13.00, "Feb": 19.00, "Mar": 4.00, "Apr": 13.00, "May": 1.00},
-    {"Trade Channel": "Wholesale Club", "YTD Cases": 17.25, "Dec": 0, "Jan": 0, "Feb": 4.00, "Mar": 8.00, "Apr": 3.17, "May": 2.08},
-    {"Trade Channel": "Convenience / Gas", "YTD Cases": 8.67, "Dec": 1.00, "Jan": 0, "Feb": 1.25, "Mar": 4.83, "Apr": 1.59, "May": 0},
+    {"Trade Channel": "Liquor / Package Store", "YTD Cases": 781.42, "Dec": 3.24, "Jan": 132.81, "Feb": 192.14, "Mar": 224.65, "Apr": 109.93, "May": 118.64},
+    {"Trade Channel": "Supermarket", "YTD Cases": 452.99, "Dec": 0, "Jan": 51.50, "Feb": 86.50, "Mar": 121.56, "Apr": 70.00, "May": 123.42},
+    {"Trade Channel": "Other Off Premise", "YTD Cases": 250.34, "Dec": 4.00, "Jan": 5.16, "Feb": 170.49, "Mar": 20.66, "Apr": 30.42, "May": 19.58},
+    {"Trade Channel": "General Merchandise", "YTD Cases": 55.00, "Dec": 0, "Jan": 13.00, "Feb": 19.00, "Mar": 4.00, "Apr": 13.00, "May": 6.00},
+    {"Trade Channel": "Wholesale Club", "YTD Cases": 21.25, "Dec": 0, "Jan": 0, "Feb": 4.00, "Mar": 8.00, "Apr": 3.17, "May": 6.08},
+    {"Trade Channel": "Convenience / Gas", "YTD Cases": 9.92, "Dec": 1.00, "Jan": 0, "Feb": 1.25, "Mar": 3.83, "Apr": 2.59, "May": 1.25},
+    {"Trade Channel": "Fine Wine Store", "YTD Cases": 8.00, "Dec": 0, "Jan": 0, "Feb": 1.08, "Mar": 2.25, "Apr": 2.00, "May": 2.67},
     {"Trade Channel": "Small Grocery Store", "YTD Cases": 6.00, "Dec": 0, "Jan": 0, "Feb": 0, "Mar": 0, "Apr": 6.00, "May": 0},
-    {"Trade Channel": "Fine Wine Store", "YTD Cases": 5.58, "Dec": 0, "Jan": 0, "Feb": 1.08, "Mar": 2.25, "Apr": 2.00, "May": 0.25},
-    {"Trade Channel": "Non-Retail", "YTD Cases": 1.22, "Dec": 0, "Jan": 0, "Feb": 0, "Mar": 0.16, "Apr": 0.98, "May": 0.08},
-    {"Trade Channel": "Retail-Specialty Services", "YTD Cases": 0.75, "Dec": 0, "Jan": 0, "Feb": 0.50, "Mar": 0, "Apr": 0, "May": 0.25},
 ])
 
 on_trade_channels = pd.DataFrame([
-    {"Trade Channel": "Restaurant", "YTD Cases": 452.53, "Dec": 14.24, "Jan": 18.82, "Feb": 87.07, "Mar": 122.13, "Apr": 154.14, "May": 56.13},
-    {"Trade Channel": "Bar / Tavern", "YTD Cases": 60.94, "Dec": 0.08, "Jan": 5.08, "Feb": 10.31, "Mar": 16.23, "Apr": 21.49, "May": 7.75},
-    {"Trade Channel": "Other On Premise", "YTD Cases": 40.24, "Dec": 1.00, "Jan": 2.00, "Feb": 19.08, "Mar": 9.33, "Apr": 6.75, "May": 2.08},
-    {"Trade Channel": "Golf / Country Club", "YTD Cases": 31.72, "Dec": 1.00, "Jan": 3.00, "Feb": 1.99, "Mar": 11.57, "Apr": 4.00, "May": 10.16},
-    {"Trade Channel": "Hotel / Motel", "YTD Cases": 22.81, "Dec": 0, "Jan": 0.42, "Feb": 4.49, "Mar": 3.57, "Apr": 10.33, "May": 4.00},
-    {"Trade Channel": "Special Event / Temp License", "YTD Cases": 2.00, "Dec": 0, "Jan": 0, "Feb": 0, "Mar": 0, "Apr": 2.00, "May": 0},
-    {"Trade Channel": "Concessionaire", "YTD Cases": 0.50, "Dec": 0, "Jan": 0, "Feb": 0.25, "Mar": 0, "Apr": 0.25, "May": 0},
+    {"Trade Channel": "Restaurant", "YTD Cases": 524.09, "Dec": 14.00, "Jan": 17.58, "Feb": 83.67, "Mar": 122.17, "Apr": 153.42, "May": 133.25},
+    {"Trade Channel": "Bar / Tavern", "YTD Cases": 75.26, "Dec": 0, "Jan": 5.00, "Feb": 8.91, "Mar": 16.59, "Apr": 21.09, "May": 23.67},
+    {"Trade Channel": "Other On Premise", "YTD Cases": 58.25, "Dec": 1.00, "Jan": 2.00, "Feb": 19.00, "Mar": 9.17, "Apr": 6.75, "May": 20.34},
+    {"Trade Channel": "Golf / Country Club", "YTD Cases": 45.08, "Dec": 1.00, "Jan": 3.00, "Feb": 1.67, "Mar": 10.41, "Apr": 5.00, "May": 24.00},
+    {"Trade Channel": "Hotel / Motel", "YTD Cases": 23.93, "Dec": 0, "Jan": 0.34, "Feb": 4.25, "Mar": 3.17, "Apr": 10.17, "May": 6.00},
+    {"Trade Channel": "Concessionaire", "YTD Cases": 3.42, "Dec": 0, "Jan": 0, "Feb": 0.17, "Mar": 0, "Apr": 0.25, "May": 3.00},
+    {"Trade Channel": "Special Event / Temp License", "YTD Cases": 3.00, "Dec": 0, "Jan": 0, "Feb": 0, "Mar": 0, "Apr": 2.00, "May": 1.00},
     {"Trade Channel": "Fine Dining / White Tablecloth", "YTD Cases": 0.25, "Dec": 0, "Jan": 0, "Feb": 0, "Mar": 0.25, "Apr": 0, "May": 0},
-    {"Trade Channel": "Recreation / Entertainment", "YTD Cases": 0.08, "Dec": 0, "Jan": 0, "Feb": 0, "Mar": 0.08, "Apr": 0, "May": 0},
 ])
 top_accounts["Chg vs LM"] = top_accounts["Apr Cases"] - top_accounts["Mar Cases"]
 top_accounts["% Growth"] = top_accounts.apply(
@@ -916,7 +919,7 @@ if active_tab == "Overview":
                 <p style="margin:4px 0 0; font-size:11px; color:rgba(255,255,255,0.6); letter-spacing:0.1em;">TOTAL CASES</p>
             </div>
             <div style="text-align:center;">
-                <p style="margin:0; font-size:30px; font-weight:900; color:white; line-height:1;">1,155</p>
+                <p style="margin:0; font-size:30px; font-weight:900; color:white; line-height:1;">1,259</p>
                 <p style="margin:4px 0 0; font-size:11px; color:rgba(255,255,255,0.6); letter-spacing:0.1em;">TOTAL PODS</p>
             </div>
             <div style="text-align:center;">
