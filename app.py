@@ -622,13 +622,14 @@ rb_bottles = pd.DataFrame([
     {"Bottles": "6", "Pct": 3.7},
 ])
 
-# ── SHIPMENTS & REVENUE DATA ────────────────────────────────────────────────
+# ── SHIPMENTS & REVENUE DATA (from Payment Process May 2026) ───────────────
 ship_monthly_cases = pd.DataFrame([
     {"Month": "Dec '25", "Cases": 2302},
     {"Month": "Jan '26", "Cases": 1447},
     {"Month": "Feb '26", "Cases": 683},
     {"Month": "Mar '26", "Cases": 379},
     {"Month": "Apr '26", "Cases": 310},
+    {"Month": "May '26", "Cases": 490},
 ])
 
 ship_monthly_revenue = pd.DataFrame([
@@ -637,6 +638,7 @@ ship_monthly_revenue = pd.DataFrame([
     {"Month": "Feb '26", "Revenue": 18488},
     {"Month": "Mar '26", "Revenue": 11073},
     {"Month": "Apr '26", "Revenue": 7598},
+    {"Month": "May '26", "Revenue": 15095},
 ])
 
 ship_monthly_rev_per_case = pd.DataFrame([
@@ -645,6 +647,7 @@ ship_monthly_rev_per_case = pd.DataFrame([
     {"Month": "Feb '26", "Rev/Case": 27.1},
     {"Month": "Mar '26", "Rev/Case": 29.2},
     {"Month": "Apr '26", "Rev/Case": 24.5},
+    {"Month": "May '26", "Rev/Case": 30.8},
 ])
 
 # Credit memo breakdown by month (from Payment Process Excel)
@@ -654,6 +657,7 @@ ship_monthly_credits = pd.DataFrame([
     {"Month": "Feb '26", "Credit Memo": -2123.16},
     {"Month": "Mar '26", "Credit Memo": -11074.88},
     {"Month": "Apr '26", "Credit Memo": -6446.44},
+    {"Month": "May '26", "Credit Memo": -5179.08},
 ])
 
 ship_monthly_net = pd.DataFrame([
@@ -662,6 +666,7 @@ ship_monthly_net = pd.DataFrame([
     {"Month": "Feb '26", "Net Revenue": 16365.00},
     {"Month": "Mar '26", "Net Revenue": -1.60},
     {"Month": "Apr '26", "Net Revenue": 1151.48},
+    {"Month": "May '26", "Net Revenue": 9915.74},
 ])
 
 # Top accounts — chain data from Ethica 05.11.26 (samples removed)
@@ -847,7 +852,7 @@ st.markdown("---")
 # SHARED MONTH OPTIONS
 # ══════════════════════════════════════════════════════════════════════════════
 DEPL_MONTHS = ["Nov", "Dec", "Jan", "Feb", "Mar", "Apr", "May", "Jun"]
-SHIP_MONTHS = ["Dec '25", "Jan '26", "Feb '26", "Mar '26", "Apr '26"]
+SHIP_MONTHS = ["Dec '25", "Jan '26", "Feb '26", "Mar '26", "Apr '26", "May '26"]
 ALL_STATES = sorted(set(on_states["State"].tolist() + off_states["State"].tolist()))
 
 # ══════════════════════════════════════════════════════════════════════════════
@@ -864,9 +869,9 @@ if active_tab == "Overview":
 
     c1, c2, c3, c4, c5 = st.columns(5)
     with c1:
-        st.markdown(kpi("Gross Revenue YTD", "$155,704", "Net: $135,734 · as of 4/30/26", dark=True), unsafe_allow_html=True)
+        st.markdown(kpi("Gross Revenue YTD", "$170,799", "Net: $145,650 · as of 5/31/26", dark=True), unsafe_allow_html=True)
     with c2:
-        st.markdown(kpi("Cases Shipped YTD", "5,121", "Dec '25 - Apr '26", dark=True), unsafe_allow_html=True)
+        st.markdown(kpi("Cases Shipped YTD", "5,611", "Dec '25 - May '26", dark=True), unsafe_allow_html=True)
     with c3:
         st.markdown(kpi("Total Depletions", f"{total_cases:,.2f}", f"Cases · samples excl · as of {DEPLETION_AS_OF}"), unsafe_allow_html=True)
     with c4:
