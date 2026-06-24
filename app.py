@@ -423,31 +423,50 @@ channel_detail = pd.DataFrame([
     {"Month": "Jun 2026 (1–19)", "Short": "Jun", "Total Depletions": 426.68, "Total PODs": 354, "On-Premise": 148.74, "Off-Premise": 277.94},
 ])
 
-# Compute change vs last month (chronological order: prior month is row i-1)
+# Same-period MTD comparison for partial months.
+# For partial Jun (1-19), the comparison should be vs May 1-19 (NOT full May).
+# May 1-19 actuals (interpolated from 05.15.26 and 05.22.26 snapshots, samples excluded):
+#   Total: 400.25 cases / 331 PODs · ON: 186.79 / 105 · OFF: 213.46 / 226
+PRIOR_MTD = {
+    "Jun": {"cases": 400.25, "pods": 331, "on": 186.79, "off": 213.46, "ref": "May 1-19"},
+}
+
+# Compute change vs last month. For partial months, use same-period MTD instead of full prior month.
 depl_vals = channel_detail["Total Depletions"].tolist()
 pod_vals = channel_detail["Total PODs"].tolist()
-changes, pct_changes, pod_changes, pod_pct_changes = [], [], [], []
+short_vals = channel_detail["Short"].tolist()
+changes, pct_changes, pod_changes, pod_pct_changes, prior_refs = [], [], [], [], []
 for i in range(len(depl_vals)):
     if i > 0:
-        prev = depl_vals[i - 1]
-        chg = depl_vals[i] - prev
-        pct = (chg / prev * 100) if prev > 0 else float("inf")
+        short = short_vals[i]
+        if short in PRIOR_MTD:
+            prev_cases = PRIOR_MTD[short]["cases"]
+            prev_pods = PRIOR_MTD[short]["pods"]
+            ref_label = PRIOR_MTD[short]["ref"]
+        else:
+            prev_cases = depl_vals[i - 1]
+            prev_pods = pod_vals[i - 1]
+            ref_label = "vs full LM"
+        chg = depl_vals[i] - prev_cases
+        pct = (chg / prev_cases * 100) if prev_cases > 0 else float("inf")
+        pchg = pod_vals[i] - prev_pods
+        ppct = (pchg / prev_pods * 100) if prev_pods > 0 else float("inf")
         changes.append(chg)
         pct_changes.append(pct)
-        pprev = pod_vals[i - 1]
-        pchg = pod_vals[i] - pprev
-        ppct = (pchg / pprev * 100) if pprev > 0 else float("inf")
         pod_changes.append(pchg)
         pod_pct_changes.append(ppct)
+        prior_refs.append(ref_label)
     else:
         changes.append(None)
         pct_changes.append(None)
         pod_changes.append(None)
         pod_pct_changes.append(None)
+        prior_refs.append("")
 channel_detail["Depl Change vs LM"] = changes
 channel_detail["% Change vs LM"] = pct_changes
 channel_detail["PODs Change vs LM"] = pod_changes
 channel_detail["PODs % Change"] = pod_pct_changes
+channel_detail["Compare Ref"] = prior_refs
 
 # ON-PREMISE state data (Depletions 06.19.26, tight scrub applied — see header)
 on_states = pd.DataFrame([
@@ -623,7 +642,8 @@ rb_bottles = pd.DataFrame([
     {"Bottles": "6", "Pct": 3.7},
 ])
 
-# ── SHIPMENTS & REVENUE DATA (from Payment Process May 2026) ───────────────
+# ── SHIPMENTS DATA (from Payment Process Excel) ─────────────────────────────
+# Revenue/credit memo data removed from dashboard per request.
 ship_monthly_cases = pd.DataFrame([
     {"Month": "Dec '25", "Cases": 2302},
     {"Month": "Jan '26", "Cases": 1447},
@@ -631,43 +651,6 @@ ship_monthly_cases = pd.DataFrame([
     {"Month": "Mar '26", "Cases": 379},
     {"Month": "Apr '26", "Cases": 310},
     {"Month": "May '26", "Cases": 490},
-])
-
-ship_monthly_revenue = pd.DataFrame([
-    {"Month": "Dec '25", "Revenue": 71539},
-    {"Month": "Jan '26", "Revenue": 47005},
-    {"Month": "Feb '26", "Revenue": 18488},
-    {"Month": "Mar '26", "Revenue": 11073},
-    {"Month": "Apr '26", "Revenue": 7598},
-    {"Month": "May '26", "Revenue": 15095},
-])
-
-ship_monthly_rev_per_case = pd.DataFrame([
-    {"Month": "Dec '25", "Rev/Case": 31.1},
-    {"Month": "Jan '26", "Rev/Case": 32.5},
-    {"Month": "Feb '26", "Rev/Case": 27.1},
-    {"Month": "Mar '26", "Rev/Case": 29.2},
-    {"Month": "Apr '26", "Rev/Case": 24.5},
-    {"Month": "May '26", "Rev/Case": 30.8},
-])
-
-# Credit memo breakdown by month (from Payment Process Excel)
-ship_monthly_credits = pd.DataFrame([
-    {"Month": "Dec '25", "Credit Memo": 0},
-    {"Month": "Jan '26", "Credit Memo": -325.44},
-    {"Month": "Feb '26", "Credit Memo": -2123.16},
-    {"Month": "Mar '26", "Credit Memo": -11074.88},
-    {"Month": "Apr '26", "Credit Memo": -6446.44},
-    {"Month": "May '26", "Credit Memo": -5179.08},
-])
-
-ship_monthly_net = pd.DataFrame([
-    {"Month": "Dec '25", "Net Revenue": 71538.92},
-    {"Month": "Jan '26", "Net Revenue": 46680.02},
-    {"Month": "Feb '26", "Net Revenue": 16365.00},
-    {"Month": "Mar '26", "Net Revenue": -1.60},
-    {"Month": "Apr '26", "Net Revenue": 1151.48},
-    {"Month": "May '26", "Net Revenue": 9915.74},
 ])
 
 # Top accounts — chain data from Ethica 05.11.26 (samples removed)
@@ -842,7 +825,7 @@ top_accounts["% Growth"] = top_accounts.apply(
 # ══════════════════════════════════════════════════════════════════════════════
 active_tab = st.radio(
     "Dashboard",
-    ["Overview", "Shipments & Revenue", "Depletions", "Gopuff", "ReserveBar"],
+    ["Overview", "Shipments", "Depletions", "Gopuff", "ReserveBar"],
     horizontal=True,
     label_visibility="collapsed",
 )
@@ -871,16 +854,15 @@ if active_tab == "Overview":
 
     c1, c2, c3, c4, c5 = st.columns(5)
     with c1:
-        st.markdown(kpi("Gross Revenue YTD", "$170,799", "Net: $145,650 · as of 5/31/26", dark=True), unsafe_allow_html=True)
+        st.markdown(kpi("Total Depletions YTD", f"{total_cases:,.2f}", f"Cases · samples excl · as of {DEPLETION_AS_OF}", dark=True), unsafe_allow_html=True)
     with c2:
-        st.markdown(kpi("Cases Shipped YTD", "5,611", "Dec '25 - May '26", dark=True), unsafe_allow_html=True)
+        st.markdown(kpi("Total YTD PODs", "1,450", "24 active states", dark=True), unsafe_allow_html=True)
     with c3:
-        st.markdown(kpi("Total Depletions", f"{total_cases:,.2f}", f"Cases · samples excl · as of {DEPLETION_AS_OF}"), unsafe_allow_html=True)
+        st.markdown(kpi("Cases Shipped YTD", "5,611", "Dec '25 - May '26"), unsafe_allow_html=True)
     with c4:
         st.markdown(kpi("Gopuff YTD Units", "169", f"29 locations · as of {GOPUFF_AS_OF}"), unsafe_allow_html=True)
-
     with c5:
-        st.markdown(kpi("ReserveBar Units", "86", "27 orders, $1.74K · as of 4/25/26"), unsafe_allow_html=True)
+        st.markdown(kpi("ReserveBar Units", "86", "27 orders · as of 4/25/26"), unsafe_allow_html=True)
 
     st.markdown("<br>", unsafe_allow_html=True)
     col1, col2 = st.columns(2)
@@ -896,13 +878,15 @@ if active_tab == "Overview":
             use_container_width=True,
         )
 
-    # Channel breakdown table — redesigned with change vs LM
+    # Channel breakdown table — redesigned with same-period MoM
     section_title("Channel Breakdown")
+    st.caption("ℹ️ Partial months compare to same-period prior month (e.g., Jun 1-19 vs May 1-19), NOT full prior month")
     cd_filt = channel_detail[channel_detail["Short"].isin(ov_months)].copy()
-    cd_display = cd_filt[["Month", "Total Depletions", "Depl Change vs LM", "% Change vs LM", "On-Premise", "Off-Premise"]].copy()
+    cd_display = cd_filt[["Month", "Total Depletions", "Compare Ref", "Depl Change vs LM", "% Change vs LM", "On-Premise", "Off-Premise"]].copy()
 
     fmt_map = {
         "Total Depletions": lambda v: f"{v:,.2f}",
+        "Compare Ref": lambda v: str(v) if v else "—",
         "Depl Change vs LM": lambda v: change_fmt(v),
         "% Change vs LM": lambda v: pct_change_fmt(v),
         "On-Premise": lambda v: f"{v:,.2f}",
@@ -950,74 +934,38 @@ if active_tab == "Overview":
 # ══════════════════════════════════════════════════════════════════════════════
 # SHIPMENTS & REVENUE
 # ══════════════════════════════════════════════════════════════════════════════
-elif active_tab == "Shipments & Revenue":
+elif active_tab == "Shipments":
+    st.caption("📅 Shipment data through May 2026 · Source: Lucci Payment Process file")
     sh_months = st.multiselect("Filter by Month", SHIP_MONTHS, default=SHIP_MONTHS, key="sh_months")
-    sc_filt = ship_monthly_cases[ship_monthly_cases["Month"].isin(sh_months)]
-    sr_filt = ship_monthly_revenue[ship_monthly_revenue["Month"].isin(sh_months)]
-    srpc_filt = ship_monthly_rev_per_case[ship_monthly_rev_per_case["Month"].isin(sh_months)]
-    scr_filt = ship_monthly_credits[ship_monthly_credits["Month"].isin(sh_months)]
-    snet_filt = ship_monthly_net[ship_monthly_net["Month"].isin(sh_months)]
+    sc_filt = ship_monthly_cases[ship_monthly_cases["Month"].isin(sh_months)].reset_index(drop=True)
 
     filt_cases = int(sc_filt["Cases"].sum())
-    filt_rev = int(sr_filt["Revenue"].sum())
-    filt_credits = round(scr_filt["Credit Memo"].sum(), 2)
-    filt_net = round(snet_filt["Net Revenue"].sum(), 2)
-    filt_rpc = round(filt_rev / filt_cases, 0) if filt_cases > 0 else 0
+    avg_cases = round(filt_cases / max(len(sc_filt), 1))
+    biggest_row = sc_filt.loc[sc_filt["Cases"].idxmax()] if len(sc_filt) > 0 else None
 
-    c1, c2, c3, c4, c5 = st.columns(5)
+    c1, c2, c3 = st.columns(3)
     with c1:
-        st.markdown(kpi("Cases Shipped", f"{filt_cases:,}", "Filtered period", dark=True), unsafe_allow_html=True)
+        st.markdown(kpi("Total Cases Shipped", f"{filt_cases:,}", f"Filtered period · {len(sc_filt)} month(s)", dark=True), unsafe_allow_html=True)
     with c2:
-        st.markdown(kpi("Gross Revenue", f"${filt_rev:,}", "Before credit memos"), unsafe_allow_html=True)
+        st.markdown(kpi("Avg Cases / Month", f"{avg_cases:,}", "In filtered period"), unsafe_allow_html=True)
     with c3:
-        st.markdown(kpi("Credit Memos", f"-${abs(filt_credits):,.0f}", "DAs, samples, other"), unsafe_allow_html=True)
-    with c4:
-        st.markdown(kpi("Net Revenue", f"${filt_net:,.0f}", "After credit memos"), unsafe_allow_html=True)
-    with c5:
-        st.markdown(kpi("Gross Rev / Case", f"${filt_rpc:.0f}", "Gross rev / cases shipped"), unsafe_allow_html=True)
+        if biggest_row is not None:
+            st.markdown(kpi("Biggest Month", str(biggest_row["Month"]), f"{int(biggest_row['Cases']):,} cases shipped"), unsafe_allow_html=True)
 
     st.markdown("<br>", unsafe_allow_html=True)
-    col1, col2 = st.columns(2)
 
-    with col1:
-        section_title("Monthly Cases Shipped")
-        fig = bar_chart(sc_filt, "Month", "Cases")
-        fig.update_traces(text=sc_filt["Cases"].apply(lambda x: f"{x:,.0f}"), textposition="outside")
-        fig.update_layout(height=320)
-        st.plotly_chart(fig, use_container_width=True)
+    section_title("Monthly Cases Shipped")
+    fig = bar_chart(sc_filt, "Month", "Cases")
+    fig.update_traces(text=sc_filt["Cases"].apply(lambda x: f"{x:,.0f}"), textposition="outside")
+    fig.update_layout(height=360)
+    st.plotly_chart(fig, use_container_width=True)
 
-    with col2:
-        section_title("Monthly Gross Revenue")
-        fig = bar_chart(sr_filt, "Month", "Revenue")
-        fig.update_traces(text=sr_filt["Revenue"].apply(lambda x: f"${x:,.0f}"), textposition="outside")
-        fig.update_layout(height=320)
-        st.plotly_chart(fig, use_container_width=True)
-
-    # Monthly financial summary table
-    section_title("Monthly Financial Summary")
-    fin_table = pd.merge(sc_filt[["Month", "Cases"]], sr_filt, on="Month")
-    fin_table = pd.merge(fin_table, scr_filt, on="Month")
-    fin_table = pd.merge(fin_table, snet_filt, on="Month")
-    fin_table = pd.merge(fin_table, srpc_filt, on="Month")
-    fin_table = fin_table[["Month", "Cases", "Revenue", "Credit Memo", "Net Revenue", "Rev/Case"]]
-    st.markdown(styled_table(fin_table, fmt={
+    section_title("Monthly Shipment Detail")
+    sc_filt["Chg vs LM"] = sc_filt["Cases"].diff()
+    st.markdown(styled_table(sc_filt[["Month", "Cases", "Chg vs LM"]], fmt={
         "Cases": lambda v: f"{int(v):,}",
-        "Revenue": lambda v: f"${v:,.0f}",
-        "Credit Memo": lambda v: f"${v:,.2f}" if v == 0 else f"-${abs(v):,.2f}",
-        "Net Revenue": lambda v: f"${v:,.2f}",
-        "Rev/Case": lambda v: f"${v:.1f}",
+        "Chg vs LM": lambda v: "—" if pd.isna(v) else (f"+{int(v):,}" if v > 0 else f"{int(v):,}"),
     }), unsafe_allow_html=True)
-
-    if filt_credits < -5000:
-        st.markdown(f"""
-        <div class="highlight-banner">
-            <div>
-                <p style="margin:0; font-size:11px; color:rgba(255,255,255,0.6); letter-spacing:0.15em; text-transform:uppercase;">Credit Memo Alert</p>
-                <p style="margin:8px 0 0; font-size:16px; color:white; font-weight:700;">April credit memos: -$6,446 against $7,598 gross (net $1,151)</p>
-                <p style="margin:4px 0 0; font-size:13px; color:rgba(255,255,255,0.7);">Includes DAs, samples, POSM materials, demo tastings, and labeling costs · YTD credits: -$19,970</p>
-            </div>
-        </div>
-        """, unsafe_allow_html=True)
 
 
 # ══════════════════════════════════════════════════════════════════════════════
@@ -1062,14 +1010,15 @@ elif active_tab == "Depletions":
         use_container_width=True,
     )
 
-    # Monthly detail table — redesigned with change vs LM
+    # Monthly detail table — same-period MoM for partial months
     section_title("Monthly Depletion Detail")
-    st.caption(f"All months full-month actuals · samples excluded · as of {DEPLETION_AS_OF}")
+    st.caption(f"Samples excluded · as of {DEPLETION_AS_OF} · ℹ️ Partial months compare to same-period prior month (e.g., Jun 1-19 vs May 1-19)")
     cd_filt = channel_detail[channel_detail["Short"].isin(dp_months)].copy()
-    cd_display = cd_filt[["Month", "Total Depletions", "Total PODs", "Depl Change vs LM", "% Change vs LM", "On-Premise", "Off-Premise"]].copy()
+    cd_display = cd_filt[["Month", "Total Depletions", "Total PODs", "Compare Ref", "Depl Change vs LM", "% Change vs LM", "On-Premise", "Off-Premise"]].copy()
     st.markdown(styled_table(cd_display, fmt={
         "Total Depletions": lambda v: f"{v:,.2f}",
         "Total PODs": lambda v: f"{int(v):,}",
+        "Compare Ref": lambda v: str(v) if v else "—",
         "Depl Change vs LM": lambda v: change_fmt(v),
         "% Change vs LM": lambda v: pct_change_fmt(v),
         "On-Premise": lambda v: f"{v:,.2f}",
