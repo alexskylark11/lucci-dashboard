@@ -745,6 +745,49 @@ top_restaurants_bars = pd.DataFrame([
     {"Rank": 10, "Restaurant": "Eataly NYC Flatiron", "City": "New York", "State": "NY", "Chain": "Eataly", "Channel": "Restaurant", "YTD Cases": 10.00, "Mar": 3.00, "Apr": 4.00, "May": 3.00, "Jun": 0},
 ])
 
+# NEW PODs THIS PAST WEEK — accounts that first depleted between 6/20 and 6/26
+# (delta between 06.19.26 and 06.26.26 snapshots; samples + person-name accounts excluded)
+NEW_POD_WEEK_RANGE = "Jun 20–26, 2026"
+new_pods_week = pd.DataFrame([
+    # ON-PREMISE
+    {"Account": "Damas", "City": "Tallahassee", "State": "FL", "Premise": "On", "Chain": "(indep)", "Channel": "Restaurant", "Cases": 1.08},
+    {"Account": "Alila Napa Valley", "City": "St. Helena", "State": "CA", "Premise": "On", "Chain": "(indep)", "Channel": "Hotel/Motel", "Cases": 1.00},
+    {"Account": "Il Posto", "City": "Neptune", "State": "NJ", "Premise": "On", "Chain": "(indep)", "Channel": "Other On-Premise", "Cases": 1.00},
+    {"Account": "Lola", "City": "Glendale", "State": "AZ", "Premise": "On", "Chain": "(indep)", "Channel": "Restaurant", "Cases": 1.00},
+    {"Account": "Madein", "City": "Reno", "State": "NV", "Premise": "On", "Chain": "(indep)", "Channel": "Restaurant", "Cases": 1.00},
+    {"Account": "Mezza Luna Pasta & Seafood", "City": "Marietta", "State": "GA", "Premise": "On", "Chain": "(indep)", "Channel": "Restaurant", "Cases": 0.50},
+    {"Account": "Contentment Golf Club", "City": "Hays", "State": "NC", "Premise": "On", "Chain": "(indep)", "Channel": "Golf / Country Club", "Cases": 0.25},
+    # OFF-PREMISE
+    {"Account": "Food Lion #1330", "City": "Bluffton", "State": "SC", "Premise": "Off", "Chain": "Food Lion", "Channel": "Supermarket", "Cases": 6.00},
+    {"Account": "Trader Joe's 740", "City": "Asheville", "State": "NC", "Premise": "Off", "Chain": "Trader Joe's", "Channel": "Supermarket", "Cases": 3.00},
+    {"Account": "Food Lion 922", "City": "Blowing Rock", "State": "NC", "Premise": "Off", "Chain": "Food Lion", "Channel": "Supermarket", "Cases": 1.25},
+    {"Account": "Mel & Rose Fine Wines (Off-Prem)", "City": "Los Angeles", "State": "CA", "Premise": "Off", "Chain": "(indep)", "Channel": "Liquor / Package", "Cases": 1.00},
+    {"Account": "Ballard Wine & Spirits", "City": "Gansevoort", "State": "NY", "Premise": "Off", "Chain": "(indep)", "Channel": "Liquor / Package", "Cases": 1.00},
+    {"Account": "Food Lion 685", "City": "Avon", "State": "NC", "Premise": "Off", "Chain": "Food Lion", "Channel": "Supermarket", "Cases": 1.00},
+    {"Account": "Food Lion 2867", "City": "Franklin", "State": "NC", "Premise": "Off", "Chain": "Food Lion", "Channel": "Supermarket", "Cases": 1.00},
+    {"Account": "Universal Package Store", "City": "Noank", "State": "CT", "Premise": "Off", "Chain": "(indep)", "Channel": "Liquor / Package", "Cases": 1.00},
+    {"Account": "Supreme Liquors - New Milford", "City": "New Milford", "State": "CT", "Premise": "Off", "Chain": "BevMax", "Channel": "Liquor / Package", "Cases": 1.00},
+    {"Account": "Food Lion 2626", "City": "Rutherfordton", "State": "NC", "Premise": "Off", "Chain": "Food Lion", "Channel": "Supermarket", "Cases": 0.75},
+    {"Account": "Food Lion 1655", "City": "Leland", "State": "NC", "Premise": "Off", "Chain": "Food Lion", "Channel": "Supermarket", "Cases": 0.58},
+    {"Account": "Food Lion 2582", "City": "Wilkesboro", "State": "NC", "Premise": "Off", "Chain": "Food Lion", "Channel": "Supermarket", "Cases": 0.58},
+    {"Account": "Food Lion 510", "City": "Columbus", "State": "NC", "Premise": "Off", "Chain": "Food Lion", "Channel": "Supermarket", "Cases": 0.50},
+    {"Account": "Food Lion 2592", "City": "Boone", "State": "NC", "Premise": "Off", "Chain": "Food Lion", "Channel": "Supermarket", "Cases": 0.50},
+    {"Account": "Food Lion 1607", "City": "Calabash", "State": "NC", "Premise": "Off", "Chain": "Food Lion", "Channel": "Supermarket", "Cases": 0.50},
+    {"Account": "Food Lion 1594", "City": "Lenoir", "State": "NC", "Premise": "Off", "Chain": "Food Lion", "Channel": "Supermarket", "Cases": 0.50},
+    {"Account": "Food Lion 957", "City": "Clyde", "State": "NC", "Premise": "Off", "Chain": "Food Lion", "Channel": "Supermarket", "Cases": 0.50},
+    {"Account": "Food Lion 1503", "City": "Boone", "State": "NC", "Premise": "Off", "Chain": "Food Lion", "Channel": "Supermarket", "Cases": 0.50},
+    {"Account": "Food Lion 726", "City": "Denver", "State": "NC", "Premise": "Off", "Chain": "Food Lion", "Channel": "Supermarket", "Cases": 0.50},
+    {"Account": "Food Lion #1097", "City": "Charleston", "State": "SC", "Premise": "Off", "Chain": "Food Lion", "Channel": "Supermarket", "Cases": 0.50},
+    {"Account": "Jubilation Wine & Spirit", "City": "Albuquerque", "State": "NM", "Premise": "Off", "Chain": "(indep)", "Channel": "Liquor / Package", "Cases": 0.50},
+    {"Account": "Food Lion 2588", "City": "Brevard", "State": "NC", "Premise": "Off", "Chain": "Food Lion", "Channel": "Supermarket", "Cases": 0.42},
+    {"Account": "200 Liquors", "City": "Chicago", "State": "IL", "Premise": "Off", "Chain": "(indep)", "Channel": "Liquor / Package", "Cases": 0.33},
+    {"Account": "Barley and Vine", "City": "Hertford", "State": "NC", "Premise": "Off", "Chain": "(indep)", "Channel": "Fine Wine Store", "Cases": 0.33},
+    {"Account": "Food Lion 1388", "City": "Wilmington", "State": "NC", "Premise": "Off", "Chain": "Food Lion", "Channel": "Supermarket", "Cases": 0.25},
+    {"Account": "Harris Teeter 335", "City": "Apex", "State": "NC", "Premise": "Off", "Chain": "Harris Teeter", "Channel": "Supermarket", "Cases": 0.25},
+    {"Account": "Total Wine & More #1503", "City": "Milford", "State": "CT", "Premise": "Off", "Chain": "Total Wine & More", "Channel": "Liquor / Package", "Cases": 0.25},
+])
+new_pods_week = new_pods_week.sort_values(["Premise", "Cases"], ascending=[True, False]).reset_index(drop=True)
+
 # State-level WEEKLY ACTUALS (kept for reference but no longer used in main UI)
 # State Performance now uses same-period comparison: Apr 1-24 vs Mar 1-27 from on_states/off_states.
 state_weekly = pd.DataFrame([
@@ -905,6 +948,33 @@ if active_tab == "Overview":
         "Off Cases": lambda v: f"{v:,.2f}",
     }
     st.markdown(styled_table(top3_display, fmt=top3_fmt), unsafe_allow_html=True)
+
+    # ── NEW PODs THIS PAST WEEK ──────────────────────────────────────────────
+    section_title("New PODs This Past Week")
+    n_total = len(new_pods_week)
+    n_on = int((new_pods_week["Premise"] == "On").sum())
+    n_off = int((new_pods_week["Premise"] == "Off").sum())
+    cs_total = new_pods_week["Cases"].sum()
+    cs_on = new_pods_week.loc[new_pods_week["Premise"] == "On", "Cases"].sum()
+    cs_off = new_pods_week.loc[new_pods_week["Premise"] == "Off", "Cases"].sum()
+    state_count = new_pods_week["State"].nunique()
+    st.caption(
+        f"📍 {NEW_POD_WEEK_RANGE} · samples excluded · accounts that first depleted Lucci during this week"
+    )
+
+    npk1, npk2, npk3, npk4 = st.columns(4)
+    with npk1:
+        st.markdown(kpi("New PODs (Total)", f"{n_total}", f"Across {state_count} states", dark=True), unsafe_allow_html=True)
+    with npk2:
+        st.markdown(kpi("New PODs · On-Premise", f"{n_on}", f"{cs_on:.2f} cases"), unsafe_allow_html=True)
+    with npk3:
+        st.markdown(kpi("New PODs · Off-Premise", f"{n_off}", f"{cs_off:.2f} cases"), unsafe_allow_html=True)
+    with npk4:
+        st.markdown(kpi("New-Acct Volume", f"{cs_total:.2f}", "Cases this week"), unsafe_allow_html=True)
+
+    npk_display = new_pods_week[["Account", "City", "State", "Premise", "Chain", "Channel", "Cases"]].copy()
+    npk_fmt = {"Cases": lambda v: f"{v:,.2f}"}
+    st.markdown(styled_table(npk_display, fmt=npk_fmt), unsafe_allow_html=True)
 
     # Highlight banner
     st.markdown(f"""
