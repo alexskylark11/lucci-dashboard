@@ -788,6 +788,17 @@ new_pods_week = pd.DataFrame([
 ])
 new_pods_week = new_pods_week.sort_values(["Premise", "Cases"], ascending=[True, False]).reset_index(drop=True)
 
+# POD ORDER RECENCY — built by build_pod_recency.py from weekly Ethica snapshots
+# Status: Green = last order ≤60d ago · Yellow = 60–90d · Red = 90+d (or pre-snapshot-history)
+import json
+import os
+_recency_path = os.path.join(os.path.dirname(__file__), "pod_recency.json")
+with open(_recency_path, "r", encoding="utf-8") as _f:
+    _recency = json.load(_f)
+pod_recency_df = pd.DataFrame(_recency["pods"])
+POD_RECENCY_AS_OF = _recency["as_of"]
+POD_RECENCY_EARLIEST_SNAPSHOT = _recency["earliest_snapshot"]
+
 # State-level WEEKLY ACTUALS (kept for reference but no longer used in main UI)
 # State Performance now uses same-period comparison: Apr 1-24 vs Mar 1-27 from on_states/off_states.
 state_weekly = pd.DataFrame([
@@ -1246,6 +1257,82 @@ elif active_tab == "Depletions":
         "Apr Cases": lambda v: f"{v:,.2f}",
         "May Cases": lambda v: f"{v:,.2f}",
     }), unsafe_allow_html=True)
+
+    # ── POD ORDER RECENCY — all PODs flagged by last order date ──
+    st.markdown("<br>", unsafe_allow_html=True)
+    section_title("POD Order Recency — All Accounts")
+    st.caption(
+        f"All {len(pod_recency_df):,} active PODs flagged by days since last order (samples excluded). "
+        f"🟢 Green = ordered within 60d · 🟡 Yellow = 60–90d · 🔴 Red = 90+d. "
+        f"Built from weekly Ethica snapshots (earliest: {POD_RECENCY_EARLIEST_SNAPSHOT}); accounts whose first visible activity predates that date are conservatively flagged Red."
+    )
+
+    n_red = int((pod_recency_df["status"] == "Red").sum())
+    n_yel = int((pod_recency_df["status"] == "Yellow").sum())
+    n_grn = int((pod_recency_df["status"] == "Green").sum())
+    n_total_recency = len(pod_recency_df)
+    pct_atrisk = round((n_red + n_yel) / n_total_recency * 100, 1) if n_total_recency else 0
+
+    rk1, rk2, rk3, rk4 = st.columns(4)
+    with rk1:
+        st.markdown(kpi("Total Active PODs", f"{n_total_recency:,}", "Samples excluded", dark=True), unsafe_allow_html=True)
+    with rk2:
+        st.markdown(kpi("🔴 Stale (90+ days)", f"{n_red:,}", f"{round(n_red/n_total_recency*100,1)}% of PODs"), unsafe_allow_html=True)
+    with rk3:
+        st.markdown(kpi("🟡 Warming (60–90d)", f"{n_yel:,}", f"{round(n_yel/n_total_recency*100,1)}% of PODs"), unsafe_allow_html=True)
+    with rk4:
+        st.markdown(kpi("🟢 Active (≤60 days)", f"{n_grn:,}", f"{round(n_grn/n_total_recency*100,1)}% of PODs"), unsafe_allow_html=True)
+
+    st.markdown(f"<p style='margin:8px 0; font-size:13px; color:#6b7280;'><strong>At-risk:</strong> {n_red + n_yel:,} PODs ({pct_atrisk}%) haven't ordered in 60+ days.</p>", unsafe_allow_html=True)
+
+    # Filters
+    rec_states = sorted(pod_recency_df["state"].unique().tolist())
+    rec_premises = sorted(pod_recency_df["premise"].unique().tolist())
+    rc1, rc2, rc3, rc4 = st.columns([1.2, 1.4, 1.4, 1.6])
+    with rc1:
+        rec_status = st.multiselect("Status", ["Red", "Yellow", "Green"], default=["Red", "Yellow"], key="rec_status")
+    with rc2:
+        rec_state_filt = st.multiselect("State", rec_states, default=rec_states, key="rec_state_filt")
+    with rc3:
+        rec_prem_filt = st.multiselect("Premise", rec_premises, default=rec_premises, key="rec_prem_filt")
+    with rc4:
+        rec_search = st.text_input("Search account / city / chain", key="rec_search", placeholder="e.g. Marvito, Asheville, Eataly")
+
+    rec_filt = pod_recency_df.copy()
+    if rec_status:
+        rec_filt = rec_filt[rec_filt["status"].isin(rec_status)]
+    if rec_state_filt:
+        rec_filt = rec_filt[rec_filt["state"].isin(rec_state_filt)]
+    if rec_prem_filt:
+        rec_filt = rec_filt[rec_filt["premise"].isin(rec_prem_filt)]
+    if rec_search:
+        s = rec_search.strip().lower()
+        mask = (
+            rec_filt["account"].astype(str).str.lower().str.contains(s, na=False) |
+            rec_filt["city"].astype(str).str.lower().str.contains(s, na=False) |
+            rec_filt["chain"].astype(str).str.lower().str.contains(s, na=False)
+        )
+        rec_filt = rec_filt[mask]
+
+    st.caption(f"Showing **{len(rec_filt):,}** of {n_total_recency:,} PODs")
+
+    # Color-coded display with Pandas Styler
+    rec_display = rec_filt[["account", "city", "state", "premise", "chain", "channel", "ytd_cases", "last_order_date", "days_since", "status"]].copy()
+    rec_display.columns = ["Account", "City", "State", "Premise", "Chain", "Channel", "YTD Cases", "Last Order", "Days Since", "Status"]
+
+    def _row_color(row):
+        s = row["Status"]
+        if s == "Red":
+            return ["background-color: #fee2e2; color: #7f1d1d"] * len(row)
+        if s == "Yellow":
+            return ["background-color: #fef3c7; color: #78350f"] * len(row)
+        return ["background-color: #dcfce7; color: #14532d"] * len(row)
+
+    styled = (rec_display.style
+              .apply(_row_color, axis=1)
+              .format({"YTD Cases": "{:,.2f}", "Days Since": "{:,}"})
+              .hide(axis="index"))
+    st.dataframe(styled, use_container_width=True, height=600)
 
 
 # ══════════════════════════════════════════════════════════════════════════════
