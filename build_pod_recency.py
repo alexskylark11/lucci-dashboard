@@ -164,3 +164,85 @@ with open(OUT_JSON, 'w', encoding='utf-8') as f:
         "pods": results,
     }, f, indent=2)
 print(f"\nWrote {OUT_JSON}")
+
+# ── DEDUP SANITY CHECKS ──────────────────────────────────────────────────────
+# Big chains (Food Lion, Total Wine, BevMo, etc.) often have many stores in the
+# same state. We want to confirm that any 'new this week' store and any 'stale
+# Red' store within the same chain+state are GENUINELY different physical
+# locations, not the same store double-counted via name-format dupes.
+print("\n" + "=" * 80)
+print("DEDUP SANITY CHECKS")
+print("=" * 80)
+
+# Identify accounts new-this-week by comparing latest snapshot to the second-latest
+if len(dep_tabs) >= 2:
+    prior_clean = load_snapshot(dep_tabs[-2])
+    prior_clean['IsEx'] = prior_clean.apply(is_excluded, axis=1)
+    prior_clean = prior_clean[~prior_clean['IsEx']]
+    prior_keys = set(prior_clean.apply(key, axis=1))
+    clean['Key'] = clean.apply(key, axis=1)
+    clean['IsNewThisWeek'] = ~clean['Key'].isin(prior_keys)
+else:
+    clean['IsNewThisWeek'] = False
+
+# Extract numeric store ID from account name (handles 'FOOD LION 1330',
+# '#1330', 'TOTAL WINE & MORE #1503-MILFORD', etc.)
+def extract_store_id(name):
+    s = str(name).upper().replace('#', '').strip()
+    m = re.search(r'\b(\d{2,5})\b(?!\s*\d)', s)
+    return m.group(1) if m else None
+
+clean['StoreID'] = clean['RetailAcct'].apply(extract_store_id)
+
+# Attach status from results
+results_lookup = {(p['account'].strip().upper(),
+                   p['city'].strip().upper(),
+                   p['state'].strip().upper()): p['status'] for p in results}
+clean['Status'] = clean['Key'].map(lambda k: results_lookup.get(k))
+
+# Check 1: within each chain+state, are there duplicate store IDs?
+print("\nCheck 1 — Duplicate store IDs within same chain+state:")
+dup_problems = 0
+for (chn, st), grp in clean[clean['StoreID'].notna()].groupby(['Chain', 'State']):
+    id_counts = grp['StoreID'].value_counts()
+    dupes = id_counts[id_counts > 1]
+    for sid, cnt in dupes.items():
+        rows = grp[grp['StoreID'] == sid]
+        accts = sorted(set(rows['RetailAcct'].astype(str)))
+        if len(accts) > 1:  # different formats of same store ID
+            dup_problems += 1
+            print(f"  [WARN] {chn} {st} store ID {sid} appears {cnt}x with different names: {accts}")
+if dup_problems == 0:
+    print("  [OK] No duplicate store IDs within any chain+state.")
+
+# Check 2: within each chain+state, do new-this-week store IDs overlap with stale Red store IDs?
+print("\nCheck 2 — Same store ID flagged BOTH new-this-week AND stale (Red):")
+overlap_problems = 0
+for (chn, st), grp in clean[clean['StoreID'].notna()].groupby(['Chain', 'State']):
+    new_ids = set(grp.loc[grp['IsNewThisWeek'], 'StoreID'].dropna())
+    red_ids = set(grp.loc[grp['Status'] == 'Red', 'StoreID'].dropna())
+    overlap = new_ids & red_ids
+    if overlap:
+        overlap_problems += 1
+        print(f"  [WARN] {chn} {st}: store IDs in BOTH new and Red: {sorted(overlap)}")
+if overlap_problems == 0:
+    print("  [OK] No store ID overlap between new-this-week and stale buckets.")
+
+# Check 3: for the biggest chains (>=10 stores in any state), print a chain-state summary
+print("\nCheck 3 — Big-chain summary (chains with 10+ stores in a single state):")
+big_groups = clean.groupby(['Chain', 'State']).size().reset_index(name='n')
+big_groups = big_groups[big_groups['n'] >= 10].sort_values('n', ascending=False)
+for _, row in big_groups.iterrows():
+    grp = clean[(clean['Chain'] == row['Chain']) & (clean['State'] == row['State'])]
+    n_new = int(grp['IsNewThisWeek'].sum())
+    n_red = int((grp['Status'] == 'Red').sum())
+    n_yel = int((grp['Status'] == 'Yellow').sum())
+    n_grn = int((grp['Status'] == 'Green').sum())
+    n_ids = grp['StoreID'].notna().sum()
+    n_unique_ids = grp['StoreID'].dropna().nunique()
+    note = ""
+    if n_ids != n_unique_ids:
+        note = f"  [WARN] {n_ids - n_unique_ids} duplicate store ID(s)"
+    print(f"  {row['Chain']!s:<28} {row['State']}: {int(row['n'])} total · "
+          f"new={n_new} · Red={n_red} · Yellow={n_yel} · Green={n_grn} · "
+          f"unique_store_ids={n_unique_ids}/{n_ids}{note}")
