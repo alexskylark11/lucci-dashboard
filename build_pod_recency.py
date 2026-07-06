@@ -71,6 +71,11 @@ def load_snapshot(sheet):
 
 # Latest snapshot defines the universe of clean accounts.
 latest = load_snapshot(dep_tabs[-1])
+# Coerce monthly columns for the latest snapshot so we can copy them into results
+_LATEST_MONTHS = ['Nov','Dec','Jan','Feb','Mar','Apr','May','Jun']
+for _m in _LATEST_MONTHS:
+    if f'{_m}_Cases' in latest.columns:
+        latest[f'{_m}_Cases'] = pd.to_numeric(latest[f'{_m}_Cases'], errors='coerce').fillna(0)
 def is_excluded(r):
     text = f"{r['Chain']} {r['RetailAcct']}"
     acct_clean = str(r['RetailAcct']).strip().upper()
@@ -130,7 +135,7 @@ for _, r in clean.iterrows():
         status = "Yellow"
     else:
         status = "Red"
-    results.append({
+    row = {
         "account": str(r['RetailAcct']),
         "city": str(r['City']),
         "state": str(r['State']),
@@ -141,7 +146,11 @@ for _, r in clean.iterrows():
         "last_order_date": last_str,
         "days_since": int(days),
         "status": status,
-    })
+    }
+    for m in _LATEST_MONTHS:
+        col = f'{m}_Cases'
+        row[m.lower()] = round(float(r[col]), 2) if col in r.index else 0
+    results.append(row)
 
 # Sort: Red first, then Yellow, then Green; within each by days desc
 status_order = {"Red": 0, "Yellow": 1, "Green": 2}

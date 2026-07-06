@@ -729,6 +729,16 @@ state_top_accounts = pd.DataFrame([
     {"State": "NJ", "Account": "Wine.com", "Premise": "Off", "YTD Cases": 9.00, "YTD PODs": 1, "Mar Cases": 0, "Apr Cases": 0, "May Cases": 0, "Jun Cases": 5.00},
     {"State": "NJ", "Account": "ShopRite Wines & Spirits", "Premise": "Off", "YTD Cases": 6.00, "YTD PODs": 4, "Mar Cases": 0, "Apr Cases": 0, "May Cases": 3.00, "Jun Cases": 0},
     {"State": "NJ", "Account": "Canals Liquor", "Premise": "Off", "YTD Cases": 3.00, "YTD PODs": 2, "Mar Cases": 0, "Apr Cases": 0, "May Cases": 1.00, "Jun Cases": 0},
+    # IL
+    {"State": "IL", "Account": "Binny's Beverage Depot", "Premise": "Off", "YTD Cases": 102.83, "YTD PODs": 44, "Mar Cases": 8.40, "Apr Cases": 14.16, "May Cases": 29.00, "Jun Cases": 17.00},
+    {"State": "IL", "Account": "Eataly (Brew Pub, Chicago)", "Premise": "On", "YTD Cases": 75.00, "YTD PODs": 1, "Mar Cases": 15.00, "Apr Cases": 20.00, "May Cases": 15.00, "Jun Cases": 8.00},
+    {"State": "IL", "Account": "VIN Chicago", "Premise": "Off", "YTD Cases": 20.16, "YTD PODs": 2, "Mar Cases": 20.00, "Apr Cases": 0, "May Cases": 0, "Jun Cases": 0},
+    {"State": "IL", "Account": "Midtown Athletic Club", "Premise": "On", "YTD Cases": 4.33, "YTD PODs": 1, "Mar Cases": 0, "Apr Cases": 0, "May Cases": 0, "Jun Cases": 4.33},
+    {"State": "IL", "Account": "Heinen's", "Premise": "Off", "YTD Cases": 3.00, "YTD PODs": 1, "Mar Cases": 1.00, "Apr Cases": 1.00, "May Cases": 0, "Jun Cases": 1.00},
+    {"State": "IL", "Account": "Go Grocer", "Premise": "On", "YTD Cases": 2.00, "YTD PODs": 1, "Mar Cases": 0, "Apr Cases": 0, "May Cases": 1.00, "Jun Cases": 0},
+    {"State": "IL", "Account": "ClubProcure", "Premise": "On", "YTD Cases": 1.17, "YTD PODs": 2, "Mar Cases": 0, "Apr Cases": 0, "May Cases": 0, "Jun Cases": 0.08},
+    {"State": "IL", "Account": "Garfield's Beverage Warehouse", "Premise": "Off", "YTD Cases": 1.00, "YTD PODs": 1, "Mar Cases": 0, "Apr Cases": 0, "May Cases": 0, "Jun Cases": 0},
+    {"State": "IL", "Account": "South Loop Market", "Premise": "Off", "YTD Cases": 1.00, "YTD PODs": 1, "Mar Cases": 0, "Apr Cases": 0, "May Cases": 0, "Jun Cases": 1.00},
 ])
 
 # Top 10 Restaurants/Bars (clean — samples removed) from 06.26.26 tab
@@ -1150,11 +1160,11 @@ elif active_tab == "Depletions":
     # ── State Drill-Down: Top accounts within key 5 states ──
     st.markdown("<br>", unsafe_allow_html=True)
     section_title("Top Accounts by Key State")
-    st.caption(f"Top accounts within CA, TX, FL, NY, NJ — sorted by YTD cases · as of {DEPLETION_AS_OF} · Apr is full month · Samples excluded")
+    st.caption(f"Top accounts within the top 6 states by combined depletions · sorted by YTD cases · as of {DEPLETION_AS_OF} · Samples excluded")
 
     drill_state = st.radio(
         "Drill-down state",
-        ["CA", "TX", "FL", "NY", "NJ"],
+        ["CA", "NY", "NJ", "FL", "IL", "TX"],
         horizontal=True,
         key="state_drill",
         label_visibility="collapsed",
@@ -1333,6 +1343,112 @@ elif active_tab == "Depletions":
               .format({"YTD Cases": "{:,.2f}", "Days Since": "{:,}"})
               .hide(axis="index"))
     st.dataframe(styled, use_container_width=True, height=600)
+
+    # ── ACCOUNT EXPLORER — full account-level performance with YTD + monthly rollups ──
+    st.markdown("<br>", unsafe_allow_html=True)
+    section_title("Account Explorer — Search by name, premise, type, state")
+    st.caption(
+        f"All {len(pod_recency_df):,} active accounts (samples excluded) with YTD cases and full monthly rollup. "
+        f"Filter by any combination below."
+    )
+
+    ae_states = sorted(pod_recency_df["state"].unique().tolist())
+    ae_channels = sorted(pod_recency_df["channel"].unique().tolist())
+    ae_premises = sorted(pod_recency_df["premise"].unique().tolist())
+
+    aef_1, aef_2 = st.columns([2, 1])
+    with aef_1:
+        ae_search = st.text_input(
+            "Search account / chain / city",
+            key="ae_search",
+            placeholder="e.g. Eataly, Wine.com, Chicago, Buona Forchetta",
+        )
+    with aef_2:
+        ae_sort = st.selectbox(
+            "Sort by",
+            ["YTD Cases (high→low)", "YTD Cases (low→high)", "Days Since Last Order", "Account (A→Z)", "State"],
+            key="ae_sort",
+        )
+
+    aef_3, aef_4, aef_5 = st.columns(3)
+    with aef_3:
+        ae_prem = st.multiselect("Premise", ae_premises, default=ae_premises, key="ae_prem")
+    with aef_4:
+        ae_chn = st.multiselect("Trade Channel", ae_channels, default=ae_channels, key="ae_chn")
+    with aef_5:
+        ae_state = st.multiselect("State", ae_states, default=ae_states, key="ae_state")
+
+    ae_filt = pod_recency_df.copy()
+    if ae_prem:
+        ae_filt = ae_filt[ae_filt["premise"].isin(ae_prem)]
+    if ae_chn:
+        ae_filt = ae_filt[ae_filt["channel"].isin(ae_chn)]
+    if ae_state:
+        ae_filt = ae_filt[ae_filt["state"].isin(ae_state)]
+    if ae_search:
+        s = ae_search.strip().lower()
+        mask = (
+            ae_filt["account"].astype(str).str.lower().str.contains(s, na=False) |
+            ae_filt["chain"].astype(str).str.lower().str.contains(s, na=False) |
+            ae_filt["city"].astype(str).str.lower().str.contains(s, na=False)
+        )
+        ae_filt = ae_filt[mask]
+
+    # Summary metrics for the current filter
+    ae_cases = ae_filt["ytd_cases"].sum()
+    ae_count = len(ae_filt)
+    ae_states_filt = ae_filt["state"].nunique()
+    aek1, aek2, aek3, aek4 = st.columns(4)
+    with aek1:
+        st.markdown(kpi("Accounts (filtered)", f"{ae_count:,}", f"of {len(pod_recency_df):,} total", dark=True), unsafe_allow_html=True)
+    with aek2:
+        st.markdown(kpi("Filtered YTD Cases", f"{ae_cases:,.2f}", f"Across {ae_states_filt} state(s)"), unsafe_allow_html=True)
+    with aek3:
+        active = int((ae_filt["status"] == "Green").sum())
+        st.markdown(kpi("🟢 Active (≤60d)", f"{active:,}", f"{round(active/max(ae_count,1)*100,1)}% of filtered"), unsafe_allow_html=True)
+    with aek4:
+        stale = int((ae_filt["status"] == "Red").sum())
+        st.markdown(kpi("🔴 Stale (90+d)", f"{stale:,}", f"{round(stale/max(ae_count,1)*100,1)}% of filtered"), unsafe_allow_html=True)
+
+    # Sorting
+    sort_map = {
+        "YTD Cases (high→low)": ("ytd_cases", False),
+        "YTD Cases (low→high)": ("ytd_cases", True),
+        "Days Since Last Order": ("days_since", False),
+        "Account (A→Z)": ("account", True),
+        "State": ("state", True),
+    }
+    sc, sasc = sort_map[ae_sort]
+    if sc == "state":
+        ae_filt = ae_filt.sort_values(["state", "ytd_cases"], ascending=[True, False])
+    else:
+        ae_filt = ae_filt.sort_values(sc, ascending=sasc)
+
+    ae_display = ae_filt[[
+        "account", "city", "state", "premise", "chain", "channel",
+        "ytd_cases", "nov", "dec", "jan", "feb", "mar", "apr", "may", "jun",
+        "last_order_date", "days_since", "status",
+    ]].copy()
+    ae_display.columns = [
+        "Account", "City", "State", "Premise", "Chain", "Channel",
+        "YTD", "Nov", "Dec", "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+        "Last Order", "Days", "Status",
+    ]
+
+    def _ae_row_color(row):
+        s = row["Status"]
+        if s == "Red":
+            return ["background-color: #fee2e2; color: #7f1d1d"] * len(row)
+        if s == "Yellow":
+            return ["background-color: #fef3c7; color: #78350f"] * len(row)
+        return ["background-color: #dcfce7; color: #14532d"] * len(row)
+
+    month_fmt = {m: (lambda v: f"{v:,.2f}" if v > 0 else "—") for m in ["Nov","Dec","Jan","Feb","Mar","Apr","May","Jun"]}
+    ae_styled = (ae_display.style
+                 .apply(_ae_row_color, axis=1)
+                 .format({"YTD": "{:,.2f}", "Days": "{:,}", **month_fmt})
+                 .hide(axis="index"))
+    st.dataframe(ae_styled, use_container_width=True, height=650)
 
 
 # ══════════════════════════════════════════════════════════════════════════════
