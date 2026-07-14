@@ -10,8 +10,8 @@ import re
 import json
 from datetime import datetime
 
-PATH = r'C:\Users\AlexBerger\Downloads\Lucci_Product Locator File + Depletion report (13).xlsx'
-AS_OF = datetime(2026, 6, 26)
+PATH = r'C:\Users\AlexBerger\Downloads\Lucci_Product Locator File + Depletion report (14).xlsx'
+AS_OF = datetime(2026, 7, 10)
 OUT_JSON = r'C:\Users\AlexBerger\OneDrive - skylarkgrowth.com\Desktop\HRL Ratings System\lucci-dashboard\pod_recency.json'
 
 SAMPLE_PATTERN = re.compile(
@@ -24,8 +24,17 @@ SAMPLE_PATTERN = re.compile(
 )
 PERSON_NAME_PATTERN = re.compile(
     r'^[A-Z][a-z]+\s+[A-Z][a-z]+$|^[A-Z]\.\s*[A-Z][a-z]+|'
-    r'^[A-Z][a-z]+\s+[A-Z]\.|^[A-Z][a-z]+,\s+[A-Z][a-z]+$',
+    r'^[A-Z][a-z]+\s+[A-Z]\.|^[A-Z][a-z]+,\s+[A-Z][a-z]+$|'
+    # Firstname McSomething or O'Something (mixed-case surname)
+    r'^[A-Z][a-z]+\s+[A-Z][a-zA-Z]+$|'
+    # Firstname Middle Lastname (three Title Case tokens)
+    r'^[A-Z][a-z]+\s+[A-Z][a-z]*\s+[A-Z][a-zA-Z]+$|'
+    # ALL-CAPS two-token names of length >= 4 each (LASTNAME  FIRSTNAME)
+    r'^[A-Z]{4,}\s{1,4}[A-Z]{3,}$',
 )
+# Trade channels that are effectively sample / rep allocations, not real
+# retail distribution points
+NON_RETAIL_CHANNELS = {'NON-RETAIL'}
 # Known sales-rep allocations that the regex can't safely detect
 HARDCODED_EXCLUDES = {"KRATZKE  ROBERT", "KRATZKE ROBERT"}
 
@@ -38,50 +47,92 @@ def parse_date(sheet):
         return datetime(2000 + int(yy), int(mm), int(dd))
     return None
 
-dep_tabs = [s for s in xls.sheet_names if s.startswith('Depletions ') and parse_date(s)]
+# Catch both plural 'Depletions ' and singular 'Depletion ' tabs (the newer
+# July snapshots switched to the singular form).
+dep_tabs = [s for s in xls.sheet_names
+            if re.match(r'Depletions?\s+\d{2}\.\d{2}\.\d{2}$', s) and parse_date(s)]
 dep_tabs.sort(key=parse_date)
 print(f"Found {len(dep_tabs)} weekly snapshots:")
 for t in dep_tabs:
     print(f"  {t} -> {parse_date(t).date()}")
 
+def _find_header_row(df):
+    """Return (header_row_index, first_data_col) by scanning rows 1-3 for
+    Ethica's 'On/Off Premise' column-header signature."""
+    for i in [1, 2]:
+        row_vals = [str(v).lower().strip() for v in df.iloc[i].tolist()]
+        if row_vals and 'premise' in row_vals[0]:
+            for j, v in enumerate(row_vals):
+                if '9 liter' in v:
+                    return i, j
+    return None, None
+
 def load_snapshot(sheet):
+    """Load a snapshot, auto-detecting the layout Ethica used in this tab.
+    Different tabs have different column counts AND different row structures
+    (07.03 vs 07.10 both have 33 cols but different entity col counts;
+    old files have headers on row 1 with data on row 2; new files have
+    date-descriptions on row 1, headers on row 2, data on row 3)."""
     df = pd.read_excel(xls, sheet, header=None)
     n = df.shape[1]
-    months_by_width = {
-        24: ['Nov','Dec','Jan','Feb','Mar'],
-        26: ['Nov','Dec','Jan','Feb','Mar','Apr'],
-        28: ['Nov','Dec','Jan','Feb','Mar','Apr','May'],
-        30: ['Nov','Dec','Jan','Feb','Mar','Apr','May','Jun'],
-    }
-    if n not in months_by_width:
-        print(f"  [WARN] {sheet} has unexpected width {n}, skipping")
+    header_row_idx, first_data_col = _find_header_row(df)
+    if header_row_idx is None:
+        print(f"  [WARN] {sheet}: could not locate header row, skipping")
         return None
-    months = months_by_width[n]
-    cols = ['Premise','State','TradeChannel','Chain','RetailAcct','City']
-    for m in months:
-        cols += [f'{m}_Cases', f'{m}_PODs']
-    cols += ['YTD_Cases','YTD_PODs','PY_Cases','PY_PODs',
-             'Diff_Cases','Diff_PODs','Pct_Cases','Pct_PODs']
-    df.columns = cols
-    data = df.iloc[2:].copy()
-    data['YTD_Cases'] = pd.to_numeric(data['YTD_Cases'], errors='coerce').fillna(0)
-    data = data[(data['Chain']!='Total') & (data['State']!='Total') &
-                (data['TradeChannel']!='Total') & (data['RetailAcct']!='Total')]
-    return data
+    data_start_row = header_row_idx + 1
+
+    # Entity col count = first_data_col
+    if first_data_col == 7:
+        entity_cols = ['Premise','State','TradeChannel','Chain','RetailAcct','Premise2','City']
+    elif first_data_col == 6:
+        entity_cols = ['Premise','State','TradeChannel','Chain','RetailAcct','City']
+    else:
+        print(f"  [WARN] {sheet}: unexpected entity col count {first_data_col}, skipping")
+        return None
+
+    # Compute how many month pairs and trailing filler columns
+    remaining = n - first_data_col
+    # Summary block is 8 cols (YTD_C, YTD_P, PY_C, PY_P, Diff_C, Diff_P, Pct_C, Pct_P)
+    # Trailing nan column varies; if the math works with 0 trailing, use that
+    for trailing in (0, 1):
+        month_cols = remaining - 8 - trailing
+        if month_cols >= 2 and month_cols % 2 == 0:
+            n_months = month_cols // 2
+            all_months = ['Nov','Dec','Jan','Feb','Mar','Apr','May','Jun','Jul']
+            if 1 <= n_months <= len(all_months):
+                months = all_months[:n_months]
+                cols = list(entity_cols)
+                for m in months:
+                    cols += [f'{m}_Cases', f'{m}_PODs']
+                cols += ['YTD_Cases','YTD_PODs','PY_Cases','PY_PODs',
+                         'Diff_Cases','Diff_PODs','Pct_Cases','Pct_PODs']
+                if trailing:
+                    cols.append('_trailing')
+                if len(cols) == n:
+                    df.columns = cols
+                    data = df.iloc[data_start_row:].copy()
+                    data['YTD_Cases'] = pd.to_numeric(data['YTD_Cases'], errors='coerce').fillna(0)
+                    data = data[(data['Chain']!='Total') & (data['State']!='Total') &
+                                (data['TradeChannel']!='Total') & (data['RetailAcct']!='Total')]
+                    return data
+    print(f"  [WARN] {sheet}: could not fit layout to width {n}, skipping")
+    return None
 
 # Latest snapshot defines the universe of clean accounts.
 latest = load_snapshot(dep_tabs[-1])
 # Coerce monthly columns for the latest snapshot so we can copy them into results
-_LATEST_MONTHS = ['Nov','Dec','Jan','Feb','Mar','Apr','May','Jun']
+_LATEST_MONTHS = ['Nov','Dec','Jan','Feb','Mar','Apr','May','Jun','Jul']
 for _m in _LATEST_MONTHS:
     if f'{_m}_Cases' in latest.columns:
         latest[f'{_m}_Cases'] = pd.to_numeric(latest[f'{_m}_Cases'], errors='coerce').fillna(0)
 def is_excluded(r):
     text = f"{r['Chain']} {r['RetailAcct']}"
     acct_clean = str(r['RetailAcct']).strip().upper()
+    channel_clean = str(r['TradeChannel']).strip().upper()
     if SAMPLE_PATTERN.search(text): return True
     if PERSON_NAME_PATTERN.match(str(r['RetailAcct'])): return True
     if acct_clean in HARDCODED_EXCLUDES: return True
+    if channel_clean in NON_RETAIL_CHANNELS: return True
     if r['YTD_Cases'] < 0.083: return True
     return False
 latest['IsEx'] = latest.apply(is_excluded, axis=1)
