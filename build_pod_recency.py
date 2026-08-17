@@ -30,7 +30,7 @@ PERSON_NAME_PATTERN = re.compile(
     # Firstname Middle Lastname (three Title Case tokens)
     r'^[A-Z][a-z]+\s+[A-Z][a-z]*\s+[A-Z][a-zA-Z]+$|'
     # ALL-CAPS two-token names of length >= 4 each (LASTNAME  FIRSTNAME)
-    r'^[A-Z]{4,}\s{1,4}[A-Z]{3,}$',
+    r'^[A-Z]{4,}\s{2,4}[A-Z]{3,}$',
 )
 # Trade channels that are effectively sample / rep allocations, not real
 # retail distribution points
@@ -129,7 +129,7 @@ def is_excluded(r):
     text = f"{r['Chain']} {r['RetailAcct']}"
     acct_clean = str(r['RetailAcct']).strip().upper()
     channel_clean = str(r['TradeChannel']).strip().upper()
-    if SAMPLE_PATTERN.search(text): return True
+    if SAMPLE_PATTERN.search(text) and r['YTD_Cases'] <= 0.2: return True
     if PERSON_NAME_PATTERN.match(str(r['RetailAcct'])): return True
     if acct_clean in HARDCODED_EXCLUDES: return True
     if channel_clean in NON_RETAIL_CHANNELS: return True
