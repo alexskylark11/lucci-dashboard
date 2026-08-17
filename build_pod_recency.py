@@ -15,11 +15,17 @@ AS_OF = datetime(2026, 8, 14)
 OUT_JSON = r'C:\Users\AlexBerger\OneDrive - skylarkgrowth.com\Desktop\HRL Ratings System\lucci-dashboard\pod_recency.json'
 
 SAMPLE_PATTERN = re.compile(
-    r'SAMPLE|SAMPL\b|F\s*&\s*F\s*FINE\s*WINE|F&F\s*FINE\s*WINE|'
-    r'SGWS-HOUSE|SGWS-TEAM|TEAM\s*#|'
-    r'\bREP\s*#|\bSALES\s+REP|\bREP\s+\d|REPS?\b\s+\d{2,}|'
-    r'\bETHICA\s+WINES?\b|UNCLASSIFIED\s+ACCOUNT|BERKELEY\s+BOWL\s*-\s*WAREHOUSE|'
-    r'CORPORATE\s+WITHDRAW|WITHDRAWL|WITHDRAWAL',
+    # Individual rep allocations only — NOT distributor buckets
+    r'SAMPLE-[A-Z]+|SAMPLES-[A-Z]+|'                           # SAMPLE-JOEY AARVIG
+    r'SAMPLE\s+REP|SAMPLES\s+REP|'                              # SAMPLE REP ANDREA
+    r'SAMPLE\s+[A-Z]+\s+[A-Z]+|'                                # SAMPLE ADAM ZAFRAN
+    r'REP\s*#|SALES\s+REP|REP\s+\d+|'                           # REP #, SALES REP #61
+    r'TEAM\s*#|'                                                 # TEAM #033
+    r'[A-Z]+\s+SAMPLES?\b|'                                     # STEPHANIE HAWKE SAMPLES
+    r'[A-Z]+\s+SAMPLE\s+ACCOUNT|'                                # W JAHN SAMPLE ACCOUNT
+    r'\.[A-Z]+-SAMPLE|\.[A-Z]+\s+SAMPLE|'                        # V.CULOTTA-SAMPLE
+    r'CORPORATE\s+WITHDRAW|WITHDRAWL|WITHDRAWAL|'                # withdrawals
+    r'BERKELEY\s+BOWL\s*-\s*WAREHOUSE',                          # specific known non-retail
     re.IGNORECASE
 )
 PERSON_NAME_PATTERN = re.compile(
