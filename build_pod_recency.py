@@ -10,8 +10,8 @@ import re
 import json
 from datetime import datetime
 
-PATH = r'C:\Users\AlexBerger\Downloads\Lucci_Product Locator File + Depletion report (17).xlsx'
-AS_OF = datetime(2026, 7, 31)
+PATH = r'C:\Users\AlexBerger\Downloads\Lucci_Product Locator File + Depletion report (19).xlsx'
+AS_OF = datetime(2026, 8, 14)
 OUT_JSON = r'C:\Users\AlexBerger\OneDrive - skylarkgrowth.com\Desktop\HRL Ratings System\lucci-dashboard\pod_recency.json'
 
 SAMPLE_PATTERN = re.compile(
@@ -98,7 +98,7 @@ def load_snapshot(sheet):
         month_cols = remaining - 8 - trailing
         if month_cols >= 2 and month_cols % 2 == 0:
             n_months = month_cols // 2
-            all_months = ['Nov','Dec','Jan','Feb','Mar','Apr','May','Jun','Jul']
+            all_months = ['Nov','Dec','Jan','Feb','Mar','Apr','May','Jun','Jul','Aug']
             if 1 <= n_months <= len(all_months):
                 months = all_months[:n_months]
                 cols = list(entity_cols)
@@ -121,7 +121,7 @@ def load_snapshot(sheet):
 # Latest snapshot defines the universe of clean accounts.
 latest = load_snapshot(dep_tabs[-1])
 # Coerce monthly columns for the latest snapshot so we can copy them into results
-_LATEST_MONTHS = ['Nov','Dec','Jan','Feb','Mar','Apr','May','Jun','Jul']
+_LATEST_MONTHS = ['Nov','Dec','Jan','Feb','Mar','Apr','May','Jun','Jul','Aug']
 for _m in _LATEST_MONTHS:
     if f'{_m}_Cases' in latest.columns:
         latest[f'{_m}_Cases'] = pd.to_numeric(latest[f'{_m}_Cases'], errors='coerce').fillna(0)
@@ -133,7 +133,7 @@ def is_excluded(r):
     if PERSON_NAME_PATTERN.match(str(r['RetailAcct'])): return True
     if acct_clean in HARDCODED_EXCLUDES: return True
     if channel_clean in NON_RETAIL_CHANNELS: return True
-    if r['YTD_Cases'] < 0.083: return True
+    if r['YTD_Cases'] < 0.05: return True
     return False
 latest['IsEx'] = latest.apply(is_excluded, axis=1)
 clean = latest[~latest['IsEx']].copy()
