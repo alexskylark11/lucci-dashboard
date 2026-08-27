@@ -430,9 +430,12 @@ channel_detail = pd.DataFrame([
 ])
 
 # Same-period MTD comparison for partial months.
-# As of 07.31.26 snapshot, Jul is effectively a full month — comparing MoM to full Jun.
-# (Kept as empty scaffolding for future partial-month periods.)
-PRIOR_MTD = {}
+# For partial Aug (1-21), the comparison is vs Jul 1-21 (NOT full Jul).
+# Jul 1-21 actuals (interpolated from 07.17.26 and 07.24.26 snapshots, samples excluded):
+#   Total: 420.52 cases / 340 PODs · ON: 140.01 / 101 · OFF: 279.84 / 238
+PRIOR_MTD = {
+    "Aug": {"cases": 420.52, "pods": 340, "on": 140.01, "off": 279.84, "ref": "Jul 1-21"},
+}
 
 # Compute change vs last month. For partial months, use same-period MTD instead of full prior month.
 depl_vals = channel_detail["Total Depletions"].tolist()
@@ -948,7 +951,7 @@ st.markdown("---")
 # ══════════════════════════════════════════════════════════════════════════════
 # SHARED MONTH OPTIONS
 # ══════════════════════════════════════════════════════════════════════════════
-DEPL_MONTHS = ["Nov", "Dec", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul"]
+DEPL_MONTHS = ["Nov", "Dec", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug"]
 SHIP_MONTHS = ["Dec '25", "Jan '26", "Feb '26", "Mar '26", "Apr '26", "May '26"]
 ALL_STATES = sorted(set(on_states["State"].tolist() + off_states["State"].tolist()))
 
@@ -992,7 +995,7 @@ if active_tab == "Overview":
 
     # Channel breakdown table — redesigned with same-period MoM
     section_title("Channel Breakdown")
-    st.caption("ℹ️ Partial months compare to same-period prior month (e.g., Jul (through 7/31) vs Jun full month), NOT full prior month")
+    st.caption("ℹ️ Partial months compare to same-period prior month (e.g., Aug (1-21) vs Jul 1-21), NOT full prior month")
     cd_filt = channel_detail[channel_detail["Short"].isin(ov_months)].copy()
     cd_display = cd_filt[["Month", "Total Depletions", "Compare Ref", "Depl Change vs LM", "% Change vs LM", "On-Premise", "Off-Premise"]].copy()
 
@@ -1151,7 +1154,7 @@ elif active_tab == "Depletions":
 
     # Monthly detail table — same-period MoM for partial months
     section_title("Monthly Depletion Detail")
-    st.caption(f"Samples excluded · as of {DEPLETION_AS_OF} · ℹ️ Partial months compare to same-period prior month (e.g., Jul (through 7/31) vs Jun full month)")
+    st.caption(f"Samples excluded · as of {DEPLETION_AS_OF} · ℹ️ Partial months compare to same-period prior month (e.g., Aug (1-21) vs Jul 1-21)")
     cd_filt = channel_detail[channel_detail["Short"].isin(dp_months)].copy()
     cd_display = cd_filt[["Month", "Total Depletions", "Total PODs", "Compare Ref", "Depl Change vs LM", "% Change vs LM", "On-Premise", "Off-Premise"]].copy()
     st.markdown(styled_table(cd_display, fmt={
@@ -1251,7 +1254,7 @@ elif active_tab == "Depletions":
     # Trade channel breakdown (Ethica 05.01.26, samples / internal accounts removed)
     st.markdown("<br>", unsafe_allow_html=True)
     section_title("Off-Premise by Trade Channel")
-    st.caption(f"As of {DEPLETION_AS_OF} · Jun is full month, Jul through 7/31 · Samples / internal accounts excluded")
+    st.caption(f"As of {DEPLETION_AS_OF} · Jul is full month, Aug partial (1–21) · Samples / internal accounts excluded")
     _month_fmt = {m: (lambda v: f"{v:,.2f}" if v > 0 else "—") for m in ["Dec","Jan","Feb","Mar","Apr","May","Jun","Jul"]}
     st.markdown(styled_table(
         off_trade_channels[["Trade Channel", "YTD Cases", "Mar", "Apr", "May", "Jun", "Jul"]],
@@ -1259,7 +1262,7 @@ elif active_tab == "Depletions":
     ), unsafe_allow_html=True)
 
     section_title("On-Premise by Trade Channel")
-    st.caption(f"As of {DEPLETION_AS_OF} · Jun is full month, Jul through 7/31 · Samples / internal accounts excluded")
+    st.caption(f"As of {DEPLETION_AS_OF} · Jul is full month, Aug partial (1–21) · Samples / internal accounts excluded")
     st.markdown(styled_table(
         on_trade_channels[["Trade Channel", "YTD Cases", "Mar", "Apr", "May", "Jun", "Jul"]],
         fmt={"YTD Cases": lambda v: f"{v:,.2f}", **_month_fmt}
