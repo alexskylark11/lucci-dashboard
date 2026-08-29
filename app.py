@@ -310,6 +310,26 @@ def grouped_bar(df, x, y1, y2, name1, name2, color1=RED, color2=RED_PALE, horizo
     return fig
 
 
+def dual_axis_line(df, x, y1, y2, name1, name2, color1=RED, color2="#8B6347"):
+    """Dual-axis line chart: y1 on left axis, y2 on right axis."""
+    fig = go.Figure()
+    fig.add_trace(go.Scatter(x=df[x], y=df[y1], name=name1, mode="lines+markers",
+                             line=dict(color=color1, width=2.5), marker=dict(size=7)))
+    fig.add_trace(go.Scatter(x=df[x], y=df[y2], name=name2, mode="lines+markers",
+                             line=dict(color=color2, width=2.5, dash="dot"),
+                             marker=dict(size=7), yaxis="y2"))
+    layout = {**CHART_LAYOUT, "showlegend": True}
+    layout["legend"] = dict(orientation="h", yanchor="bottom", y=1.02, font=dict(size=11))
+    layout["yaxis"]  = dict(title=name1, showgrid=True, gridcolor=CREAM_DARK,
+                            showline=False, tickfont=dict(size=11))
+    layout["yaxis2"] = dict(title=name2, overlaying="y", side="right",
+                             showgrid=False, showline=False, tickfont=dict(size=11))
+    layout["height"] = 340
+    fig.update_layout(**layout)
+    fig.update_xaxes(showgrid=False, showline=False, tickfont=dict(size=11))
+    return fig
+
+
 def styled_table(df, columns=None, fmt=None):
     """Render a DataFrame as a styled HTML table with alternating row colors.
     fmt: dict of column -> format function for cell values.
@@ -856,6 +876,14 @@ pod_recency_df = pd.DataFrame(_recency["pods"])
 POD_RECENCY_AS_OF = _recency["as_of"]
 POD_RECENCY_EARLIEST_SNAPSHOT = _recency["earliest_snapshot"]
 
+# IRI weekly retail-scan data (Ethica-provided IRI panel)
+_iri_path = os.path.join(os.path.dirname(__file__), "iri.json")
+with open(_iri_path, "r", encoding="utf-8") as _f:
+    _iri = json.load(_f)
+iri_df = pd.DataFrame(_iri["weeks"])
+iri_df["week_ending"] = pd.to_datetime(iri_df["week_ending"])
+IRI_AS_OF = _iri["as_of"]
+
 # State-level WEEKLY ACTUALS (kept for reference but no longer used in main UI)
 # State Performance now uses same-period comparison: Apr 1-24 vs Mar 1-27 from on_states/off_states.
 state_weekly = pd.DataFrame([
@@ -939,7 +967,7 @@ top_accounts["% Growth"] = top_accounts.apply(
 # ══════════════════════════════════════════════════════════════════════════════
 active_tab = st.radio(
     "Dashboard",
-    ["Overview", "Shipments", "Depletions", "Gopuff", "ReserveBar"],
+    ["Overview", "Shipments", "Depletions", "Account Explorer", "Gopuff", "ReserveBar"],
     horizontal=True,
     label_visibility="collapsed",
 )
@@ -1145,6 +1173,17 @@ elif active_tab == "Depletions":
 
     st.markdown("<br>", unsafe_allow_html=True)
 
+    # ── Depletions + Active PODs trend (new line chart) ──
+    section_title("Depletions & Active PODs by Month")
+    st.caption("Monthly depletions (cases, left axis) alongside monthly active POD count (accounts that ordered that month, right axis).")
+    st.plotly_chart(
+        dual_axis_line(gm_filt, "Month", "Cases", "PODs",
+                        "Depletions (Cases)", "Active PODs"),
+        use_container_width=True,
+    )
+
+    st.markdown("<br>", unsafe_allow_html=True)
+
     section_title("On-Premise vs Off-Premise by Month")
     st.plotly_chart(
         grouped_bar(cm_filt, "Month", "On-Premise", "Off-Premise", "On-Premise", "Off-Premise"),
@@ -1197,14 +1236,18 @@ elif active_tab == "Depletions":
 
     sp_display = sp[["State", "Jun Cases", "Jul Cases", "Aug Cases", "YTD PODs", "New Jul PODs", "New Aug PODs"]].copy()
 
-    st.markdown(styled_table(sp_display, fmt={
-        "Jun Cases": lambda v: f"{v:,.2f}",
-        "Jul Cases": lambda v: f"{v:,.2f}",
-        "Aug Cases": lambda v: f"{v:,.2f}",
-        "YTD PODs": lambda v: f"{int(v)}",
-        "New Jul PODs": lambda v: f"+{int(v)}" if v > 0 else "0",
-        "New Aug PODs": lambda v: f"+{int(v)}" if v > 0 else "0",
-    }), unsafe_allow_html=True)
+    st.caption("Click any column header to sort · e.g. sort by YTD PODs to find top-POD states, or Aug Cases to spot top current-period movers")
+    st.dataframe(
+        sp_display, use_container_width=True, hide_index=True, height=520,
+        column_config={
+            "Jun Cases": st.column_config.NumberColumn("Jun Cases", format="%.2f"),
+            "Jul Cases": st.column_config.NumberColumn("Jul Cases", format="%.2f"),
+            "Aug Cases": st.column_config.NumberColumn("Aug MTD", format="%.2f"),
+            "YTD PODs":  st.column_config.NumberColumn("YTD PODs", format="%d"),
+            "New Jul PODs": st.column_config.NumberColumn("New Jul PODs", format="%d"),
+            "New Aug PODs": st.column_config.NumberColumn("New Aug PODs", format="%d"),
+        },
+    )
 
     # ── State Drill-Down: Top accounts within key 5 states ──
     st.markdown("<br>", unsafe_allow_html=True)
@@ -1224,48 +1267,86 @@ elif active_tab == "Depletions":
         lambda r: ((r["Jul Cases"] - r["Jun Cases"]) / r["Jun Cases"] * 100) if r["Jun Cases"] > 0 else (float("inf") if r["Jul Cases"] > 0 else 0),
         axis=1,
     )
-    st.markdown(styled_table(
+    st.dataframe(
         sda[["Account", "Premise", "YTD Cases", "YTD PODs", "Jun Cases", "Jul Cases", "Aug Cases"]],
-        fmt={
-            "YTD Cases": lambda v: f"{v:,.2f}",
-            "YTD PODs": lambda v: f"{int(v):,}",
-            "Jun Cases": lambda v: f"{v:,.2f}",
-            "Jul Cases": lambda v: f"{v:,.2f}",
-            "Aug Cases": lambda v: f"{v:,.2f}",
-        }
-    ), unsafe_allow_html=True)
+        use_container_width=True, hide_index=True, height=480,
+        column_config={
+            "YTD Cases": st.column_config.NumberColumn("YTD Cases", format="%.2f"),
+            "YTD PODs":  st.column_config.NumberColumn("YTD PODs", format="%d"),
+            "Jun Cases": st.column_config.NumberColumn("Jun Cases", format="%.2f"),
+            "Jul Cases": st.column_config.NumberColumn("Jul Cases", format="%.2f"),
+            "Aug Cases": st.column_config.NumberColumn("Aug MTD",   format="%.2f"),
+        },
+    )
 
     # ── Top 10 Restaurants / Bars ──
     st.markdown("<br>", unsafe_allow_html=True)
     section_title("Top 10 Restaurants & Bars by YTD Depletions")
     st.caption(f"On-premise restaurants, bars, and fine-dining accounts · sorted by YTD cases · as of {DEPLETION_AS_OF} · Samples excluded")
-    st.markdown(styled_table(
+    st.dataframe(
         top_restaurants_bars[["Rank", "Restaurant", "City", "State", "Chain", "Channel", "YTD Cases", "Jun", "Jul", "Aug"]],
-        fmt={
-            "Rank": lambda v: str(v),
-            "YTD Cases": lambda v: f"{v:,.2f}",
-            "Jun": lambda v: f"{v:,.2f}" if v > 0 else "—",
-            "Jul": lambda v: f"{v:,.2f}" if v > 0 else "—",
-            "Aug": lambda v: f"{v:,.2f}" if v > 0 else "—",
-        }
-    ), unsafe_allow_html=True)
+        use_container_width=True, hide_index=True, height=560,
+        column_config={
+            "Rank":      st.column_config.NumberColumn("Rank", format="%d"),
+            "YTD Cases": st.column_config.NumberColumn("YTD Cases", format="%.2f"),
+            "Jun":       st.column_config.NumberColumn("Jun", format="%.2f"),
+            "Jul":       st.column_config.NumberColumn("Jul", format="%.2f"),
+            "Aug":       st.column_config.NumberColumn("Aug MTD", format="%.2f"),
+        },
+    )
 
-    # Trade channel breakdown (Ethica 05.01.26, samples / internal accounts removed)
+    # Trade channel breakdown — Jan through current, with MTD + %vs Jul same-period
     st.markdown("<br>", unsafe_allow_html=True)
+
+    def _tc_with_mtd(df):
+        """Add 'Jul 1-28' (Jul scaled to same-period MTD as Aug) and '% vs Jul' columns."""
+        out = df.copy()
+        out["Jul 1-28"] = out["Jul"] * (28/31)
+        out["% vs Jul"] = out.apply(
+            lambda r: ((r["Aug"] - r["Jul 1-28"]) / r["Jul 1-28"] * 100) if r["Jul 1-28"] > 0 else 0,
+            axis=1,
+        )
+        return out
+
     section_title("Off-Premise by Trade Channel")
-    st.caption(f"As of {DEPLETION_AS_OF} · Jul is full month, Aug partial (1–21) · Samples / internal accounts excluded")
-    _month_fmt = {m: (lambda v: f"{v:,.2f}" if v > 0 else "—") for m in ["Dec","Jan","Feb","Mar","Apr","May","Jun","Jul"]}
-    st.markdown(styled_table(
-        off_trade_channels[["Trade Channel", "YTD Cases", "Mar", "Apr", "May", "Jun", "Jul"]],
-        fmt={"YTD Cases": lambda v: f"{v:,.2f}", **_month_fmt}
-    ), unsafe_allow_html=True)
+    st.caption(f"As of {DEPLETION_AS_OF} · Jan 2026 → Aug MTD · '% vs Jul' compares Aug 1-28 to Jul scaled to 28 days (same-period). Click any column to sort. Samples / internal excluded.")
+    tc_off = _tc_with_mtd(off_trade_channels)
+    st.dataframe(
+        tc_off[["Trade Channel", "YTD Cases", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "% vs Jul"]],
+        use_container_width=True, hide_index=True, height=360,
+        column_config={
+            "YTD Cases": st.column_config.NumberColumn("YTD Cases", format="%.2f"),
+            "Jan": st.column_config.NumberColumn("Jan", format="%.2f"),
+            "Feb": st.column_config.NumberColumn("Feb", format="%.2f"),
+            "Mar": st.column_config.NumberColumn("Mar", format="%.2f"),
+            "Apr": st.column_config.NumberColumn("Apr", format="%.2f"),
+            "May": st.column_config.NumberColumn("May", format="%.2f"),
+            "Jun": st.column_config.NumberColumn("Jun", format="%.2f"),
+            "Jul": st.column_config.NumberColumn("Jul", format="%.2f"),
+            "Aug": st.column_config.NumberColumn("Aug MTD", format="%.2f"),
+            "% vs Jul": st.column_config.NumberColumn("% vs Jul 1-28", format="%+.1f%%"),
+        },
+    )
 
     section_title("On-Premise by Trade Channel")
-    st.caption(f"As of {DEPLETION_AS_OF} · Jul is full month, Aug partial (1–21) · Samples / internal accounts excluded")
-    st.markdown(styled_table(
-        on_trade_channels[["Trade Channel", "YTD Cases", "Mar", "Apr", "May", "Jun", "Jul"]],
-        fmt={"YTD Cases": lambda v: f"{v:,.2f}", **_month_fmt}
-    ), unsafe_allow_html=True)
+    st.caption(f"As of {DEPLETION_AS_OF} · Jan 2026 → Aug MTD · '% vs Jul' compares Aug 1-28 to Jul scaled to 28 days (same-period). Click any column to sort. Samples / internal excluded.")
+    tc_on = _tc_with_mtd(on_trade_channels)
+    st.dataframe(
+        tc_on[["Trade Channel", "YTD Cases", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "% vs Jul"]],
+        use_container_width=True, hide_index=True, height=360,
+        column_config={
+            "YTD Cases": st.column_config.NumberColumn("YTD Cases", format="%.2f"),
+            "Jan": st.column_config.NumberColumn("Jan", format="%.2f"),
+            "Feb": st.column_config.NumberColumn("Feb", format="%.2f"),
+            "Mar": st.column_config.NumberColumn("Mar", format="%.2f"),
+            "Apr": st.column_config.NumberColumn("Apr", format="%.2f"),
+            "May": st.column_config.NumberColumn("May", format="%.2f"),
+            "Jun": st.column_config.NumberColumn("Jun", format="%.2f"),
+            "Jul": st.column_config.NumberColumn("Jul", format="%.2f"),
+            "Aug": st.column_config.NumberColumn("Aug MTD", format="%.2f"),
+            "% vs Jul": st.column_config.NumberColumn("% vs Jul 1-28", format="%+.1f%%"),
+        },
+    )
 
     # Top 15 accounts - toggleable (Overall / On / Off)
     st.markdown("<br>", unsafe_allow_html=True)
@@ -1378,31 +1459,91 @@ elif active_tab == "Depletions":
               .hide(axis="index"))
     st.dataframe(styled, use_container_width=True, height=600)
 
-    # ── ACCOUNT EXPLORER — full account-level performance with YTD + monthly rollups ──
+    # ── IRI RETAIL SCAN DATA — 12-week trend ──
     st.markdown("<br>", unsafe_allow_html=True)
+    section_title("IRI Retail Scan — Weekly Trend")
+    st.caption(
+        f"IRI panel data provided by Ethica · latest week ending {IRI_AS_OF} · "
+        f"Note: IRI's 'Stores Selling' is the scanned-panel store count, distinct from our full POD universe."
+    )
+
+    _iri_latest = iri_df.iloc[-1]
+    ir1, ir2, ir3, ir4, ir5 = st.columns(5)
+    with ir1:
+        st.markdown(kpi("Dollar Sales (Latest 52-wk)", f"${_iri_latest['dollar_sales']:,.0f}",
+                         f"Wk ending {_iri_latest['week_ending'].strftime('%m/%d/%y')}", dark=True), unsafe_allow_html=True)
+    with ir2:
+        st.markdown(kpi("Unit Sales", f"{int(_iri_latest['unit_sales']):,}",
+                         f"9L equiv: {int(_iri_latest['volume_sales']):,}"), unsafe_allow_html=True)
+    with ir3:
+        st.markdown(kpi("Stores Selling", f"{int(_iri_latest['stores_selling']):,}",
+                         f"{_iri_latest['cat_wtd_dist']:.2f}% category weighted"), unsafe_allow_html=True)
+    with ir4:
+        st.markdown(kpi("Avg Weekly $/Store", f"${_iri_latest['avg_wk_dollars_per_store']:.2f}",
+                         f"{_iri_latest['avg_wk_units_per_store']:.2f} units/store"), unsafe_allow_html=True)
+    with ir5:
+        st.markdown(kpi("Weeks in Distribution", f"{int(_iri_latest['weeks_in_dist'])}",
+                         f"Base price ${_iri_latest['wtd_avg_base_price']:.2f}"), unsafe_allow_html=True)
+
+    # Compact trend charts — dollar sales, stores selling, and velocity
+    ic1, ic2 = st.columns(2)
+    with ic1:
+        section_title("Dollar Sales · Stores Selling (weekly)")
+        st.plotly_chart(
+            dual_axis_line(iri_df, "week_ending", "dollar_sales", "stores_selling",
+                            "Dollar Sales ($)", "Stores Selling"),
+            use_container_width=True,
+        )
+    with ic2:
+        section_title("Category Weighted Distribution · Avg $/Store")
+        st.plotly_chart(
+            dual_axis_line(iri_df, "week_ending", "cat_wtd_dist", "avg_wk_dollars_per_store",
+                            "Cat Wtd Dist (%)", "Avg $/Store"),
+            use_container_width=True,
+        )
+
+    # Full weekly table
+    st.markdown("<br>", unsafe_allow_html=True)
+    section_title("Weekly IRI Detail")
+    iri_display = iri_df[[
+        "week_ending", "dollar_sales", "unit_sales", "volume_sales",
+        "stores_selling", "cat_wtd_dist",
+        "avg_wk_dollars_per_store", "avg_wk_units_per_store",
+        "wtd_avg_base_price", "wtd_avg_pct_price_reduction",
+        "pct_any_merch", "weeks_in_dist",
+    ]].copy()
+    iri_display.columns = [
+        "Week Ending", "$ Sales", "Units", "Volume (9L)",
+        "Stores", "Cat Wtd Dist %",
+        "Avg Wk $/Store", "Avg Wk Units/Store",
+        "Base $", "Avg % Price Reduction",
+        "% Volume on Merch", "Wks in Dist",
+    ]
+    iri_display["Week Ending"] = iri_display["Week Ending"].dt.strftime("%Y-%m-%d")
+    st.dataframe(iri_display, use_container_width=True, height=420, hide_index=True)
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+# ACCOUNT EXPLORER — full account-level performance with YTD + monthly rollups
+# ══════════════════════════════════════════════════════════════════════════════
+elif active_tab == "Account Explorer":
+    st.caption(f"📅 Depletion data as of **{DEPLETION_AS_OF}** · Samples / internal accounts excluded · Source: Ethica weekly snapshots")
+
     section_title("Account Explorer — Search by name, premise, type, state")
     st.caption(
-        f"All {len(pod_recency_df):,} active accounts (samples excluded) with YTD cases and full monthly rollup. "
-        f"Filter by any combination below."
+        f"All {len(pod_recency_df):,} active accounts (samples excluded) with YTD cases and full monthly rollup through {DEPLETION_AS_OF}. "
+        f"Filter by any combination below. Table is sortable by clicking column headers."
     )
 
     ae_states = sorted(pod_recency_df["state"].unique().tolist())
     ae_channels = sorted(pod_recency_df["channel"].unique().tolist())
     ae_premises = sorted(pod_recency_df["premise"].unique().tolist())
 
-    aef_1, aef_2 = st.columns([2, 1])
-    with aef_1:
-        ae_search = st.text_input(
-            "Search account / chain / city",
-            key="ae_search",
-            placeholder="e.g. Eataly, Wine.com, Chicago, Buona Forchetta",
-        )
-    with aef_2:
-        ae_sort = st.selectbox(
-            "Sort by",
-            ["YTD Cases (high→low)", "YTD Cases (low→high)", "Days Since Last Order", "Account (A→Z)", "State"],
-            key="ae_sort",
-        )
+    ae_search = st.text_input(
+        "Search account / chain / city",
+        key="ae_search",
+        placeholder="e.g. Eataly, Wine.com, Chicago, Buona Forchetta",
+    )
 
     aef_3, aef_4, aef_5 = st.columns(3)
     with aef_3:
@@ -1430,59 +1571,47 @@ elif active_tab == "Depletions":
 
     # Summary metrics for the current filter
     ae_cases = ae_filt["ytd_cases"].sum()
+    ae_aug_cases = ae_filt["aug"].sum() if "aug" in ae_filt.columns else 0
     ae_count = len(ae_filt)
     ae_states_filt = ae_filt["state"].nunique()
-    aek1, aek2, aek3, aek4 = st.columns(4)
+    aek1, aek2, aek3, aek4, aek5 = st.columns(5)
     with aek1:
         st.markdown(kpi("Accounts (filtered)", f"{ae_count:,}", f"of {len(pod_recency_df):,} total", dark=True), unsafe_allow_html=True)
     with aek2:
         st.markdown(kpi("Filtered YTD Cases", f"{ae_cases:,.2f}", f"Across {ae_states_filt} state(s)"), unsafe_allow_html=True)
     with aek3:
+        st.markdown(kpi("Aug MTD Cases", f"{ae_aug_cases:,.2f}", "Through 8/28"), unsafe_allow_html=True)
+    with aek4:
         active = int((ae_filt["status"] == "Green").sum())
         st.markdown(kpi("🟢 Active (≤60d)", f"{active:,}", f"{round(active/max(ae_count,1)*100,1)}% of filtered"), unsafe_allow_html=True)
-    with aek4:
+    with aek5:
         stale = int((ae_filt["status"] == "Red").sum())
         st.markdown(kpi("🔴 Stale (90+d)", f"{stale:,}", f"{round(stale/max(ae_count,1)*100,1)}% of filtered"), unsafe_allow_html=True)
 
-    # Sorting
-    sort_map = {
-        "YTD Cases (high→low)": ("ytd_cases", False),
-        "YTD Cases (low→high)": ("ytd_cases", True),
-        "Days Since Last Order": ("days_since", False),
-        "Account (A→Z)": ("account", True),
-        "State": ("state", True),
-    }
-    sc, sasc = sort_map[ae_sort]
-    if sc == "state":
-        ae_filt = ae_filt.sort_values(["state", "ytd_cases"], ascending=[True, False])
-    else:
-        ae_filt = ae_filt.sort_values(sc, ascending=sasc)
-
+    # Prep display DataFrame — sortable via st.dataframe native click-to-sort
     ae_display = ae_filt[[
         "account", "city", "state", "premise", "chain", "channel",
-        "ytd_cases", "nov", "dec", "jan", "feb", "mar", "apr", "may", "jun",
+        "ytd_cases", "jul", "aug",
         "last_order_date", "days_since", "status",
     ]].copy()
     ae_display.columns = [
         "Account", "City", "State", "Premise", "Chain", "Channel",
-        "YTD", "Nov", "Dec", "Jan", "Feb", "Mar", "Apr", "May", "Jun",
-        "Last Order", "Days", "Status",
+        "YTD Cases", "Jul", "Aug MTD",
+        "Last Order", "Days Since", "Status",
     ]
+    ae_display = ae_display.sort_values("YTD Cases", ascending=False)
 
-    def _ae_row_color(row):
-        s = row["Status"]
-        if s == "Red":
-            return ["background-color: #fee2e2; color: #7f1d1d"] * len(row)
-        if s == "Yellow":
-            return ["background-color: #fef3c7; color: #78350f"] * len(row)
-        return ["background-color: #dcfce7; color: #14532d"] * len(row)
-
-    month_fmt = {m: (lambda v: f"{v:,.2f}" if v > 0 else "—") for m in ["Nov","Dec","Jan","Feb","Mar","Apr","May","Jun"]}
-    ae_styled = (ae_display.style
-                 .apply(_ae_row_color, axis=1)
-                 .format({"YTD": "{:,.2f}", "Days": "{:,}", **month_fmt})
-                 .hide(axis="index"))
-    st.dataframe(ae_styled, use_container_width=True, height=650)
+    st.markdown(f"<p style='margin:4px 0; font-size:13px; color:#6b7280;'>Showing <strong>{len(ae_display):,}</strong> of {len(pod_recency_df):,} accounts · click column headers to sort</p>", unsafe_allow_html=True)
+    st.dataframe(
+        ae_display,
+        use_container_width=True, height=650, hide_index=True,
+        column_config={
+            "YTD Cases": st.column_config.NumberColumn("YTD Cases", format="%.2f"),
+            "Jul":       st.column_config.NumberColumn("Jul", format="%.2f"),
+            "Aug MTD":   st.column_config.NumberColumn("Aug MTD", format="%.2f"),
+            "Days Since": st.column_config.NumberColumn("Days Since", format="%d"),
+        },
+    )
 
 
 # ══════════════════════════════════════════════════════════════════════════════
