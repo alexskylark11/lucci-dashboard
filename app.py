@@ -1547,7 +1547,7 @@ elif active_tab == "Depletions":
     st.markdown("<br>", unsafe_allow_html=True)
     section_title("Sample Tracking — Lucci vs. Ethica-funded")
     st.caption(
-        f"Cases we exclude from depletion depletions as samples, categorized by who funded them. "
+        f"Cases we exclude from depletions as samples, categorized by who funded them. "
         f"Note: {SAMPLES_NOTE}"
     )
 
