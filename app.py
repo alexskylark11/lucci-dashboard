@@ -235,7 +235,7 @@ st.markdown(f"""
         </div>
         <div style="text-align:right;">
             <p style="margin:0; font-size:10px; color:rgba(255,255,255,0.55); letter-spacing:0.12em; text-transform:uppercase;">Data as of</p>
-            <p style="margin:0; font-size:13px; color:rgba(255,255,255,0.95); font-weight:700;">Depletions: 7/24/26 &middot; Gopuff: 4/25/26 &middot; ReserveBar: 4/25/26</p>
+            <p style="margin:0; font-size:13px; color:rgba(255,255,255,0.95); font-weight:700;">Depletions: 8/28/26 &middot; Gopuff: 4/25/26 &middot; ReserveBar: 4/25/26</p>
         </div>
     </div>
     <p class="lucci-period">Sales Intelligence Dashboard &middot; Samples / internal accounts excluded from depletions</p>
@@ -1083,7 +1083,7 @@ if active_tab == "Overview":
     last4 = velo.tail(4)["new_pods"].mean() if len(velo) >= 4 else velo["new_pods"].mean() if len(velo) else 0
     vs_avg = int(round(n_total - last4)) if last4 else 0
     st.caption(
-        f"📍 {NEW_POD_WEEK_RANGE} · samples excluded · accounts that first depleted Lucci during this week"
+        f"📍 Week of {DEPLETION_AS_OF} · samples excluded · accounts that first depleted Lucci during this week"
     )
 
     npk1, npk2, npk3, npk4 = st.columns(4)
@@ -1225,6 +1225,7 @@ elif active_tab == "Depletions":
         dp_states = st.multiselect("Filter by State", ALL_STATES, default=ALL_STATES, key="dp_states")
 
     cm_filt = combined_monthly[combined_monthly["Month"].isin(dp_months)]
+    gm_filt = grand_monthly[grand_monthly["Month"].isin(dp_months)]
     on_filt = on_states[on_states["State"].isin(dp_states)]
     off_filt = off_states[off_states["State"].isin(dp_states)]
 
@@ -1494,8 +1495,8 @@ elif active_tab == "Depletions":
     st.markdown(f"<p style='margin:8px 0; font-size:13px; color:#6b7280;'><strong>At-risk:</strong> {n_red + n_yel:,} PODs ({pct_atrisk}%) haven't ordered in 60+ days.</p>", unsafe_allow_html=True)
 
     # Filters
-    rec_states = sorted(pod_recency_df["state"].unique().tolist())
-    rec_premises = sorted(pod_recency_df["premise"].unique().tolist())
+    rec_states = sorted(v for v in pod_recency_df["state"].unique() if v and str(v) != "nan")
+    rec_premises = sorted(v for v in pod_recency_df["premise"].unique() if v and str(v) != "nan")
     rc1, rc2, rc3, rc4 = st.columns([1.2, 1.4, 1.4, 1.6])
     with rc1:
         rec_status = st.multiselect("Status", ["Red", "Yellow", "Green"], default=["Red", "Yellow"], key="rec_status")
@@ -1673,9 +1674,14 @@ elif active_tab == "Account Explorer":
         f"Filter by any combination below. Table is sortable by clicking column headers."
     )
 
-    ae_states = sorted(pod_recency_df["state"].unique().tolist())
-    ae_channels = sorted(pod_recency_df["channel"].unique().tolist())
-    ae_premises = sorted(pod_recency_df["premise"].unique().tolist())
+    # Clean 'nan' premise values (a small number of UNCLASSIFIED accounts have
+    # no premise assigned in Ethica's raw data — treat as OFF-premise for
+    # filter purposes rather than showing 'nan' as a chip)
+    _pod_df = pod_recency_df.copy()
+    _pod_df["premise"] = _pod_df["premise"].replace(["nan", "NaN"], "OFF")
+    ae_states = sorted(v for v in _pod_df["state"].unique() if v and str(v) != "nan")
+    ae_channels = sorted(v for v in _pod_df["channel"].unique() if v and str(v) != "nan")
+    ae_premises = sorted(v for v in _pod_df["premise"].unique() if v and str(v) != "nan")
 
     ae_search = st.text_input(
         "Search account / chain / city",
@@ -1691,7 +1697,7 @@ elif active_tab == "Account Explorer":
     with aef_5:
         ae_state = st.multiselect("State", ae_states, default=ae_states, key="ae_state")
 
-    ae_filt = pod_recency_df.copy()
+    ae_filt = _pod_df.copy()
     if ae_prem:
         ae_filt = ae_filt[ae_filt["premise"].isin(ae_prem)]
     if ae_chn:
