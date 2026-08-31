@@ -884,6 +884,23 @@ iri_df = pd.DataFrame(_iri["weeks"])
 iri_df["week_ending"] = pd.to_datetime(iri_df["week_ending"])
 IRI_AS_OF = _iri["as_of"]
 
+# Sample tracking (Lucci vs Ethica-funded sample activity)
+with open(os.path.join(os.path.dirname(__file__), "samples.json"), "r", encoding="utf-8") as _f:
+    _samples = json.load(_f)
+samples_by_bucket_df = pd.DataFrame(_samples["by_bucket"])
+samples_by_funded_df = pd.DataFrame(_samples["by_funded_by"])
+samples_top_accts_df = pd.DataFrame(_samples["top_accounts"])
+SAMPLES_NOTE = _samples["notes"]
+
+# New PODs velocity (weekly count + this-week breakdown by state/channel)
+with open(os.path.join(os.path.dirname(__file__), "new_pods_velocity.json"), "r", encoding="utf-8") as _f:
+    _velocity = json.load(_f)
+velocity_df = pd.DataFrame(_velocity["weekly"])
+velocity_df["week_ending"] = pd.to_datetime(velocity_df["week_ending"])
+new_pods_by_state_df = pd.DataFrame(_velocity["this_week_by_state"])
+new_pods_by_channel_on_df = pd.DataFrame(_velocity["this_week_by_channel_on"])
+new_pods_by_channel_off_df = pd.DataFrame(_velocity["this_week_by_channel_off"])
+
 # State-level WEEKLY ACTUALS (kept for reference but no longer used in main UI)
 # State Performance now uses same-period comparison: Apr 1-24 vs Mar 1-27 from on_states/off_states.
 state_weekly = pd.DataFrame([
@@ -1056,23 +1073,72 @@ if active_tab == "Overview":
     cs_on = new_pods_week.loc[new_pods_week["Premise"] == "On", "Cases"].sum()
     cs_off = new_pods_week.loc[new_pods_week["Premise"] == "Off", "Cases"].sum()
     state_count = new_pods_week["State"].nunique()
+    # 4-week rolling avg from velocity for context
+    velo = velocity_df.dropna(subset=["new_pods"])
+    last4 = velo.tail(4)["new_pods"].mean() if len(velo) >= 4 else velo["new_pods"].mean() if len(velo) else 0
+    vs_avg = int(round(n_total - last4)) if last4 else 0
     st.caption(
         f"📍 {NEW_POD_WEEK_RANGE} · samples excluded · accounts that first depleted Lucci during this week"
     )
 
     npk1, npk2, npk3, npk4 = st.columns(4)
     with npk1:
-        st.markdown(kpi("New PODs (Total)", f"{n_total}", f"Across {state_count} states", dark=True), unsafe_allow_html=True)
+        st.markdown(kpi("🆕 New PODs This Week", f"{n_total}",
+                         f"{'+' if vs_avg >= 0 else ''}{vs_avg} vs 4-wk avg ({last4:.0f})", dark=True), unsafe_allow_html=True)
     with npk2:
-        st.markdown(kpi("New PODs · On-Premise", f"{n_on}", f"{cs_on:.2f} cases"), unsafe_allow_html=True)
+        st.markdown(kpi("New · On-Premise", f"{n_on}", f"{cs_on:.2f} cases"), unsafe_allow_html=True)
     with npk3:
-        st.markdown(kpi("New PODs · Off-Premise", f"{n_off}", f"{cs_off:.2f} cases"), unsafe_allow_html=True)
+        st.markdown(kpi("New · Off-Premise", f"{n_off}", f"{cs_off:.2f} cases"), unsafe_allow_html=True)
     with npk4:
-        st.markdown(kpi("New-Acct Volume", f"{cs_total:.2f}", "Cases this week"), unsafe_allow_html=True)
+        st.markdown(kpi("States with new PODs", f"{state_count}", f"{cs_total:.2f} cases added"), unsafe_allow_html=True)
 
+    # (b) Weekly velocity trend line — last 12 weeks
+    st.markdown("<br>", unsafe_allow_html=True)
+    section_title("New PODs Velocity — Weekly (last 12 weeks)")
+    st.caption("Number of retail accounts that first appeared in each week's Ethica snapshot. Watching for deceleration.")
+    velo_recent = velo.tail(12).copy()
+    velo_recent["week"] = velo_recent["week_ending"].dt.strftime("%b %d")
+    st.plotly_chart(bar_chart(velo_recent, "week", "new_pods"), use_container_width=True)
+
+    # (c) This-week breakdown by state and channel
+    st.markdown("<br>", unsafe_allow_html=True)
+    npbc1, npbc2 = st.columns(2)
+    with npbc1:
+        section_title("New PODs · By State (this week)")
+        if len(new_pods_by_state_df):
+            st.dataframe(
+                new_pods_by_state_df.rename(columns={"state": "State", "count": "New PODs"}),
+                use_container_width=True, hide_index=True, height=340,
+            )
+        else:
+            st.caption("_No new PODs this week._")
+    with npbc2:
+        section_title("New PODs · By Channel (this week)")
+        st.markdown("**On-Premise**")
+        if len(new_pods_by_channel_on_df):
+            st.dataframe(
+                new_pods_by_channel_on_df.rename(columns={"channel": "Channel", "count": "New PODs"}),
+                use_container_width=True, hide_index=True, height=150,
+            )
+        else:
+            st.caption("_No new on-premise this week._")
+        st.markdown("**Off-Premise**")
+        if len(new_pods_by_channel_off_df):
+            st.dataframe(
+                new_pods_by_channel_off_df.rename(columns={"channel": "Channel", "count": "New PODs"}),
+                use_container_width=True, hide_index=True, height=150,
+            )
+        else:
+            st.caption("_No new off-premise this week._")
+
+    # Full list of new PODs this week
+    st.markdown("<br>", unsafe_allow_html=True)
+    section_title("New PODs This Week — Full List")
     npk_display = new_pods_week[["Account", "City", "State", "Premise", "Chain", "Channel", "Cases"]].copy()
-    npk_fmt = {"Cases": lambda v: f"{v:,.2f}"}
-    st.markdown(styled_table(npk_display, fmt=npk_fmt), unsafe_allow_html=True)
+    st.dataframe(
+        npk_display, use_container_width=True, hide_index=True, height=380,
+        column_config={"Cases": st.column_config.NumberColumn("Cases", format="%.2f")},
+    )
 
     # Highlight banner
     st.markdown(f"""
@@ -1092,7 +1158,7 @@ if active_tab == "Overview":
                 <p style="margin:4px 0 0; font-size:11px; color:rgba(255,255,255,0.6); letter-spacing:0.1em;">TOTAL PODS</p>
             </div>
             <div style="text-align:center;">
-                <p style="margin:0; font-size:30px; font-weight:900; color:white; line-height:1;">24</p>
+                <p style="margin:0; font-size:30px; font-weight:900; color:white; line-height:1;">28</p>
                 <p style="margin:4px 0 0; font-size:11px; color:rgba(255,255,255,0.6); letter-spacing:0.1em;">STATES</p>
             </div>
         </div>
@@ -1458,6 +1524,61 @@ elif active_tab == "Depletions":
               .format({"YTD Cases": "{:,.2f}", "Days Since": "{:,}"})
               .hide(axis="index"))
     st.dataframe(styled, use_container_width=True, height=600)
+
+    # ── SAMPLE TRACKING — Lucci-funded vs Ethica-funded ──
+    st.markdown("<br>", unsafe_allow_html=True)
+    section_title("Sample Tracking — Lucci vs. Ethica-funded")
+    st.caption(
+        f"Cases we exclude from depletion depletions as samples, categorized by who funded them. "
+        f"Note: {SAMPLES_NOTE}"
+    )
+
+    # 2-KPI summary — Lucci vs Ethica
+    lucci_row = samples_by_funded_df[samples_by_funded_df["funded_by"] == "Lucci"]
+    ethica_row = samples_by_funded_df[samples_by_funded_df["funded_by"] == "Ethica"]
+    lucci_ytd = float(lucci_row["ytd_cases"].iloc[0]) if len(lucci_row) else 0
+    ethica_ytd = float(ethica_row["ytd_cases"].iloc[0]) if len(ethica_row) else 0
+    lucci_ct = int(lucci_row["accounts"].iloc[0]) if len(lucci_row) else 0
+    ethica_ct = int(ethica_row["accounts"].iloc[0]) if len(ethica_row) else 0
+    smp1, smp2, smp3 = st.columns(3)
+    with smp1:
+        st.markdown(kpi("Lucci-funded samples", f"{lucci_ytd:,.2f}",
+                         f"{lucci_ct} accounts · marketing / activations", dark=True), unsafe_allow_html=True)
+    with smp2:
+        st.markdown(kpi("Ethica-funded samples", f"{ethica_ytd:,.2f}",
+                         f"{ethica_ct} accounts · supplier arm / distributor / reps"), unsafe_allow_html=True)
+    with smp3:
+        total = lucci_ytd + ethica_ytd
+        st.markdown(kpi("Total sample volume YTD", f"{total:,.2f}",
+                         f"~{(total / (total + 4574) * 100):.1f}% of gross depletions" if (total + 4574) > 0 else ""), unsafe_allow_html=True)
+
+    # Breakdown by bucket
+    st.markdown("<br>", unsafe_allow_html=True)
+    section_title("Sample Breakdown by Bucket")
+    st.caption("Click any column to sort. Each bucket represents a distinct sample-funding source.")
+    smpl_display = samples_by_bucket_df[["label", "funded_by", "accounts", "ytd_cases",
+                                          "jun", "jul", "aug"]].copy()
+    smpl_display.columns = ["Bucket", "Funded By", "Accounts", "YTD Cases", "Jun", "Jul", "Aug MTD"]
+    st.dataframe(
+        smpl_display, use_container_width=True, hide_index=True, height=280,
+        column_config={
+            "Accounts": st.column_config.NumberColumn("Accounts", format="%d"),
+            "YTD Cases": st.column_config.NumberColumn("YTD Cases", format="%.2f"),
+            "Jun": st.column_config.NumberColumn("Jun", format="%.2f"),
+            "Jul": st.column_config.NumberColumn("Jul", format="%.2f"),
+            "Aug MTD": st.column_config.NumberColumn("Aug MTD", format="%.2f"),
+        },
+    )
+
+    # Top sample accounts
+    st.markdown("<br>", unsafe_allow_html=True)
+    section_title("Top Sample-Tagged Accounts (YTD)")
+    top_smp = samples_top_accts_df[["account", "state", "trade_channel", "label", "funded_by", "ytd_cases"]].copy()
+    top_smp.columns = ["Account", "State", "Channel", "Bucket", "Funded By", "YTD Cases"]
+    st.dataframe(
+        top_smp, use_container_width=True, hide_index=True, height=380,
+        column_config={"YTD Cases": st.column_config.NumberColumn("YTD Cases", format="%.2f")},
+    )
 
     # ── IRI RETAIL SCAN DATA — 12-week trend ──
     st.markdown("<br>", unsafe_allow_html=True)

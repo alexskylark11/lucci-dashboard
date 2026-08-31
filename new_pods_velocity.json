@@ -1,0 +1,136 @@
+{
+  "as_of": "2026-08-28",
+  "weekly": [
+    {
+      "week_ending": "2026-07-03",
+      "total_pods": 1737,
+      "new_pods": null
+    },
+    {
+      "week_ending": "2026-07-10",
+      "total_pods": 1765,
+      "new_pods": 36
+    },
+    {
+      "week_ending": "2026-07-17",
+      "total_pods": 1798,
+      "new_pods": 39
+    },
+    {
+      "week_ending": "2026-07-24",
+      "total_pods": 1829,
+      "new_pods": 32
+    },
+    {
+      "week_ending": "2026-07-31",
+      "total_pods": 1866,
+      "new_pods": 37
+    },
+    {
+      "week_ending": "2026-08-07",
+      "total_pods": 1903,
+      "new_pods": 37
+    },
+    {
+      "week_ending": "2026-08-14",
+      "total_pods": 1917,
+      "new_pods": 14
+    },
+    {
+      "week_ending": "2026-08-21",
+      "total_pods": 1951,
+      "new_pods": 51
+    },
+    {
+      "week_ending": "2026-08-28",
+      "total_pods": 1996,
+      "new_pods": 48
+    }
+  ],
+  "this_week_by_state": [
+    {
+      "state": "VA",
+      "count": 12
+    },
+    {
+      "state": "NC",
+      "count": 10
+    },
+    {
+      "state": "MN",
+      "count": 8
+    },
+    {
+      "state": "CA",
+      "count": 5
+    },
+    {
+      "state": "NY",
+      "count": 4
+    },
+    {
+      "state": "NE",
+      "count": 3
+    },
+    {
+      "state": "WA",
+      "count": 2
+    },
+    {
+      "state": "IL",
+      "count": 1
+    },
+    {
+      "state": "TX",
+      "count": 1
+    },
+    {
+      "state": "MA",
+      "count": 1
+    },
+    {
+      "state": "NM",
+      "count": 1
+    }
+  ],
+  "this_week_by_channel_on": [
+    {
+      "channel": "RESTAURANT",
+      "count": 8
+    },
+    {
+      "channel": "HOTEL/ MOTEL",
+      "count": 2
+    },
+    {
+      "channel": "BAR/TAVERN",
+      "count": 2
+    },
+    {
+      "channel": "GOLF/ COUNTRY CLUB",
+      "count": 1
+    },
+    {
+      "channel": "OTHER ON PREMISE",
+      "count": 1
+    },
+    {
+      "channel": "RECREATION/ ENTERTAINMENT",
+      "count": 1
+    }
+  ],
+  "this_week_by_channel_off": [
+    {
+      "channel": "SUPERMARKET",
+      "count": 19
+    },
+    {
+      "channel": "LIQUOR/PACKAGE STORE",
+      "count": 13
+    },
+    {
+      "channel": "OTHER OFF PREMISE",
+      "count": 1
+    }
+  ]
+}
