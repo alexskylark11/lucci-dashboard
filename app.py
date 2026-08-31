@@ -1017,7 +1017,7 @@ if active_tab == "Overview":
     with c2:
         st.markdown(kpi("Total YTD PODs", "2,069", "28 active states", dark=True), unsafe_allow_html=True)
     with c3:
-        st.markdown(kpi("Cases Shipped YTD", "5,611", "Dec '25 - May '26"), unsafe_allow_html=True)
+        st.markdown(kpi("Cases Shipped", "5,611", "Dec '25 – May '26 · Jul/Aug pending"), unsafe_allow_html=True)
     with c4:
         st.markdown(kpi("Gopuff YTD Units", "169", f"29 locations · as of {GOPUFF_AS_OF}"), unsafe_allow_html=True)
     with c5:
@@ -1037,32 +1037,37 @@ if active_tab == "Overview":
             use_container_width=True,
         )
 
-    # Channel breakdown table — redesigned with same-period MoM
-    section_title("Channel Breakdown")
-    st.caption("ℹ️ Partial months compare to same-period prior month (e.g., Aug (1-28) vs Jul 1-28), NOT full prior month")
+    # Monthly detail — click column headers to sort
+    section_title("Monthly Detail")
+    st.caption("Partial months (Aug) compare to same-period prior month (Aug 1-28 vs Jul 1-28). Click any column to sort.")
     cd_filt = channel_detail[channel_detail["Short"].isin(ov_months)].copy()
     cd_display = cd_filt[["Month", "Total Depletions", "Compare Ref", "Depl Change vs LM", "% Change vs LM", "On-Premise", "Off-Premise"]].copy()
+    st.dataframe(
+        cd_display, use_container_width=True, hide_index=True, height=340,
+        column_config={
+            "Month":               st.column_config.TextColumn("Month"),
+            "Total Depletions":    st.column_config.NumberColumn("Total Depletions", format="%.2f"),
+            "Compare Ref":         st.column_config.TextColumn("Compared To"),
+            "Depl Change vs LM":   st.column_config.NumberColumn("Δ vs prior", format="%+.2f"),
+            "% Change vs LM":      st.column_config.NumberColumn("% Change", format="%+.1f%%"),
+            "On-Premise":          st.column_config.NumberColumn("On-Premise", format="%.2f"),
+            "Off-Premise":         st.column_config.NumberColumn("Off-Premise", format="%.2f"),
+        },
+    )
 
-    fmt_map = {
-        "Total Depletions": lambda v: f"{v:,.2f}",
-        "Compare Ref": lambda v: str(v) if v else "—",
-        "Depl Change vs LM": lambda v: change_fmt(v),
-        "% Change vs LM": lambda v: pct_change_fmt(v),
-        "On-Premise": lambda v: f"{v:,.2f}",
-        "Off-Premise": lambda v: f"{v:,.2f}",
-    }
-    st.markdown(styled_table(cd_display, fmt=fmt_map), unsafe_allow_html=True)
-
-    # Top 3 States
-    section_title("Top 3 States by Depletions")
+    # Top 3 States — sortable
+    section_title("Top States by Depletions")
+    st.caption("Top-performing states in the filtered period · click any column to sort.")
     top3_display = top3_states[["State", "Total Cases", "Total PODs", "On Cases", "Off Cases"]].copy()
-    top3_fmt = {
-        "Total Cases": lambda v: f"{v:,.2f}",
-        "Total PODs": lambda v: f"{int(v):,}",
-        "On Cases": lambda v: f"{v:,.2f}",
-        "Off Cases": lambda v: f"{v:,.2f}",
-    }
-    st.markdown(styled_table(top3_display, fmt=top3_fmt), unsafe_allow_html=True)
+    st.dataframe(
+        top3_display, use_container_width=True, hide_index=True, height=180,
+        column_config={
+            "Total Cases": st.column_config.NumberColumn("Total Cases", format="%.2f"),
+            "Total PODs":  st.column_config.NumberColumn("Total PODs", format="%d"),
+            "On Cases":    st.column_config.NumberColumn("On-Premise Cases", format="%.2f"),
+            "Off Cases":   st.column_config.NumberColumn("Off-Premise Cases", format="%.2f"),
+        },
+    )
 
     # ── NEW PODs THIS PAST WEEK ──────────────────────────────────────────────
     section_title("New PODs This Past Week")
@@ -1196,11 +1201,16 @@ elif active_tab == "Shipments":
     st.plotly_chart(fig, use_container_width=True)
 
     section_title("Monthly Shipment Detail")
+    st.caption("Click any column to sort.")
     sc_filt["Chg vs LM"] = sc_filt["Cases"].diff()
-    st.markdown(styled_table(sc_filt[["Month", "Cases", "Chg vs LM"]], fmt={
-        "Cases": lambda v: f"{int(v):,}",
-        "Chg vs LM": lambda v: "—" if pd.isna(v) else (f"+{int(v):,}" if v > 0 else f"{int(v):,}"),
-    }), unsafe_allow_html=True)
+    st.dataframe(
+        sc_filt[["Month", "Cases", "Chg vs LM"]],
+        use_container_width=True, hide_index=True, height=280,
+        column_config={
+            "Cases":     st.column_config.NumberColumn("Cases", format="%d"),
+            "Chg vs LM": st.column_config.NumberColumn("Δ vs prior", format="%+d"),
+        },
+    )
 
 
 # ══════════════════════════════════════════════════════════════════════════════
@@ -1258,24 +1268,28 @@ elif active_tab == "Depletions":
 
     # Monthly detail table — same-period MoM for partial months
     section_title("Monthly Depletion Detail")
-    st.caption(f"Samples excluded · as of {DEPLETION_AS_OF} · ℹ️ Partial months compare to same-period prior month (e.g., Aug (1-28) vs Jul 1-28)")
+    st.caption(f"Samples excluded · as of {DEPLETION_AS_OF} · Partial months (Aug) compare to same-period prior (Aug 1-28 vs Jul 1-28). Click any column to sort.")
     cd_filt = channel_detail[channel_detail["Short"].isin(dp_months)].copy()
     cd_display = cd_filt[["Month", "Total Depletions", "Total PODs", "Compare Ref", "Depl Change vs LM", "% Change vs LM", "On-Premise", "Off-Premise"]].copy()
-    st.markdown(styled_table(cd_display, fmt={
-        "Total Depletions": lambda v: f"{v:,.2f}",
-        "Total PODs": lambda v: f"{int(v):,}",
-        "Compare Ref": lambda v: str(v) if v else "—",
-        "Depl Change vs LM": lambda v: change_fmt(v),
-        "% Change vs LM": lambda v: pct_change_fmt(v),
-        "On-Premise": lambda v: f"{v:,.2f}",
-        "Off-Premise": lambda v: f"{v:,.2f}",
-    }), unsafe_allow_html=True)
+    st.dataframe(
+        cd_display, use_container_width=True, hide_index=True, height=380,
+        column_config={
+            "Month":               st.column_config.TextColumn("Month"),
+            "Total Depletions":    st.column_config.NumberColumn("Total Depletions", format="%.2f"),
+            "Total PODs":          st.column_config.NumberColumn("Active PODs", format="%d"),
+            "Compare Ref":         st.column_config.TextColumn("Compared To"),
+            "Depl Change vs LM":   st.column_config.NumberColumn("Δ vs prior", format="%+.2f"),
+            "% Change vs LM":      st.column_config.NumberColumn("% Change", format="%+.1f%%"),
+            "On-Premise":          st.column_config.NumberColumn("On-Premise", format="%.2f"),
+            "Off-Premise":         st.column_config.NumberColumn("Off-Premise", format="%.2f"),
+        },
+    )
 
     st.markdown("<br>", unsafe_allow_html=True)
 
     # ── State Performance — Jun / Jul / Aug with new PODs ──
     section_title("State Performance — Jun / Jul / Aug")
-    st.caption(f"As of {DEPLETION_AS_OF}. Jun & Jul are full months (apples-to-apples MoM); Aug is partial (1–21). PODs are cumulative: 'YTD PODs' = total unique distribution points active YTD (repeat purchases don't add a new POD). 'New Jul/Aug PODs' = retail accounts activated for the FIRST time that month. Samples / internal accounts excluded.")
+    st.caption(f"As of {DEPLETION_AS_OF}. Jun & Jul are full months; Aug is partial (1–28). 'YTD PODs' = unique accounts active YTD. 'New Jul/Aug PODs' = accounts that first depleted Lucci that month. Samples excluded.")
 
     state_view = st.radio(
         "View",
@@ -1440,14 +1454,17 @@ elif active_tab == "Depletions":
         use_container_width=True,
     )
 
-    acct_display = ta_filt[["Account", "Premise", "States", "YTD Cases", "YTD PODs", "Mar Cases", "Apr Cases", "May Cases"]].copy()
-    st.markdown(styled_table(acct_display, fmt={
-        "YTD Cases": lambda v: f"{v:,.2f}",
-        "YTD PODs": lambda v: f"{int(v):,}",
-        "Mar Cases": lambda v: f"{v:,.2f}",
-        "Apr Cases": lambda v: f"{v:,.2f}",
-        "May Cases": lambda v: f"{v:,.2f}",
-    }), unsafe_allow_html=True)
+    acct_display = ta_filt[["Account", "Premise", "States", "YTD Cases", "YTD PODs", "Jun Cases", "Jul Cases", "Aug Cases"]].copy()
+    st.dataframe(
+        acct_display, use_container_width=True, hide_index=True, height=560,
+        column_config={
+            "YTD Cases": st.column_config.NumberColumn("YTD Cases", format="%.2f"),
+            "YTD PODs":  st.column_config.NumberColumn("YTD PODs", format="%d"),
+            "Jun Cases": st.column_config.NumberColumn("Jun", format="%.2f"),
+            "Jul Cases": st.column_config.NumberColumn("Jul", format="%.2f"),
+            "Aug Cases": st.column_config.NumberColumn("Aug MTD", format="%.2f"),
+        },
+    )
 
     # ── POD ORDER RECENCY — all PODs flagged by last order date ──
     st.markdown("<br>", unsafe_allow_html=True)
@@ -1794,16 +1811,19 @@ elif active_tab == "Gopuff":
         st.plotly_chart(fig, use_container_width=True)
 
     section_title(f"Location Detail — Monthly Units (as of {GOPUFF_AS_OF}; thru week ending {GOPUFF_LATEST_WEEK})")
+    st.caption("Click any column to sort.")
     detail_display = gl_filt[["Rank", "Location", "ST", "Jan", "Feb", "Mar", "Apr", "YTD"]].copy()
-    detail_display = detail_display.replace(0, "-")
-    st.markdown(styled_table(detail_display, fmt={
-        "Rank": lambda v: str(v),
-        "Jan": lambda v: str(v),
-        "Feb": lambda v: str(v),
-        "Mar": lambda v: str(v),
-        "Apr": lambda v: str(v),
-        "YTD": lambda v: f"<strong>{v}</strong>" if v != "-" else "-",
-    }), unsafe_allow_html=True)
+    st.dataframe(
+        detail_display, use_container_width=True, hide_index=True, height=440,
+        column_config={
+            "Rank": st.column_config.NumberColumn("Rank", format="%d"),
+            "Jan":  st.column_config.NumberColumn("Jan",  format="%d"),
+            "Feb":  st.column_config.NumberColumn("Feb",  format="%d"),
+            "Mar":  st.column_config.NumberColumn("Mar",  format="%d"),
+            "Apr":  st.column_config.NumberColumn("Apr",  format="%d"),
+            "YTD":  st.column_config.NumberColumn("YTD",  format="%d"),
+        },
+    )
 
 
 # ══════════════════════════════════════════════════════════════════════════════
