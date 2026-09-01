@@ -685,6 +685,8 @@ ship_monthly_cases = pd.DataFrame([
     {"Month": "Mar '26", "Cases": 379},
     {"Month": "Apr '26", "Cases": 310},
     {"Month": "May '26", "Cases": 490},
+    {"Month": "Jun '26", "Cases": 520},
+    {"Month": "Jul '26", "Cases": 691},
 ])
 
 # Top accounts — chain data from Ethica 05.11.26 (samples removed)
@@ -984,7 +986,7 @@ top_accounts["% Growth"] = top_accounts.apply(
 # ══════════════════════════════════════════════════════════════════════════════
 active_tab = st.radio(
     "Dashboard",
-    ["Overview", "Shipments", "Depletions", "Account Explorer", "Gopuff", "ReserveBar"],
+    ["Overview", "Shipments", "Depletions", "POD Recency", "Sample Tracking", "Account Explorer", "Gopuff", "ReserveBar"],
     horizontal=True,
     label_visibility="collapsed",
 )
@@ -996,7 +998,7 @@ st.markdown("---")
 # SHARED MONTH OPTIONS
 # ══════════════════════════════════════════════════════════════════════════════
 DEPL_MONTHS = ["Nov", "Dec", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug"]
-SHIP_MONTHS = ["Dec '25", "Jan '26", "Feb '26", "Mar '26", "Apr '26", "May '26"]
+SHIP_MONTHS = ["Dec '25", "Jan '26", "Feb '26", "Mar '26", "Apr '26", "May '26", "Jun '26", "Jul '26"]
 ALL_STATES = sorted(set(on_states["State"].tolist() + off_states["State"].tolist()))
 
 # ══════════════════════════════════════════════════════════════════════════════
@@ -1017,7 +1019,7 @@ if active_tab == "Overview":
     with c2:
         st.markdown(kpi("Total YTD PODs", "2,069", "28 active states", dark=True), unsafe_allow_html=True)
     with c3:
-        st.markdown(kpi("Cases Shipped", "5,611", "Dec '25 – May '26 · Jul/Aug pending"), unsafe_allow_html=True)
+        st.markdown(kpi("Cases Shipped", "6,822", "Dec '25 – Jul '26 · Aug pending"), unsafe_allow_html=True)
     with c4:
         st.markdown(kpi("Gopuff YTD Units", "169", f"29 locations · as of {GOPUFF_AS_OF}"), unsafe_allow_html=True)
     with c5:
@@ -1097,13 +1099,22 @@ if active_tab == "Overview":
     with npk4:
         st.markdown(kpi("States with new PODs", f"{state_count}", f"{cs_total:.2f} cases added"), unsafe_allow_html=True)
 
-    # (b) Weekly velocity trend line — last 12 weeks
+    # (b) Weekly velocity — last 8 weeks with WoW % change
     st.markdown("<br>", unsafe_allow_html=True)
-    section_title("New PODs Velocity — Weekly (last 12 weeks)")
-    st.caption("Number of retail accounts that first appeared in each week's Ethica snapshot. Watching for deceleration.")
-    velo_recent = velo.tail(12).copy()
-    velo_recent["week"] = velo_recent["week_ending"].dt.strftime("%b %d")
-    st.plotly_chart(bar_chart(velo_recent, "week", "new_pods"), use_container_width=True)
+    section_title("New PODs · Week-over-Week")
+    st.caption("Weekly new-account count with the % change vs. the prior week. Watching for deceleration.")
+    velo_recent = velo.tail(8).copy()
+    velo_recent["Week Ending"] = velo_recent["week_ending"].dt.strftime("%b %d")
+    velo_recent["New PODs"] = velo_recent["new_pods"].astype(int)
+    velo_recent["WoW %"] = velo_recent["new_pods"].pct_change() * 100
+    st.dataframe(
+        velo_recent[["Week Ending", "New PODs", "WoW %"]],
+        use_container_width=True, hide_index=True, height=310,
+        column_config={
+            "New PODs": st.column_config.NumberColumn("New PODs", format="%d"),
+            "WoW %":    st.column_config.NumberColumn("WoW %",    format="%+.1f%%"),
+        },
+    )
 
     # (c) This-week breakdown by state and channel
     st.markdown("<br>", unsafe_allow_html=True)
@@ -1175,7 +1186,7 @@ if active_tab == "Overview":
 # SHIPMENTS & REVENUE
 # ══════════════════════════════════════════════════════════════════════════════
 elif active_tab == "Shipments":
-    st.caption("📅 Shipment data through May 2026 · Source: Lucci Payment Process file")
+    st.caption("📅 Shipment data through Jul 2026 · Aug shipments pending from EW · Source: Lucci Payment Process file")
     sh_months = st.multiselect("Filter by Month", SHIP_MONTHS, default=SHIP_MONTHS, key="sh_months")
     sc_filt = ship_monthly_cases[ship_monthly_cases["Month"].isin(sh_months)].reset_index(drop=True)
 
@@ -1303,7 +1314,7 @@ elif active_tab == "Depletions":
     on_f = on_states[on_states["State"].isin(dp_states)].copy()
     off_f = off_states[off_states["State"].isin(dp_states)].copy()
 
-    sp_cols = ["Jun Cases", "Jul Cases", "Aug Cases", "YTD PODs", "New Jul PODs", "New Aug PODs"]
+    sp_cols = ["Jun Cases", "Jul Cases", "Aug Cases", "YTD PODs", "New Jun PODs", "New Jul PODs", "New Aug PODs"]
     if state_view == "On-Premise":
         sp = on_f[["State"] + sp_cols].copy()
     elif state_view == "Off-Premise":
@@ -1315,18 +1326,19 @@ elif active_tab == "Depletions":
 
     sp = sp.sort_values("Jul Cases", ascending=False).reset_index(drop=True)
 
-    sp_display = sp[["State", "Jun Cases", "Jul Cases", "Aug Cases", "YTD PODs", "New Jul PODs", "New Aug PODs"]].copy()
+    sp_display = sp[["State", "Jun Cases", "Jul Cases", "Aug Cases", "YTD PODs", "New Jun PODs", "New Jul PODs", "New Aug PODs"]].copy()
 
     st.caption("Click any column header to sort · e.g. sort by YTD PODs to find top-POD states, or Aug Cases to spot top current-period movers")
     st.dataframe(
         sp_display, use_container_width=True, hide_index=True, height=520,
         column_config={
-            "Jun Cases": st.column_config.NumberColumn("Jun Cases", format="%.2f"),
-            "Jul Cases": st.column_config.NumberColumn("Jul Cases", format="%.2f"),
-            "Aug Cases": st.column_config.NumberColumn("Aug MTD", format="%.2f"),
-            "YTD PODs":  st.column_config.NumberColumn("YTD PODs", format="%d"),
-            "New Jul PODs": st.column_config.NumberColumn("New Jul PODs", format="%d"),
-            "New Aug PODs": st.column_config.NumberColumn("New Aug PODs", format="%d"),
+            "Jun Cases":     st.column_config.NumberColumn("Jun Cases", format="%.2f"),
+            "Jul Cases":     st.column_config.NumberColumn("Jul Cases", format="%.2f"),
+            "Aug Cases":     st.column_config.NumberColumn("Aug MTD",  format="%.2f"),
+            "YTD PODs":      st.column_config.NumberColumn("YTD PODs", format="%d"),
+            "New Jun PODs":  st.column_config.NumberColumn("New Jun PODs", format="%d"),
+            "New Jul PODs":  st.column_config.NumberColumn("New Jul PODs", format="%d"),
+            "New Aug PODs":  st.column_config.NumberColumn("New Aug PODs", format="%d"),
         },
     )
 
@@ -1467,137 +1479,6 @@ elif active_tab == "Depletions":
         },
     )
 
-    # ── POD ORDER RECENCY — all PODs flagged by last order date ──
-    st.markdown("<br>", unsafe_allow_html=True)
-    section_title("POD Order Recency — All Accounts")
-    st.caption(
-        f"All {len(pod_recency_df):,} active PODs flagged by days since last order (samples excluded). "
-        f"🟢 Green = ordered within 60d · 🟡 Yellow = 60–90d · 🔴 Red = 90+d. "
-        f"Built from weekly Ethica snapshots (earliest: {POD_RECENCY_EARLIEST_SNAPSHOT}); accounts whose first visible activity predates that date are conservatively flagged Red."
-    )
-
-    n_red = int((pod_recency_df["status"] == "Red").sum())
-    n_yel = int((pod_recency_df["status"] == "Yellow").sum())
-    n_grn = int((pod_recency_df["status"] == "Green").sum())
-    n_total_recency = len(pod_recency_df)
-    pct_atrisk = round((n_red + n_yel) / n_total_recency * 100, 1) if n_total_recency else 0
-
-    rk1, rk2, rk3, rk4 = st.columns(4)
-    with rk1:
-        st.markdown(kpi("Total Active PODs", f"{n_total_recency:,}", "Samples excluded", dark=True), unsafe_allow_html=True)
-    with rk2:
-        st.markdown(kpi("🔴 Stale (90+ days)", f"{n_red:,}", f"{round(n_red/n_total_recency*100,1)}% of PODs"), unsafe_allow_html=True)
-    with rk3:
-        st.markdown(kpi("🟡 Warming (60–90d)", f"{n_yel:,}", f"{round(n_yel/n_total_recency*100,1)}% of PODs"), unsafe_allow_html=True)
-    with rk4:
-        st.markdown(kpi("🟢 Active (≤60 days)", f"{n_grn:,}", f"{round(n_grn/n_total_recency*100,1)}% of PODs"), unsafe_allow_html=True)
-
-    st.markdown(f"<p style='margin:8px 0; font-size:13px; color:#6b7280;'><strong>At-risk:</strong> {n_red + n_yel:,} PODs ({pct_atrisk}%) haven't ordered in 60+ days.</p>", unsafe_allow_html=True)
-
-    # Filters
-    rec_states = sorted(v for v in pod_recency_df["state"].unique() if v and str(v) != "nan")
-    rec_premises = sorted(v for v in pod_recency_df["premise"].unique() if v and str(v) != "nan")
-    rc1, rc2, rc3, rc4 = st.columns([1.2, 1.4, 1.4, 1.6])
-    with rc1:
-        rec_status = st.multiselect("Status", ["Red", "Yellow", "Green"], default=["Red", "Yellow"], key="rec_status")
-    with rc2:
-        rec_state_filt = st.multiselect("State", rec_states, default=rec_states, key="rec_state_filt")
-    with rc3:
-        rec_prem_filt = st.multiselect("Premise", rec_premises, default=rec_premises, key="rec_prem_filt")
-    with rc4:
-        rec_search = st.text_input("Search account / city / chain", key="rec_search", placeholder="e.g. Marvito, Asheville, Eataly")
-
-    rec_filt = pod_recency_df.copy()
-    if rec_status:
-        rec_filt = rec_filt[rec_filt["status"].isin(rec_status)]
-    if rec_state_filt:
-        rec_filt = rec_filt[rec_filt["state"].isin(rec_state_filt)]
-    if rec_prem_filt:
-        rec_filt = rec_filt[rec_filt["premise"].isin(rec_prem_filt)]
-    if rec_search:
-        s = rec_search.strip().lower()
-        mask = (
-            rec_filt["account"].astype(str).str.lower().str.contains(s, na=False) |
-            rec_filt["city"].astype(str).str.lower().str.contains(s, na=False) |
-            rec_filt["chain"].astype(str).str.lower().str.contains(s, na=False)
-        )
-        rec_filt = rec_filt[mask]
-
-    st.caption(f"Showing **{len(rec_filt):,}** of {n_total_recency:,} PODs")
-
-    # Color-coded display with Pandas Styler
-    rec_display = rec_filt[["account", "city", "state", "premise", "chain", "channel", "ytd_cases", "last_order_date", "days_since", "status"]].copy()
-    rec_display.columns = ["Account", "City", "State", "Premise", "Chain", "Channel", "YTD Cases", "Last Order", "Days Since", "Status"]
-
-    def _row_color(row):
-        s = row["Status"]
-        if s == "Red":
-            return ["background-color: #fee2e2; color: #7f1d1d"] * len(row)
-        if s == "Yellow":
-            return ["background-color: #fef3c7; color: #78350f"] * len(row)
-        return ["background-color: #dcfce7; color: #14532d"] * len(row)
-
-    styled = (rec_display.style
-              .apply(_row_color, axis=1)
-              .format({"YTD Cases": "{:,.2f}", "Days Since": "{:,}"})
-              .hide(axis="index"))
-    st.dataframe(styled, use_container_width=True, height=600)
-
-    # ── SAMPLE TRACKING — Lucci-funded vs Ethica-funded ──
-    st.markdown("<br>", unsafe_allow_html=True)
-    section_title("Sample Tracking — Lucci vs. Ethica-funded")
-    st.caption(
-        f"Cases we exclude from depletions as samples, categorized by who funded them. "
-        f"Note: {SAMPLES_NOTE}"
-    )
-
-    # 2-KPI summary — Lucci vs Ethica
-    lucci_row = samples_by_funded_df[samples_by_funded_df["funded_by"] == "Lucci"]
-    ethica_row = samples_by_funded_df[samples_by_funded_df["funded_by"] == "Ethica"]
-    lucci_ytd = float(lucci_row["ytd_cases"].iloc[0]) if len(lucci_row) else 0
-    ethica_ytd = float(ethica_row["ytd_cases"].iloc[0]) if len(ethica_row) else 0
-    lucci_ct = int(lucci_row["accounts"].iloc[0]) if len(lucci_row) else 0
-    ethica_ct = int(ethica_row["accounts"].iloc[0]) if len(ethica_row) else 0
-    smp1, smp2, smp3 = st.columns(3)
-    with smp1:
-        st.markdown(kpi("Lucci-funded samples", f"{lucci_ytd:,.2f}",
-                         f"{lucci_ct} accounts · marketing / activations", dark=True), unsafe_allow_html=True)
-    with smp2:
-        st.markdown(kpi("Ethica-funded samples", f"{ethica_ytd:,.2f}",
-                         f"{ethica_ct} accounts · supplier arm / distributor / reps"), unsafe_allow_html=True)
-    with smp3:
-        total = lucci_ytd + ethica_ytd
-        st.markdown(kpi("Total sample volume YTD", f"{total:,.2f}",
-                         f"~{(total / (total + 4574) * 100):.1f}% of gross depletions" if (total + 4574) > 0 else ""), unsafe_allow_html=True)
-
-    # Breakdown by bucket
-    st.markdown("<br>", unsafe_allow_html=True)
-    section_title("Sample Breakdown by Bucket")
-    st.caption("Click any column to sort. Each bucket represents a distinct sample-funding source.")
-    smpl_display = samples_by_bucket_df[["label", "funded_by", "accounts", "ytd_cases",
-                                          "jun", "jul", "aug"]].copy()
-    smpl_display.columns = ["Bucket", "Funded By", "Accounts", "YTD Cases", "Jun", "Jul", "Aug MTD"]
-    st.dataframe(
-        smpl_display, use_container_width=True, hide_index=True, height=280,
-        column_config={
-            "Accounts": st.column_config.NumberColumn("Accounts", format="%d"),
-            "YTD Cases": st.column_config.NumberColumn("YTD Cases", format="%.2f"),
-            "Jun": st.column_config.NumberColumn("Jun", format="%.2f"),
-            "Jul": st.column_config.NumberColumn("Jul", format="%.2f"),
-            "Aug MTD": st.column_config.NumberColumn("Aug MTD", format="%.2f"),
-        },
-    )
-
-    # Top sample accounts
-    st.markdown("<br>", unsafe_allow_html=True)
-    section_title("Top Sample-Tagged Accounts (YTD)")
-    top_smp = samples_top_accts_df[["account", "state", "trade_channel", "label", "funded_by", "ytd_cases"]].copy()
-    top_smp.columns = ["Account", "State", "Channel", "Bucket", "Funded By", "YTD Cases"]
-    st.dataframe(
-        top_smp, use_container_width=True, hide_index=True, height=380,
-        column_config={"YTD Cases": st.column_config.NumberColumn("YTD Cases", format="%.2f")},
-    )
-
     # ── IRI RETAIL SCAN DATA — 12-week trend ──
     st.markdown("<br>", unsafe_allow_html=True)
     section_title("IRI Retail Scan — Weekly Trend")
@@ -1660,6 +1541,146 @@ elif active_tab == "Depletions":
     ]
     iri_display["Week Ending"] = iri_display["Week Ending"].dt.strftime("%Y-%m-%d")
     st.dataframe(iri_display, use_container_width=True, height=420, hide_index=True)
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+# POD ORDER RECENCY — all PODs flagged by last order date
+# ══════════════════════════════════════════════════════════════════════════════
+elif active_tab == "POD Recency":
+    st.caption(f"📅 Depletion data as of **{DEPLETION_AS_OF}** · Samples / internal accounts excluded · Source: Ethica weekly snapshots")
+
+    section_title("POD Order Recency — All Accounts")
+    st.caption(
+        f"All {len(pod_recency_df):,} active PODs flagged by days since last order (samples excluded). "
+        f"🟢 Green = ordered within 60d · 🟡 Yellow = 60–90d · 🔴 Red = 90+d. "
+        f"Built from weekly Ethica snapshots (earliest: {POD_RECENCY_EARLIEST_SNAPSHOT}); accounts whose first visible activity predates that date are conservatively flagged Red."
+    )
+
+    n_red = int((pod_recency_df["status"] == "Red").sum())
+    n_yel = int((pod_recency_df["status"] == "Yellow").sum())
+    n_grn = int((pod_recency_df["status"] == "Green").sum())
+    n_total_recency = len(pod_recency_df)
+    pct_atrisk = round((n_red + n_yel) / n_total_recency * 100, 1) if n_total_recency else 0
+
+    rk1, rk2, rk3, rk4 = st.columns(4)
+    with rk1:
+        st.markdown(kpi("Total Active PODs", f"{n_total_recency:,}", "Samples excluded", dark=True), unsafe_allow_html=True)
+    with rk2:
+        st.markdown(kpi("🔴 Stale (90+ days)", f"{n_red:,}", f"{round(n_red/n_total_recency*100,1)}% of PODs"), unsafe_allow_html=True)
+    with rk3:
+        st.markdown(kpi("🟡 Warming (60–90d)", f"{n_yel:,}", f"{round(n_yel/n_total_recency*100,1)}% of PODs"), unsafe_allow_html=True)
+    with rk4:
+        st.markdown(kpi("🟢 Active (≤60 days)", f"{n_grn:,}", f"{round(n_grn/n_total_recency*100,1)}% of PODs"), unsafe_allow_html=True)
+
+    st.markdown(f"<p style='margin:8px 0; font-size:13px; color:#6b7280;'><strong>At-risk:</strong> {n_red + n_yel:,} PODs ({pct_atrisk}%) haven't ordered in 60+ days.</p>", unsafe_allow_html=True)
+
+    # Filters
+    rec_states = sorted(v for v in pod_recency_df["state"].unique() if v and str(v) != "nan")
+    rec_premises = sorted(v for v in pod_recency_df["premise"].unique() if v and str(v) != "nan")
+    rc1, rc2, rc3, rc4 = st.columns([1.2, 1.4, 1.4, 1.6])
+    with rc1:
+        rec_status = st.multiselect("Status", ["Red", "Yellow", "Green"], default=["Red", "Yellow"], key="rec_status")
+    with rc2:
+        rec_state_filt = st.multiselect("State", rec_states, default=rec_states, key="rec_state_filt")
+    with rc3:
+        rec_prem_filt = st.multiselect("Premise", rec_premises, default=rec_premises, key="rec_prem_filt")
+    with rc4:
+        rec_search = st.text_input("Search account / city / chain", key="rec_search", placeholder="e.g. Marvito, Asheville, Eataly")
+
+    rec_filt = pod_recency_df.copy()
+    if rec_status:
+        rec_filt = rec_filt[rec_filt["status"].isin(rec_status)]
+    if rec_state_filt:
+        rec_filt = rec_filt[rec_filt["state"].isin(rec_state_filt)]
+    if rec_prem_filt:
+        rec_filt = rec_filt[rec_filt["premise"].isin(rec_prem_filt)]
+    if rec_search:
+        s = rec_search.strip().lower()
+        mask = (
+            rec_filt["account"].astype(str).str.lower().str.contains(s, na=False) |
+            rec_filt["city"].astype(str).str.lower().str.contains(s, na=False) |
+            rec_filt["chain"].astype(str).str.lower().str.contains(s, na=False)
+        )
+        rec_filt = rec_filt[mask]
+
+    st.caption(f"Showing **{len(rec_filt):,}** of {n_total_recency:,} PODs")
+
+    rec_display = rec_filt[["account", "city", "state", "premise", "chain", "channel", "ytd_cases", "last_order_date", "days_since", "status"]].copy()
+    rec_display.columns = ["Account", "City", "State", "Premise", "Chain", "Channel", "YTD Cases", "Last Order", "Days Since", "Status"]
+
+    def _row_color(row):
+        s = row["Status"]
+        if s == "Red":
+            return ["background-color: #fee2e2; color: #7f1d1d"] * len(row)
+        if s == "Yellow":
+            return ["background-color: #fef3c7; color: #78350f"] * len(row)
+        return ["background-color: #dcfce7; color: #14532d"] * len(row)
+
+    styled = (rec_display.style
+              .apply(_row_color, axis=1)
+              .format({"YTD Cases": "{:,.2f}", "Days Since": "{:,}"})
+              .hide(axis="index"))
+    st.dataframe(styled, use_container_width=True, height=650)
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+# SAMPLE TRACKING — Lucci-funded vs Ethica-funded
+# ══════════════════════════════════════════════════════════════════════════════
+elif active_tab == "Sample Tracking":
+    st.caption(f"📅 Depletion data as of **{DEPLETION_AS_OF}** · Source: Ethica weekly snapshots")
+
+    section_title("Sample Tracking — Lucci vs. Ethica-funded")
+    st.caption(
+        f"Cases we exclude from depletions as samples, categorized by who funded them. "
+        f"Note: {SAMPLES_NOTE}"
+    )
+
+    # 2-KPI summary — Lucci vs Ethica
+    lucci_row = samples_by_funded_df[samples_by_funded_df["funded_by"] == "Lucci"]
+    ethica_row = samples_by_funded_df[samples_by_funded_df["funded_by"] == "Ethica"]
+    lucci_ytd = float(lucci_row["ytd_cases"].iloc[0]) if len(lucci_row) else 0
+    ethica_ytd = float(ethica_row["ytd_cases"].iloc[0]) if len(ethica_row) else 0
+    lucci_ct = int(lucci_row["accounts"].iloc[0]) if len(lucci_row) else 0
+    ethica_ct = int(ethica_row["accounts"].iloc[0]) if len(ethica_row) else 0
+    smp1, smp2, smp3 = st.columns(3)
+    with smp1:
+        st.markdown(kpi("Lucci-funded samples", f"{lucci_ytd:,.2f}",
+                         f"{lucci_ct} accounts · marketing / activations", dark=True), unsafe_allow_html=True)
+    with smp2:
+        st.markdown(kpi("Ethica-funded samples", f"{ethica_ytd:,.2f}",
+                         f"{ethica_ct} accounts · supplier arm / distributor / reps"), unsafe_allow_html=True)
+    with smp3:
+        total = lucci_ytd + ethica_ytd
+        st.markdown(kpi("Total sample volume YTD", f"{total:,.2f}",
+                         f"~{(total / (total + 4574) * 100):.1f}% of gross depletions" if (total + 4574) > 0 else ""), unsafe_allow_html=True)
+
+    # Breakdown by bucket
+    st.markdown("<br>", unsafe_allow_html=True)
+    section_title("Sample Breakdown by Bucket")
+    st.caption("Click any column to sort. Each bucket represents a distinct sample-funding source.")
+    smpl_display = samples_by_bucket_df[["label", "funded_by", "accounts", "ytd_cases",
+                                          "jun", "jul", "aug"]].copy()
+    smpl_display.columns = ["Bucket", "Funded By", "Accounts", "YTD Cases", "Jun", "Jul", "Aug MTD"]
+    st.dataframe(
+        smpl_display, use_container_width=True, hide_index=True, height=280,
+        column_config={
+            "Accounts": st.column_config.NumberColumn("Accounts", format="%d"),
+            "YTD Cases": st.column_config.NumberColumn("YTD Cases", format="%.2f"),
+            "Jun": st.column_config.NumberColumn("Jun", format="%.2f"),
+            "Jul": st.column_config.NumberColumn("Jul", format="%.2f"),
+            "Aug MTD": st.column_config.NumberColumn("Aug MTD", format="%.2f"),
+        },
+    )
+
+    # Top sample accounts
+    st.markdown("<br>", unsafe_allow_html=True)
+    section_title("Top Sample-Tagged Accounts (YTD)")
+    top_smp = samples_top_accts_df[["account", "state", "trade_channel", "label", "funded_by", "ytd_cases"]].copy()
+    top_smp.columns = ["Account", "State", "Channel", "Bucket", "Funded By", "YTD Cases"]
+    st.dataframe(
+        top_smp, use_container_width=True, hide_index=True, height=480,
+        column_config={"YTD Cases": st.column_config.NumberColumn("YTD Cases", format="%.2f")},
+    )
 
 
 # ══════════════════════════════════════════════════════════════════════════════
@@ -1932,4 +1953,4 @@ elif active_tab == "ReserveBar":
 
 
 # ── FOOTER ───────────────────────────────────────────────────────────────────
-st.markdown(f'<p class="footer-text">Data Period: Dec 2025 – Apr 2026 &middot; Depletions thru {DEPLETION_AS_OF} &middot; Gopuff thru {GOPUFF_AS_OF} &middot; Samples / internal accounts excluded &middot; Lucci Sales Intelligence</p>', unsafe_allow_html=True)
+st.markdown(f'<p class="footer-text">Data Period: Dec 2025 – Aug 2026 &middot; Depletions thru {DEPLETION_AS_OF} &middot; Gopuff thru {GOPUFF_AS_OF} &middot; Samples / internal accounts excluded &middot; Lucci Sales Intelligence</p>', unsafe_allow_html=True)
