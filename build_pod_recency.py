@@ -10,8 +10,8 @@ import re
 import json
 from datetime import datetime
 
-PATH = r'C:\Users\AlexBerger\Downloads\Lucci_Product Locator File + Depletion report (21).xlsx'
-AS_OF = datetime(2026, 8, 28)
+PATH = r'C:\Users\AlexBerger\Downloads\Lucci_Product Locator File + Depletion report (22).xlsx'
+AS_OF = datetime(2026, 9, 4)
 OUT_JSON = r'C:\Users\AlexBerger\OneDrive - skylarkgrowth.com\Desktop\HRL Ratings System\lucci-dashboard\pod_recency.json'
 
 SAMPLE_PATTERN = re.compile(
@@ -100,7 +100,7 @@ def load_snapshot(sheet):
         month_cols = remaining - 8 - trailing
         if month_cols >= 2 and month_cols % 2 == 0:
             n_months = month_cols // 2
-            all_months = ['Nov','Dec','Jan','Feb','Mar','Apr','May','Jun','Jul','Aug']
+            all_months = ['Nov','Dec','Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep']
             if 1 <= n_months <= len(all_months):
                 months = all_months[:n_months]
                 cols = list(entity_cols)
@@ -123,7 +123,7 @@ def load_snapshot(sheet):
 # Latest snapshot defines the universe of clean accounts.
 latest = load_snapshot(dep_tabs[-1])
 # Coerce monthly columns for the latest snapshot so we can copy them into results
-_LATEST_MONTHS = ['Nov','Dec','Jan','Feb','Mar','Apr','May','Jun','Jul','Aug']
+_LATEST_MONTHS = ['Nov','Dec','Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep']
 for _m in _LATEST_MONTHS:
     if f'{_m}_Cases' in latest.columns:
         latest[f'{_m}_Cases'] = pd.to_numeric(latest[f'{_m}_Cases'], errors='coerce').fillna(0)
