@@ -50,23 +50,36 @@
       "week_ending": "2026-09-04",
       "total_pods": 2022,
       "new_pods": 29
+    },
+    {
+      "week_ending": "2026-09-11",
+      "total_pods": 2059,
+      "new_pods": 38
     }
   ],
   "this_week_by_state": [
     {
       "state": "WA",
-      "count": 7
+      "count": 10
     },
     {
-      "state": "IL",
-      "count": 6
+      "state": "TX",
+      "count": 5
     },
     {
-      "state": "NY",
+      "state": "CA",
       "count": 3
     },
     {
-      "state": "FL",
+      "state": "MI",
+      "count": 3
+    },
+    {
+      "state": "CO",
+      "count": 2
+    },
+    {
+      "state": "CT",
       "count": 2
     },
     {
@@ -74,19 +87,11 @@
       "count": 2
     },
     {
-      "state": "NJ",
+      "state": "NY",
       "count": 1
     },
     {
-      "state": "OH",
-      "count": 1
-    },
-    {
-      "state": "IN",
-      "count": 1
-    },
-    {
-      "state": "DC",
+      "state": "NV",
       "count": 1
     },
     {
@@ -94,15 +99,31 @@
       "count": 1
     },
     {
-      "state": "CT",
+      "state": "IL",
+      "count": 1
+    },
+    {
+      "state": "VA",
+      "count": 1
+    },
+    {
+      "state": "MD",
+      "count": 1
+    },
+    {
+      "state": "OH",
+      "count": 1
+    },
+    {
+      "state": "DE",
+      "count": 1
+    },
+    {
+      "state": "AZ",
       "count": 1
     },
     {
       "state": "GA",
-      "count": 1
-    },
-    {
-      "state": "NM",
       "count": 1
     },
     {
@@ -112,16 +133,16 @@
   ],
   "this_week_by_channel_on": [
     {
-      "channel": "RESTAURANT",
-      "count": 9
-    },
-    {
       "channel": "BAR/TAVERN",
-      "count": 2
+      "count": 6
     },
     {
       "channel": "OTHER ON PREMISE",
-      "count": 1
+      "count": 3
+    },
+    {
+      "channel": "RESTAURANT",
+      "count": 3
     },
     {
       "channel": "HOTEL/ MOTEL",
@@ -131,15 +152,15 @@
   "this_week_by_channel_off": [
     {
       "channel": "SUPERMARKET",
-      "count": 9
+      "count": 13
     },
     {
       "channel": "LIQUOR/PACKAGE STORE",
-      "count": 6
+      "count": 9
     },
     {
       "channel": "OTHER OFF PREMISE",
-      "count": 1
+      "count": 3
     }
   ]
 }
