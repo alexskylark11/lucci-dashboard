@@ -53,8 +53,8 @@
     },
     {
       "week_ending": "2026-09-11",
-      "total_pods": 2059,
-      "new_pods": 38
+      "total_pods": 2058,
+      "new_pods": 37
     }
   ],
   "this_week_by_state": [
@@ -115,10 +115,6 @@
       "count": 1
     },
     {
-      "state": "DE",
-      "count": 1
-    },
-    {
       "state": "AZ",
       "count": 1
     },
@@ -160,7 +156,7 @@
     },
     {
       "channel": "OTHER OFF PREMISE",
-      "count": 3
+      "count": 2
     }
   ]
 }

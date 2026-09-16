@@ -22,6 +22,7 @@ SAMPLE_PATTERN = re.compile(
     r'REP\s*#|SALES\s+REP|REP\s+\d+|'                           # REP #, SALES REP #61
     r'TEAM\s*#|'                                                 # TEAM #033
     r'[A-Z]+\s+SAMPLES?\b|'                                     # STEPHANIE HAWKE SAMPLES
+    r'\b[A-Z]+-SAMPLES?\b|'                                     # ANDREA VOLK-SAMPLES, SMITH-SAMPLE
     r'[A-Z]+\s+SAMPLE\s+ACCOUNT|'                                # W JAHN SAMPLE ACCOUNT
     r'\.[A-Z]+-SAMPLE|\.[A-Z]+\s+SAMPLE|'                        # V.CULOTTA-SAMPLE
     r'CORPORATE\s+WITHDRAW|WITHDRAWL|WITHDRAWAL|'                # withdrawals

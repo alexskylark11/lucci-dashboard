@@ -834,7 +834,7 @@ new_pods_week = pd.DataFrame([
     {"Account": "Summerhouse", "City": "Orlando", "State": "FL", "Premise": "On", "Chain": "(indep)", "Channel": "Restaurant", "Cases": 0},
     {"Account": "Victoria S Wine And Dine", "City": "Oxford", "State": "MI", "Premise": "On", "Chain": "(indep)", "Channel": "Other On Premise", "Cases": 0},
     {"Account": "Xxxriverbanks Society", "City": "West Columbia", "State": "SC", "Premise": "On", "Chain": "(indep)", "Channel": "Other On Premise", "Cases": 0},
-    # OFF-PREMISE (25 new)
+    # OFF-PREMISE (24 new)
     {"Account": "Spec S # 262", "City": "Fort Worth", "State": "TX", "Premise": "Off", "Chain": "Specs Warehouse", "Channel": "Liquor/Package Store", "Cases": 8},
     {"Account": "Haggen #3460", "City": "Bellingham", "State": "WA", "Premise": "Off", "Chain": "Haggen Food & Pharmacy", "Channel": "Supermarket", "Cases": 2},
     {"Account": "Haggen #3436", "City": "Burlington", "State": "WA", "Premise": "Off", "Chain": "Haggen Food & Pharmacy", "Channel": "Supermarket", "Cases": 2},
@@ -856,7 +856,6 @@ new_pods_week = pd.DataFrame([
     {"Account": "Harris Teeter #305", "City": "Charlotte", "State": "NC", "Premise": "Off", "Chain": "Harris Teeter", "Channel": "Supermarket", "Cases": 0.25},
     {"Account": "Food Lion #0596", "City": "Elkton", "State": "VA", "Premise": "Off", "Chain": "Food Lion", "Channel": "Supermarket", "Cases": 0.25},
     {"Account": "The Cellar", "City": "Troy", "State": "OH", "Premise": "Off", "Chain": "(indep)", "Channel": "Liquor/Package Store", "Cases": 0.08},
-    {"Account": "Andrea Volk-Samples", "City": "New Castle", "State": "DE", "Premise": "Off", "Chain": "(indep)", "Channel": "Other Off Premise", "Cases": 0.08},
     {"Account": "Lakes Liquor - Detroit La", "City": "Detroit Lakes", "State": "MN", "Premise": "Off", "Chain": "(indep)", "Channel": "Liquor/Package Store", "Cases": 0.08},
     {"Account": "The Beverage Company", "City": "Traverse City", "State": "MI", "Premise": "Off", "Chain": "(indep)", "Channel": "Other Off Premise", "Cases": 0},
     {"Account": "Spring Lake Wine & Spirits (2)", "City": "Spring Lake", "State": "MI", "Premise": "Off", "Chain": "(indep)", "Channel": "Other Off Premise", "Cases": 0},
