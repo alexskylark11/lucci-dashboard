@@ -55,55 +55,44 @@
       "week_ending": "2026-09-11",
       "total_pods": 2058,
       "new_pods": 37
+    },
+    {
+      "week_ending": "2026-09-18",
+      "total_pods": 2087,
+      "new_pods": 29
     }
   ],
   "this_week_by_state": [
     {
-      "state": "WA",
-      "count": 10
-    },
-    {
-      "state": "TX",
-      "count": 5
-    },
-    {
-      "state": "CA",
-      "count": 3
-    },
-    {
-      "state": "MI",
-      "count": 3
-    },
-    {
-      "state": "CO",
-      "count": 2
-    },
-    {
-      "state": "CT",
-      "count": 2
+      "state": "VA",
+      "count": 8
     },
     {
       "state": "NC",
+      "count": 3
+    },
+    {
+      "state": "TX",
+      "count": 3
+    },
+    {
+      "state": "CA",
       "count": 2
     },
     {
       "state": "NY",
-      "count": 1
-    },
-    {
-      "state": "NV",
-      "count": 1
-    },
-    {
-      "state": "SC",
-      "count": 1
+      "count": 2
     },
     {
       "state": "IL",
       "count": 1
     },
     {
-      "state": "VA",
+      "state": "FL",
+      "count": 1
+    },
+    {
+      "state": "MA",
       "count": 1
     },
     {
@@ -111,11 +100,19 @@
       "count": 1
     },
     {
-      "state": "OH",
+      "state": "IN",
       "count": 1
     },
     {
-      "state": "AZ",
+      "state": "SC",
+      "count": 1
+    },
+    {
+      "state": "WA",
+      "count": 1
+    },
+    {
+      "state": "OH",
       "count": 1
     },
     {
@@ -123,40 +120,44 @@
       "count": 1
     },
     {
-      "state": "MN",
+      "state": "DC",
+      "count": 1
+    },
+    {
+      "state": "ME",
       "count": 1
     }
   ],
   "this_week_by_channel_on": [
     {
-      "channel": "BAR/TAVERN",
-      "count": 6
-    },
-    {
-      "channel": "OTHER ON PREMISE",
-      "count": 3
-    },
-    {
       "channel": "RESTAURANT",
-      "count": 3
+      "count": 5
     },
     {
-      "channel": "HOTEL/ MOTEL",
+      "channel": "GOLF/ COUNTRY CLUB",
+      "count": 1
+    },
+    {
+      "channel": "BAR/TAVERN",
       "count": 1
     }
   ],
   "this_week_by_channel_off": [
     {
       "channel": "SUPERMARKET",
-      "count": 13
+      "count": 15
     },
     {
       "channel": "LIQUOR/PACKAGE STORE",
-      "count": 9
+      "count": 5
     },
     {
       "channel": "OTHER OFF PREMISE",
-      "count": 2
+      "count": 1
+    },
+    {
+      "channel": "SMALL GROCERY STORE",
+      "count": 1
     }
   ]
 }

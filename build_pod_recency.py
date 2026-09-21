@@ -10,8 +10,8 @@ import re
 import json
 from datetime import datetime
 
-PATH = r'C:\Users\AlexBerger\Downloads\Lucci_Product Locator File + Depletion report (23).xlsx'
-AS_OF = datetime(2026, 9, 11)
+PATH = r'C:\Users\AlexBerger\Downloads\Lucci_Product Locator File + Depletion report (24).xlsx'
+AS_OF = datetime(2026, 9, 18)
 OUT_JSON = r'C:\Users\AlexBerger\OneDrive - skylarkgrowth.com\Desktop\HRL Ratings System\lucci-dashboard\pod_recency.json'
 
 SAMPLE_PATTERN = re.compile(
