@@ -60,103 +60,92 @@
       "week_ending": "2026-09-18",
       "total_pods": 2087,
       "new_pods": 29
+    },
+    {
+      "week_ending": "2026-09-25",
+      "total_pods": 2125,
+      "new_pods": 39
     }
   ],
   "this_week_by_state": [
     {
-      "state": "VA",
+      "state": "LA",
       "count": 8
     },
     {
-      "state": "NC",
-      "count": 3
+      "state": "IL",
+      "count": 6
     },
     {
       "state": "TX",
-      "count": 3
+      "count": 6
+    },
+    {
+      "state": "VA",
+      "count": 6
+    },
+    {
+      "state": "NY",
+      "count": 4
     },
     {
       "state": "CA",
       "count": 2
     },
     {
-      "state": "NY",
+      "state": "AZ",
       "count": 2
     },
     {
-      "state": "IL",
-      "count": 1
+      "state": "KY",
+      "count": 2
+    },
+    {
+      "state": "SC",
+      "count": 2
+    },
+    {
+      "state": "IN",
+      "count": 2
     },
     {
       "state": "FL",
       "count": 1
     },
     {
-      "state": "MA",
-      "count": 1
-    },
-    {
-      "state": "MD",
-      "count": 1
-    },
-    {
-      "state": "IN",
-      "count": 1
-    },
-    {
-      "state": "SC",
-      "count": 1
-    },
-    {
-      "state": "WA",
-      "count": 1
-    },
-    {
-      "state": "OH",
-      "count": 1
-    },
-    {
-      "state": "GA",
-      "count": 1
-    },
-    {
-      "state": "DC",
-      "count": 1
-    },
-    {
-      "state": "ME",
+      "state": "NC",
       "count": 1
     }
   ],
   "this_week_by_channel_on": [
     {
       "channel": "RESTAURANT",
-      "count": 5
+      "count": 9
     },
     {
-      "channel": "GOLF/ COUNTRY CLUB",
-      "count": 1
-    },
-    {
-      "channel": "BAR/TAVERN",
+      "channel": "HOTEL/ MOTEL",
       "count": 1
     }
   ],
   "this_week_by_channel_off": [
     {
-      "channel": "SUPERMARKET",
-      "count": 15
+      "channel": "LIQUOR/PACKAGE STORE",
+      "count": 19
     },
     {
-      "channel": "LIQUOR/PACKAGE STORE",
-      "count": 5
+      "channel": "SUPERMARKET",
+      "count": 7
+    },
+    {
+      "channel": "CONVENIENCE/ GAS",
+      "count": 3
+    },
+    {
+      "channel": "FINE WINE STORE",
+      "count": 2
     },
     {
       "channel": "OTHER OFF PREMISE",
-      "count": 1
-    },
-    {
-      "channel": "SMALL GROCERY STORE",
       "count": 1
     }
   ]
