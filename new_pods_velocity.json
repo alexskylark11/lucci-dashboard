@@ -1,5 +1,5 @@
 {
-  "as_of": "2026-08-28",
+  "as_of": "2026-10-02",
   "weekly": [
     {
       "week_ending": "2026-07-03",
@@ -65,55 +65,76 @@
       "week_ending": "2026-09-25",
       "total_pods": 2125,
       "new_pods": 39
+    },
+    {
+      "week_ending": "2026-10-02",
+      "total_pods": 2161,
+      "new_pods": 38
     }
   ],
   "this_week_by_state": [
     {
-      "state": "LA",
-      "count": 8
-    },
-    {
-      "state": "IL",
+      "state": "FL",
       "count": 6
     },
     {
-      "state": "TX",
-      "count": 6
-    },
-    {
-      "state": "VA",
+      "state": "NC",
       "count": 6
     },
     {
       "state": "NY",
-      "count": 4
+      "count": 5
     },
     {
       "state": "CA",
+      "count": 3
+    },
+    {
+      "state": "NJ",
+      "count": 3
+    },
+    {
+      "state": "KY",
+      "count": 3
+    },
+    {
+      "state": "MN",
+      "count": 3
+    },
+    {
+      "state": "MO",
       "count": 2
     },
     {
       "state": "AZ",
-      "count": 2
-    },
-    {
-      "state": "KY",
-      "count": 2
-    },
-    {
-      "state": "SC",
-      "count": 2
-    },
-    {
-      "state": "IN",
-      "count": 2
-    },
-    {
-      "state": "FL",
       "count": 1
     },
     {
-      "state": "NC",
+      "state": "IN",
+      "count": 1
+    },
+    {
+      "state": "TX",
+      "count": 1
+    },
+    {
+      "state": "WA",
+      "count": 1
+    },
+    {
+      "state": "GA",
+      "count": 1
+    },
+    {
+      "state": "DC",
+      "count": 1
+    },
+    {
+      "state": "NM",
+      "count": 1
+    },
+    {
+      "state": "LA",
       "count": 1
     }
   ],
@@ -123,29 +144,37 @@
       "count": 9
     },
     {
+      "channel": "BAR/TAVERN",
+      "count": 3
+    },
+    {
       "channel": "HOTEL/ MOTEL",
+      "count": 3
+    },
+    {
+      "channel": "OTHER ON PREMISE",
+      "count": 3
+    },
+    {
+      "channel": "GOLF/ COUNTRY CLUB",
       "count": 1
     }
   ],
   "this_week_by_channel_off": [
     {
       "channel": "LIQUOR/PACKAGE STORE",
-      "count": 19
+      "count": 10
     },
     {
       "channel": "SUPERMARKET",
       "count": 7
     },
     {
-      "channel": "CONVENIENCE/ GAS",
-      "count": 3
-    },
-    {
-      "channel": "FINE WINE STORE",
+      "channel": "OTHER OFF PREMISE",
       "count": 2
     },
     {
-      "channel": "OTHER OFF PREMISE",
+      "channel": "UNASSIGNED",
       "count": 1
     }
   ]
