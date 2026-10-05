@@ -563,10 +563,9 @@ off_states = pd.DataFrame([
     {"State": "NE", "YTD Cases": 0.50, "YTD PODs": 1, "Apr Cases": 0, "Apr PODs": 0, "May Cases": 0, "May PODs": 0, "Jun Cases": 0, "Jun PODs": 0, "Jul Cases": 0.50, "Jul PODs": 1, "Aug Cases": 0, "Aug PODs": 0, "Sep Cases": 0, "Sep PODs": 0, "Oct Cases": 0, "Oct PODs": 0, "New Aug PODs": 0, "New Sep PODs": 0, "New Oct PODs": 0},
 ])
 
-# Add change vs last month (Apr vs Mar) to state data
+# Add change vs last month (Sep vs Aug) to state data
 for df in [on_states, off_states]:
-    # Apr is now a full month, so we can compare Apr full vs Mar full natively (apples-to-apples).
-    df["MoM Chg"] = df["Apr Cases"] - df["Mar Cases"]
+    df["MoM Chg"] = df["Sep Cases"] - df["Aug Cases"]
 
 # Compute combined state totals
 combined_states = pd.merge(
@@ -966,9 +965,9 @@ on_trade_channels = pd.DataFrame([
     {"Trade Channel": "Special Event / Temp License", "YTD Cases": 5.50, "Dec": 0, "Jan": 0, "Feb": 0, "Mar": 0, "Apr": 2.00, "May": 1.00, "Jun": 0.50, "Jul": 1.00, "Aug": 0, "Sep": 1.00, "Oct": 0},
     {"Trade Channel": "Recreation / Entertainment", "YTD Cases": 0.50, "Dec": 0, "Jan": 0, "Feb": 0, "Mar": 0, "Apr": 0, "May": 0, "Jun": 0, "Jul": 0.50, "Aug": 0, "Sep": 0, "Oct": 0},
 ])
-top_accounts["Chg vs LM"] = top_accounts["Apr Cases"] - top_accounts["Mar Cases"]
+top_accounts["Chg vs LM"] = top_accounts["Sep Cases"] - top_accounts["Aug Cases"]
 top_accounts["% Growth"] = top_accounts.apply(
-    lambda r: ((r["Apr Cases"] - r["Mar Cases"]) / r["Mar Cases"] * 100) if r["Mar Cases"] > 0 else (float("inf") if r["Apr Cases"] > 0 else 0),
+    lambda r: ((r["Sep Cases"] - r["Aug Cases"]) / r["Aug Cases"] * 100) if r["Aug Cases"] > 0 else (float("inf") if r["Sep Cases"] > 0 else 0),
     axis=1,
 )
 
