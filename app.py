@@ -825,7 +825,7 @@ top_restaurants_bars = pd.DataFrame([
 
 # NEW PODs added this past week (prior week -> 10/2/2026 snapshots)
 new_pods_week = pd.DataFrame([
-    # ON-PREMISE (20 new)
+    # ON-PREMISE (16 new)
     {"Account": "Piadi", "City": "New York", "State": "NY", "Premise": "On", "Chain": "(indep)", "Channel": "Other On Premise", "Cases": 5},
     {"Account": "Briciola", "City": "New York", "State": "NY", "Premise": "On", "Chain": "(indep)", "Channel": "Restaurant", "Cases": 3},
     {"Account": "Mandolin Aegean Bistro", "City": "Miami", "State": "FL", "Premise": "On", "Chain": "(indep)", "Channel": "Restaurant", "Cases": 3},
@@ -842,11 +842,7 @@ new_pods_week = pd.DataFrame([
     {"Account": "Spectators", "City": "Jefferson City", "State": "MO", "Premise": "On", "Chain": "(indep)", "Channel": "Bar/Tavern", "Cases": 1},
     {"Account": "Hickory Hills Country Club", "City": "Springfield", "State": "MO", "Premise": "On", "Chain": "(indep)", "Channel": "Golf/ Country Club", "Cases": 1},
     {"Account": "Salt & Flour", "City": "Minneapolis", "State": "MN", "Premise": "On", "Chain": "(indep)", "Channel": "Restaurant", "Cases": 1},
-    {"Account": "Kappa Foundation Of Pompano", "City": "Pompano Beach", "State": "FL", "Premise": "On", "Chain": "(indep)", "Channel": "Other On Premise", "Cases": 0.25},
-    {"Account": "The Straight & Narrow", "City": "Elizabethtown", "State": "KY", "Premise": "On", "Chain": "(indep)", "Channel": "Bar/Tavern", "Cases": 0.25},
-    {"Account": "Ambrosia", "City": "Boca Raton", "State": "FL", "Premise": "On", "Chain": "(indep)", "Channel": "Restaurant", "Cases": 0.08},
-    {"Account": "Oakwood Inn", "City": "Syracuse", "State": "IN", "Premise": "On", "Chain": "(indep)", "Channel": "Hotel/ Motel", "Cases": 0.08},
-    # OFF-PREMISE (21 new)
+    # OFF-PREMISE (16 new)
     {"Account": "Garys Closter", "City": "Closter", "State": "NJ", "Premise": "Off", "Chain": "Garys Wine & Marketplace", "Channel": "Other Off Premise", "Cases": 7},
     {"Account": "Total Wine & More #947", "City": "Tampa", "State": "FL", "Premise": "Off", "Chain": "(indep)", "Channel": "Liquor/Package Store", "Cases": 2},
     {"Account": "Northbound Liquor - Cambr", "City": "Cambridge", "State": "MN", "Premise": "Off", "Chain": "(indep)", "Channel": "Liquor/Package Store", "Cases": 1.17},
@@ -863,11 +859,19 @@ new_pods_week = pd.DataFrame([
     {"Account": "Food Lion 2114", "City": "Oak Island", "State": "NC", "Premise": "Off", "Chain": "Food Lion", "Channel": "Supermarket", "Cases": 0.50},
     {"Account": "Food Lion 1573", "City": "Raleigh", "State": "NC", "Premise": "Off", "Chain": "Food Lion", "Channel": "Supermarket", "Cases": 0.50},
     {"Account": "Ingles #086", "City": "Chatsworth", "State": "GA", "Premise": "Off", "Chain": "Ingles", "Channel": "Supermarket", "Cases": 0.42},
+])
+
+# NEW first-timers below 1/3 case (scrubbed per new methodology, Oct 2026 onward)
+new_pods_watchlist = pd.DataFrame([
     {"Account": "Food Lion #0944", "City": "Pilot Mountain", "State": "NC", "Premise": "Off", "Chain": "Food Lion", "Channel": "Supermarket", "Cases": 0.25},
     {"Account": "Harris Teeter #011", "City": "Charlotte", "State": "NC", "Premise": "Off", "Chain": "Harris Teeter", "Channel": "Supermarket", "Cases": 0.25},
     {"Account": "Food Lion 2290", "City": "Charlotte", "State": "NC", "Premise": "Off", "Chain": "(indep)", "Channel": "Supermarket", "Cases": 0.25},
     {"Account": "Ffla01 Unclassified Account", "City": "Geismar", "State": "LA", "Premise": "Off", "Chain": "(indep)", "Channel": "Unassigned", "Cases": 0.17},
     {"Account": "Hy-Vee  Rochester", "City": "Rochester", "State": "MN", "Premise": "Off", "Chain": "Hy Vee Wine & Spirits", "Channel": "Liquor/Package Store", "Cases": 0.08},
+    {"Account": "Kappa Foundation Of Pompano", "City": "Pompano Beach", "State": "FL", "Premise": "On", "Chain": "(indep)", "Channel": "Other On Premise", "Cases": 0.25},
+    {"Account": "The Straight & Narrow", "City": "Elizabethtown", "State": "KY", "Premise": "On", "Chain": "(indep)", "Channel": "Bar/Tavern", "Cases": 0.25},
+    {"Account": "Ambrosia", "City": "Boca Raton", "State": "FL", "Premise": "On", "Chain": "(indep)", "Channel": "Restaurant", "Cases": 0.08},
+    {"Account": "Oakwood Inn", "City": "Syracuse", "State": "IN", "Premise": "On", "Chain": "(indep)", "Channel": "Hotel/ Motel", "Cases": 0.08},
 ])
 new_pods_week = new_pods_week.sort_values(["Premise", "Cases"], ascending=[True, False]).reset_index(drop=True)
 
@@ -1157,8 +1161,27 @@ if active_tab == "Overview":
     npk_display = new_pods_week[["Account", "City", "State", "Premise", "Chain", "Channel", "Cases"]].copy()
     st.dataframe(
         npk_display, use_container_width=True, hide_index=True, height=380,
-        column_config={"Cases": st.column_config.NumberColumn("Cases", format="%.2f")},
+        column_config={"Cases": st.column_config.NumberColumn("YTD Cases", format="%.2f")},
     )
+
+    # ── First-timers below the 1/3-case threshold ─────────────────────────
+    # New methodology (Oct 2026 onward): accounts first appearing with
+    # <1/3 case YTD are flagged as likely one-off placements/tastings and
+    # NOT counted as real new PODs. Existing low-volume accounts are
+    # grandfathered (they stay in the POD count).
+    if 'new_pods_watchlist' in dir() and len(new_pods_watchlist):
+        st.markdown("<br>", unsafe_allow_html=True)
+        section_title(f"Watchlist · First-timers below 1/3 case ({len(new_pods_watchlist)})")
+        st.caption(
+            "Accounts that first appeared this week with fewer than 4 bottles YTD. "
+            "Not counted toward the new-POD total — these are typically one-off tastings "
+            "that haven't converted to repeat retail velocity yet. Watch for the next 1–2 weeks."
+        )
+        wl_display = new_pods_watchlist[["Account", "City", "State", "Premise", "Chain", "Channel", "Cases"]].copy()
+        st.dataframe(
+            wl_display, use_container_width=True, hide_index=True, height=260,
+            column_config={"Cases": st.column_config.NumberColumn("YTD Cases", format="%.2f")},
+        )
 
     # Highlight banner
     st.markdown(f"""
@@ -1643,17 +1666,14 @@ elif active_tab == "Sample Tracking":
         f"Note: {SAMPLES_NOTE}"
     )
 
-    # 3-KPI summary — Lucci / Ethica / Low-volume (new bucket for <1/3 case YTD)
+    # 3-KPI summary — Lucci / Ethica / Total
     lucci_row  = samples_by_funded_df[samples_by_funded_df["funded_by"] == "Lucci"]
     ethica_row = samples_by_funded_df[samples_by_funded_df["funded_by"] == "Ethica"]
-    unknown_row = samples_by_funded_df[samples_by_funded_df["funded_by"] == "Unknown"]
     lucci_ytd   = float(lucci_row["ytd_cases"].iloc[0])  if len(lucci_row)  else 0
     ethica_ytd  = float(ethica_row["ytd_cases"].iloc[0]) if len(ethica_row) else 0
-    unknown_ytd = float(unknown_row["ytd_cases"].iloc[0]) if len(unknown_row) else 0
     lucci_ct    = int(lucci_row["accounts"].iloc[0])  if len(lucci_row)  else 0
     ethica_ct   = int(ethica_row["accounts"].iloc[0]) if len(ethica_row) else 0
-    unknown_ct  = int(unknown_row["accounts"].iloc[0]) if len(unknown_row) else 0
-    smp1, smp2, smp3, smp4 = st.columns(4)
+    smp1, smp2, smp3 = st.columns(3)
     with smp1:
         st.markdown(kpi("Lucci-funded samples", f"{lucci_ytd:,.2f}",
                          f"{lucci_ct} accounts · marketing / activations", dark=True), unsafe_allow_html=True)
@@ -1661,10 +1681,7 @@ elif active_tab == "Sample Tracking":
         st.markdown(kpi("Ethica-funded samples", f"{ethica_ytd:,.2f}",
                          f"{ethica_ct} accounts · supplier arm / distributor / reps"), unsafe_allow_html=True)
     with smp3:
-        st.markdown(kpi("Likely tastings (<1/3 case)", f"{unknown_ytd:,.2f}",
-                         f"{unknown_ct} accounts · watchlist, still counted in PODs"), unsafe_allow_html=True)
-    with smp4:
-        total = lucci_ytd + ethica_ytd + unknown_ytd
+        total = lucci_ytd + ethica_ytd
         st.markdown(kpi("Total sample volume YTD", f"{total:,.2f}",
                          f"~{(total / (total + 4574) * 100):.1f}% of gross depletions" if (total + 4574) > 0 else ""), unsafe_allow_html=True)
 
