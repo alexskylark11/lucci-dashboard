@@ -1886,23 +1886,39 @@ elif active_tab == "Circana":
         )
 
         cc = circana_chains_df.copy()
-        # Visible columns + label polish
+        # Unpack the Ethica cross-reference columns from the nested dict so they're
+        # sortable in the dataframe. 'ethica' is a dict (or None for Circana-only).
+        def _ex(row, key, default=None):
+            d = row.get('ethica')
+            return d.get(key, default) if isinstance(d, dict) else default
+        cc['ethica_ytd']      = cc.apply(lambda r: _ex(r, 'ytd_cases'), axis=1)
+        cc['ethica_stores']   = cc.apply(lambda r: _ex(r, 'stores'), axis=1)
+        cc['ethica_sep']      = cc.apply(lambda r: _ex(r, 'sep_cases'), axis=1)
+        cc['ethica_oct']      = cc.apply(lambda r: _ex(r, 'oct_cases'), axis=1)
+        # Coverage ratio for a quick "how much of this chain does Circana capture?"
+        cc['circana_coverage_pct'] = cc.apply(
+            lambda r: (r['cases_L52W'] / r['ethica_ytd'] * 100) if r['ethica_ytd'] and r['ethica_ytd'] > 0 else None,
+            axis=1,
+        )
+
+        # Visible columns + label polish — use the UNIFIED display_name
         display_cols = {
-            'chain': 'Chain',
+            'display_name': 'Account',
             'bucket': 'Signal',
-            'cases_L52W': 'L52W Cases',
-            'cases_L13W': 'L13W Cases',
-            'cases_L4W':  'L4W Cases',
-            'rate_cases_4w': 'L4W Rate/wk',
+            'cases_L52W':    'Circana Cases (L52W)',
+            'cases_L4W':     'Circana Cases (L4W)',
+            'rate_cases_4w': 'L4W Rate (cases/wk)',
             'momentum_pct_vs_13w': 'Momentum % (L4W vs L13W)',
-            'stores_L52W': 'Stores L52W',
-            'stores_L4W':  'Stores L4W',
-            'stores_delta': 'Store Δ',
-            'stores_delta_pct': 'Store Δ %',
-            'vel_$_per_store_wk_L52W': '$/Store/Wk (L52W)',
-            'vel_$_per_store_wk_L4W':  '$/Store/Wk (L4W)',
-            'price_750': 'Avg $/750ml',
-            'merch_pct_L52W': 'Merch % (L52W)',
+            'stores_L52W':   'Circana Stores (L52W)',
+            'stores_L4W':    'Circana Stores (L4W)',
+            'stores_delta':  'Store Δ (L4W vs L52W)',
+            'ethica_ytd':    'Ethica YTD Cases',
+            'ethica_stores': 'Ethica Stores (YTD)',
+            'ethica_sep':    'Ethica Sep Cases',
+            'ethica_oct':    'Ethica Oct Cases',
+            'circana_coverage_pct': 'Circana % of Ethica',
+            'vel_$_per_store_wk_L4W': '$/Store/Wk (L4W)',
+            'price_750':     'Avg $/750ml',
         }
 
         # Default view: ACCELERATING + DORMANT first (actionable), rest below
@@ -1914,20 +1930,30 @@ elif active_tab == "Circana":
             cc_sorted[list(display_cols)].rename(columns=display_cols),
             use_container_width=True, hide_index=True, height=560,
             column_config={
-                'L52W Cases':  st.column_config.NumberColumn('L52W Cases', format='%.1f'),
-                'L13W Cases':  st.column_config.NumberColumn('L13W Cases', format='%.1f'),
-                'L4W Cases':   st.column_config.NumberColumn('L4W Cases',  format='%.1f'),
-                'L4W Rate/wk': st.column_config.NumberColumn('L4W Rate/wk', format='%.2f'),
+                'Account': st.column_config.TextColumn('Account', help='Unified display name — same account references across Circana and Ethica.'),
+                'Signal':  st.column_config.TextColumn('Signal'),
+                'Circana Cases (L52W)': st.column_config.NumberColumn('Circana Cases (L52W)', format='%.1f'),
+                'Circana Cases (L4W)':  st.column_config.NumberColumn('Circana Cases (L4W)',  format='%.1f'),
+                'L4W Rate (cases/wk)':  st.column_config.NumberColumn('L4W Rate (cases/wk)',  format='%.2f'),
                 'Momentum % (L4W vs L13W)': st.column_config.NumberColumn('Momentum (L4W vs L13W)', format='%+.1f%%'),
-                'Stores L52W': st.column_config.NumberColumn('Stores L52W', format='%d'),
-                'Stores L4W':  st.column_config.NumberColumn('Stores L4W',  format='%d'),
-                'Store Δ':     st.column_config.NumberColumn('Store Δ',     format='%+d'),
-                'Store Δ %':   st.column_config.NumberColumn('Store Δ %',   format='%+.1f%%'),
-                '$/Store/Wk (L52W)': st.column_config.NumberColumn('$/Store/Wk (L52W)', format='$%.2f'),
-                '$/Store/Wk (L4W)':  st.column_config.NumberColumn('$/Store/Wk (L4W)',  format='$%.2f'),
-                'Avg $/750ml':   st.column_config.NumberColumn('Avg $/750ml', format='$%.2f'),
-                'Merch % (L52W)':st.column_config.NumberColumn('Merch % (L52W)', format='%.1f%%'),
+                'Circana Stores (L52W)': st.column_config.NumberColumn('Circana Stores (L52W)', format='%d'),
+                'Circana Stores (L4W)':  st.column_config.NumberColumn('Circana Stores (L4W)',  format='%d'),
+                'Store Δ (L4W vs L52W)': st.column_config.NumberColumn('Store Δ (L4W vs L52W)', format='%+d'),
+                'Ethica YTD Cases':      st.column_config.NumberColumn('Ethica YTD Cases', format='%.1f', help='Depletions from Ethica — our primary source of truth.'),
+                'Ethica Stores (YTD)':   st.column_config.NumberColumn('Ethica Stores (YTD)', format='%d'),
+                'Ethica Sep Cases':      st.column_config.NumberColumn('Ethica Sep', format='%.1f'),
+                'Ethica Oct Cases':      st.column_config.NumberColumn('Ethica Oct', format='%.1f'),
+                'Circana % of Ethica':   st.column_config.NumberColumn('Circana % of Ethica', format='%.0f%%', help='What % of our Ethica depletions does Circana capture for this account?'),
+                '$/Store/Wk (L4W)':      st.column_config.NumberColumn('$/Store/Wk (L4W)', format='$%.2f'),
+                'Avg $/750ml':           st.column_config.NumberColumn('Avg $/750ml', format='$%.2f'),
             },
+        )
+        st.caption(
+            "⚖️  **Reading the cross-reference:** Circana ≠ Ethica by design. Ethica = cases *shipped by distributor* "
+            "(what we invoice). Circana = cases *scanned at register* (what consumers bought). Ethica numbers are higher because of "
+            "store inventory, non-scanned promo, and chain accounts aggregated at warehouse level. The 'Circana % of Ethica' column "
+            "is a coverage ratio, not a performance measure. For state liquor aggregates, Ethica is broader (all off-prem accounts) "
+            "than Circana's liquor-store panel."
         )
 
         # ── CALL LIST — the chains worth a phone call this week ────────────────
@@ -1947,16 +1973,51 @@ elif active_tab == "Circana":
             st.markdown("**📞 Possible reorder breakdown — verify in Ethica first:**")
             if len(_top_dormant):
                 for _, r in _top_dormant.iterrows():
-                    st.markdown(f"- **{r['chain']}** — stores {r['stores_L52W']}→{r['stores_L4W']} ({r['stores_delta']:+d}), velocity still ${r['vel_$_per_store_wk_L4W']:.2f}/store/wk")
+                    # Pull Ethica Sep as the quick cross-check number
+                    eth_sep = r['ethica'].get('sep_cases') if isinstance(r.get('ethica'), dict) else None
+                    eth_note = f" · Ethica Sep: {eth_sep:.1f}c" if eth_sep is not None else " · no Ethica match"
+                    st.markdown(f"- **{r['display_name']}** — stores {r['stores_L52W']}→{r['stores_L4W']} ({r['stores_delta']:+d}){eth_note}")
             else:
                 st.caption("No dormancy flags this week.")
         with colB:
             st.markdown("**🔥 Accelerating — double down:**")
             if len(_top_accel):
                 for _, r in _top_accel.iterrows():
-                    st.markdown(f"- **{r['chain']}** — L4W rate {r['rate_cases_4w']:.1f}/wk ({r['momentum_pct_vs_13w']:+.0f}% vs L13W rate), ${r['vel_$_per_store_wk_L4W']:.2f}/store/wk")
+                    eth_sep = r['ethica'].get('sep_cases') if isinstance(r.get('ethica'), dict) else None
+                    eth_note = f" · Ethica Sep: {eth_sep:.1f}c" if eth_sep is not None else " · Circana-only"
+                    st.markdown(f"- **{r['display_name']}** — L4W rate {r['rate_cases_4w']:.1f}/wk ({r['momentum_pct_vs_13w']:+.0f}% vs L13W){eth_note}")
             else:
                 st.caption("No acceleration flags this week.")
+
+        # ── ETHICA-ONLY CHAINS — accounts invisible to Circana ────────────────
+        _ethica_only_df = pd.DataFrame(_circana.get('ethica_only_chains', []))
+        if len(_ethica_only_df):
+            st.markdown("<br>", unsafe_allow_html=True)
+            section_title(f"Top accounts NOT captured by Circana ({len(_ethica_only_df)})")
+            st.caption(
+                "These chains show up in Ethica depletions but are **not in Circana's scanner panel**. "
+                "All velocity/trend changes here are invisible on the Circana tab — monitor them via "
+                "Depletions / POD Recency instead. Includes BevMo!, Binny's, Trader Joe's, Wine.com, "
+                "Harris Teeter, HEB Central Market, Spec's, and Eataly."
+            )
+            _rename = {
+                'chain': 'Account', 'ytd_cases': 'YTD Cases', 'stores': 'Stores',
+                'jul_cases': 'Jul', 'aug_cases': 'Aug', 'sep_cases': 'Sep', 'oct_cases': 'Oct',
+            }
+            _display_cols = [c for c in ['chain','ytd_cases','stores','jul_cases','aug_cases','sep_cases','oct_cases']
+                             if c in _ethica_only_df.columns]
+            st.dataframe(
+                _ethica_only_df[_display_cols].rename(columns=_rename),
+                use_container_width=True, hide_index=True, height=400,
+                column_config={
+                    'YTD Cases': st.column_config.NumberColumn('YTD Cases', format='%.1f'),
+                    'Stores':    st.column_config.NumberColumn('Stores', format='%d'),
+                    'Jul':       st.column_config.NumberColumn('Jul', format='%.1f'),
+                    'Aug':       st.column_config.NumberColumn('Aug', format='%.1f'),
+                    'Sep':       st.column_config.NumberColumn('Sep', format='%.1f'),
+                    'Oct':       st.column_config.NumberColumn('Oct', format='%.1f'),
+                },
+            )
 
         # ── Weekly headline trend (grows over time as new files land) ──────────
         if len(CIRCANA_HISTORY) >= 2:
