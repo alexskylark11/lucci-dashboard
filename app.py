@@ -911,6 +911,27 @@ new_pods_by_state_df = pd.DataFrame(_velocity["this_week_by_state"])
 new_pods_by_channel_on_df = pd.DataFrame(_velocity["this_week_by_channel_on"])
 new_pods_by_channel_off_df = pd.DataFrame(_velocity["this_week_by_channel_off"])
 
+# Circana retail-scan data (chain-level, delivered weekly ~2-3 weeks behind)
+_circana_path = os.path.join(os.path.dirname(__file__), "circana.json")
+if os.path.exists(_circana_path):
+    with open(_circana_path, "r", encoding="utf-8") as _f:
+        _circana = json.load(_f)
+    circana_chains_df = pd.DataFrame(_circana.get("chains", []))
+    CIRCANA_AS_OF = _circana.get("as_of")
+    CIRCANA_HEADLINE_GEO = _circana.get("headline_geo", "Total US Final Final")
+    CIRCANA_HEADLINE = _circana.get("headline", {})
+    CIRCANA_HISTORY = _circana.get("history", [])
+    CIRCANA_NOTES = _circana.get("notes", {})
+    CIRCANA_LOADED = True
+else:
+    circana_chains_df = pd.DataFrame()
+    CIRCANA_AS_OF = None
+    CIRCANA_HEADLINE_GEO = None
+    CIRCANA_HEADLINE = {}
+    CIRCANA_HISTORY = []
+    CIRCANA_NOTES = {}
+    CIRCANA_LOADED = False
+
 # State-level WEEKLY ACTUALS (kept for reference but no longer used in main UI)
 # State Performance now uses same-period comparison: Apr 1-24 vs Mar 1-27 from on_states/off_states.
 state_weekly = pd.DataFrame([
@@ -994,7 +1015,7 @@ top_accounts["% Growth"] = top_accounts.apply(
 # ══════════════════════════════════════════════════════════════════════════════
 active_tab = st.radio(
     "Dashboard",
-    ["Overview", "Shipments", "Depletions", "POD Recency", "Sample Tracking", "Account Explorer", "Gopuff", "ReserveBar"],
+    ["Overview", "Shipments", "Depletions", "POD Recency", "Sample Tracking", "Account Explorer", "Circana", "Gopuff", "ReserveBar"],
     horizontal=True,
     label_visibility="collapsed",
 )
@@ -1809,6 +1830,159 @@ elif active_tab == "Account Explorer":
             "Days Since": st.column_config.NumberColumn("Days Since", format="%d"),
         },
     )
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+# CIRCANA — retail-scan panel data (chain-level sell-through)
+# ══════════════════════════════════════════════════════════════════════════════
+elif active_tab == "Circana":
+    if not CIRCANA_LOADED:
+        st.warning("No Circana data loaded. Drop the latest 'Circana Lucci - Chains.xlsx' into Downloads and re-run the extractor.")
+    else:
+        st.caption(
+            f"📅 Circana retail-scan data as of **{CIRCANA_AS_OF}** · Headline aggregate: **{CIRCANA_HEADLINE_GEO}** · "
+            f"Captures ~35% of our off-premise, zero on-premise. Use as a scan-level velocity signal; "
+            f"Ethica depletions remain the primary source of truth."
+        )
+
+        # ── HEADLINE KPI STRIP ─────────────────────────────────────────────────
+        h = CIRCANA_HEADLINE
+        c1, c2, c3, c4, c5 = st.columns(5)
+        with c1:
+            st.markdown(kpi("Scanned Cases (L52W)",
+                             f"{h['L52W']['cases']:,.0f}",
+                             f"${h['L52W']['dollars']:,.0f} · ends {CIRCANA_AS_OF}", dark=True), unsafe_allow_html=True)
+        with c2:
+            st.markdown(kpi("Stores Selling (L52W)",
+                             f"{h['L52W']['stores']:,}",
+                             f"{h['L52W']['wks_in_dist']} weeks in distribution"), unsafe_allow_html=True)
+        with c3:
+            st.markdown(kpi("$ / Store / Week",
+                             f"${h['L52W']['vel_$_wk']:.2f}",
+                             f"L4W: ${h['L4W']['vel_$_wk']:.2f}"), unsafe_allow_html=True)
+        with c4:
+            # Momentum: L4W rate vs L13W rate
+            rate_4  = h['L4W']['rate_cases_wk']
+            rate_13 = h['L13W']['rate_cases_wk']
+            delta_pct = ((rate_4 / rate_13) - 1) * 100 if rate_13 > 0 else 0
+            st.markdown(kpi(f"L4W Rate (cases/wk)",
+                             f"{rate_4:.1f}",
+                             f"{delta_pct:+.0f}% vs L13W rate ({rate_13:.1f}/wk)"), unsafe_allow_html=True)
+        with c5:
+            st.markdown(kpi("Avg Retail (per 750ml)",
+                             f"${h['L52W']['price_750']:.2f}",
+                             "Hitting target ~$20"), unsafe_allow_html=True)
+
+        # ── ACCELERATION vs DORMANCY — the two most actionable signals ────────
+        st.markdown("<br>", unsafe_allow_html=True)
+        section_title("Chains · Buckets by signal")
+        st.caption(
+            "**ACCELERATING** = L4W velocity ≥15% above L13W rate (invest here). "
+            "**DORMANT** = store count down ≥20% but velocity holding — a REORDER breakdown, not a demand problem (call the distributor). "
+            "**DECLINING** = velocity down ≥15% with stable store base (consumer-pull problem). "
+            "**HEALTHY** = steady. "
+            "Click column headers to sort."
+        )
+
+        cc = circana_chains_df.copy()
+        # Visible columns + label polish
+        display_cols = {
+            'chain': 'Chain',
+            'bucket': 'Signal',
+            'cases_L52W': 'L52W Cases',
+            'cases_L13W': 'L13W Cases',
+            'cases_L4W':  'L4W Cases',
+            'rate_cases_4w': 'L4W Rate/wk',
+            'momentum_pct_vs_13w': 'Momentum % (L4W vs L13W)',
+            'stores_L52W': 'Stores L52W',
+            'stores_L4W':  'Stores L4W',
+            'stores_delta': 'Store Δ',
+            'stores_delta_pct': 'Store Δ %',
+            'vel_$_per_store_wk_L52W': '$/Store/Wk (L52W)',
+            'vel_$_per_store_wk_L4W':  '$/Store/Wk (L4W)',
+            'price_750': 'Avg $/750ml',
+            'merch_pct_L52W': 'Merch % (L52W)',
+        }
+
+        # Default view: ACCELERATING + DORMANT first (actionable), rest below
+        bucket_order = ['ACCELERATING','DORMANT','DECLINING','DECLINING_HARD','HEALTHY','CONCENTRATING','NEW']
+        cc['_sort'] = cc['bucket'].map({b:i for i,b in enumerate(bucket_order)}).fillna(99)
+        cc_sorted = cc.sort_values(['_sort', 'cases_L52W'], ascending=[True, False]).drop(columns=['_sort'])
+
+        st.dataframe(
+            cc_sorted[list(display_cols)].rename(columns=display_cols),
+            use_container_width=True, hide_index=True, height=560,
+            column_config={
+                'L52W Cases':  st.column_config.NumberColumn('L52W Cases', format='%.1f'),
+                'L13W Cases':  st.column_config.NumberColumn('L13W Cases', format='%.1f'),
+                'L4W Cases':   st.column_config.NumberColumn('L4W Cases',  format='%.1f'),
+                'L4W Rate/wk': st.column_config.NumberColumn('L4W Rate/wk', format='%.2f'),
+                'Momentum % (L4W vs L13W)': st.column_config.NumberColumn('Momentum (L4W vs L13W)', format='%+.1f%%'),
+                'Stores L52W': st.column_config.NumberColumn('Stores L52W', format='%d'),
+                'Stores L4W':  st.column_config.NumberColumn('Stores L4W',  format='%d'),
+                'Store Δ':     st.column_config.NumberColumn('Store Δ',     format='%+d'),
+                'Store Δ %':   st.column_config.NumberColumn('Store Δ %',   format='%+.1f%%'),
+                '$/Store/Wk (L52W)': st.column_config.NumberColumn('$/Store/Wk (L52W)', format='$%.2f'),
+                '$/Store/Wk (L4W)':  st.column_config.NumberColumn('$/Store/Wk (L4W)',  format='$%.2f'),
+                'Avg $/750ml':   st.column_config.NumberColumn('Avg $/750ml', format='$%.2f'),
+                'Merch % (L52W)':st.column_config.NumberColumn('Merch % (L52W)', format='%.1f%%'),
+            },
+        )
+
+        # ── CALL LIST — the chains worth a phone call this week ────────────────
+        st.markdown("<br>", unsafe_allow_html=True)
+        section_title("This week's call list")
+        _top_dormant = cc[cc['bucket'] == 'DORMANT'].sort_values('stores_delta').head(3)
+        _top_accel   = cc[cc['bucket'] == 'ACCELERATING'].sort_values('rate_cases_4w', ascending=False).head(3)
+        colA, colB = st.columns(2)
+        with colA:
+            st.markdown("**📞 Reorder breakdown — call distributor:**")
+            if len(_top_dormant):
+                for _, r in _top_dormant.iterrows():
+                    st.markdown(f"- **{r['chain']}** — stores {r['stores_L52W']}→{r['stores_L4W']} ({r['stores_delta']:+d}), velocity still ${r['vel_$_per_store_wk_L4W']:.2f}/store/wk")
+            else:
+                st.caption("No dormancy flags this week.")
+        with colB:
+            st.markdown("**🔥 Accelerating — double down:**")
+            if len(_top_accel):
+                for _, r in _top_accel.iterrows():
+                    st.markdown(f"- **{r['chain']}** — L4W rate {r['rate_cases_4w']:.1f}/wk ({r['momentum_pct_vs_13w']:+.0f}% vs L13W rate), ${r['vel_$_per_store_wk_L4W']:.2f}/store/wk")
+            else:
+                st.caption("No acceleration flags this week.")
+
+        # ── Weekly headline trend (grows over time as new files land) ──────────
+        if len(CIRCANA_HISTORY) >= 2:
+            st.markdown("<br>", unsafe_allow_html=True)
+            section_title("Weekly headline trend")
+            hist_df = pd.DataFrame(CIRCANA_HISTORY)
+            hist_df["as_of"] = pd.to_datetime(hist_df["as_of"])
+            st.line_chart(hist_df.set_index("as_of")[["headline_cases_L52W", "headline_stores"]])
+        else:
+            st.caption("_Weekly trend chart will populate as more Circana files are added (need 2+ snapshots)._")
+
+        # ── Methodology / caveats ──────────────────────────────────────────────
+        with st.expander("What this data captures (and doesn't)", expanded=False):
+            st.markdown(f"""
+**Captures:**
+{CIRCANA_NOTES.get('what_this_captures', '')}
+
+**Coverage vs Ethica:**
+{CIRCANA_NOTES.get('coverage_vs_ethica', '')}
+
+**Reporting lag:**
+{CIRCANA_NOTES.get('lag', '')}
+
+**Year-ago warning:**
+{CIRCANA_NOTES.get('ya_warning', '')}
+
+**How to read the buckets:**
+- **ACCELERATING** — L4W velocity is at least 15% above the L13W rate. Invest.
+- **DORMANT** — Store count dropped ≥20%, but velocity in remaining stores holds. Reorder/distribution breakdown. Call the distributor.
+- **DECLINING** — Velocity down ≥15%, stores stable. Consumer-pull problem. Marketing/sampling.
+- **DECLINING_HARD** — Both velocity down AND store count down ≥20%. Chain is actively dropping us.
+- **CONCENTRATING** — Store count down but velocity holding (not flagged DORMANT because store drop is <20%).
+- **HEALTHY** — Everything steady.
+            """)
 
 
 # ══════════════════════════════════════════════════════════════════════════════
