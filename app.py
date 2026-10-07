@@ -1861,13 +1861,14 @@ elif active_tab == "Circana":
                              f"${h['L52W']['vel_$_wk']:.2f}",
                              f"L4W: ${h['L4W']['vel_$_wk']:.2f}"), unsafe_allow_html=True)
         with c4:
-            # Momentum: L4W rate vs L13W rate
+            # Momentum: L4W rate vs L13W rate (short-term signal — recent 4 wks
+            # already included in the 13-wk mean, so a small +% means acceleration)
             rate_4  = h['L4W']['rate_cases_wk']
             rate_13 = h['L13W']['rate_cases_wk']
-            delta_pct = ((rate_4 / rate_13) - 1) * 100 if rate_13 > 0 else 0
+            delta_13 = ((rate_4 / rate_13) - 1) * 100 if rate_13 > 0 else 0
             st.markdown(kpi(f"L4W Rate (cases/wk)",
                              f"{rate_4:.1f}",
-                             f"{delta_pct:+.0f}% vs L13W rate ({rate_13:.1f}/wk)"), unsafe_allow_html=True)
+                             f"{delta_13:+.1f}% vs L13W trailing avg ({rate_13:.1f}/wk)"), unsafe_allow_html=True)
         with c5:
             st.markdown(kpi("Avg Retail (per 750ml)",
                              f"${h['L52W']['price_750']:.2f}",
@@ -1905,7 +1906,7 @@ elif active_tab == "Circana":
         }
 
         # Default view: ACCELERATING + DORMANT first (actionable), rest below
-        bucket_order = ['ACCELERATING','DORMANT','DECLINING','DECLINING_HARD','HEALTHY','CONCENTRATING','NEW']
+        bucket_order = ['ACCELERATING','DORMANT','DECLINING','DECLINING_HARD','HEALTHY','CONCENTRATING','NEW','LOW_VOLUME']
         cc['_sort'] = cc['bucket'].map({b:i for i,b in enumerate(bucket_order)}).fillna(99)
         cc_sorted = cc.sort_values(['_sort', 'cases_L52W'], ascending=[True, False]).drop(columns=['_sort'])
 
@@ -1932,11 +1933,18 @@ elif active_tab == "Circana":
         # ── CALL LIST — the chains worth a phone call this week ────────────────
         st.markdown("<br>", unsafe_allow_html=True)
         section_title("This week's call list")
+        st.caption(
+            "⚠️  **Always cross-check against Ethica depletions before calling.** "
+            "The DORMANT signal measures 'stores that scanned ≥1 bottle in the last 4 weeks' — "
+            "a chain whose stores order Lucci every 6-8 weeks will register as dormant without "
+            "any real distribution loss. If Ethica shows the chain's monthly ship volume rising, "
+            "it's slow cadence, not a real reorder gap."
+        )
         _top_dormant = cc[cc['bucket'] == 'DORMANT'].sort_values('stores_delta').head(3)
         _top_accel   = cc[cc['bucket'] == 'ACCELERATING'].sort_values('rate_cases_4w', ascending=False).head(3)
         colA, colB = st.columns(2)
         with colA:
-            st.markdown("**📞 Reorder breakdown — call distributor:**")
+            st.markdown("**📞 Possible reorder breakdown — verify in Ethica first:**")
             if len(_top_dormant):
                 for _, r in _top_dormant.iterrows():
                     st.markdown(f"- **{r['chain']}** — stores {r['stores_L52W']}→{r['stores_L4W']} ({r['stores_delta']:+d}), velocity still ${r['vel_$_per_store_wk_L4W']:.2f}/store/wk")
@@ -1975,13 +1983,21 @@ elif active_tab == "Circana":
 **Year-ago warning:**
 {CIRCANA_NOTES.get('ya_warning', '')}
 
-**How to read the buckets:**
+**How to read the buckets** (thresholds require ≥10 L52W cases and ≥10 stores for store-based signals; smaller chains default to LOW_VOLUME to avoid false alarms):
 - **ACCELERATING** — L4W velocity is at least 15% above the L13W rate. Invest.
 - **DORMANT** — Store count dropped ≥20%, but velocity in remaining stores holds. Reorder/distribution breakdown. Call the distributor.
 - **DECLINING** — Velocity down ≥15%, stores stable. Consumer-pull problem. Marketing/sampling.
 - **DECLINING_HARD** — Both velocity down AND store count down ≥20%. Chain is actively dropping us.
 - **CONCENTRATING** — Store count down but velocity holding (not flagged DORMANT because store drop is <20%).
 - **HEALTHY** — Everything steady.
+- **LOW_VOLUME** — Below the signal thresholds (noise floor). Track but don't act on single-week swings here.
+
+**Deduping applied** so chain rows don't double-count:
+- ADUSA family: kept parent "ADUSA Corp" only (dropped Delhaize / Food Lion / Ahold / Giant Martin's — all subsets or duplicates)
+- UNFI SuperValu: kept Independents row only (the "Total Enterprise" variant has identical values)
+- Albertsons: kept parent "AlbertsonsCo Corp" only (dropped SoCal Pavilions, Haggen Div — subsets)
+- State liquor: kept state aggregates only (dropped city-level Boston / Miami / Tampa / Jacksonville / Orlando / Denver / Atlanta — subsets of state).
+- Sum of deduped chain rows ≈ 72% of the headline aggregate — gap is regional/outlet aggregates not individually tracked. **Use the headline for totals; use chain rows for signals, not for summing.**
             """)
 
 
