@@ -64,12 +64,12 @@
       "kind": "CHAIN",
       "bucket": "HEALTHY",
       "ethica": {
-        "ytd_cases": 585.85,
-        "stores": 146,
-        "jul_cases": 93.77,
+        "ytd_cases": 596.83,
+        "stores": 147,
+        "jul_cases": 93.75,
         "aug_cases": 67.67,
-        "sep_cases": 85.01,
-        "oct_cases": 18.0
+        "sep_cases": 85.0,
+        "oct_cases": 29.0
       },
       "ethica_source": "Ethica depletions (10.02.26)",
       "mapping_note": "Chain-for-chain match with Ethica \"TOTAL WINE & MORE\".",
@@ -129,12 +129,12 @@
       "kind": "CHAIN",
       "bucket": "DORMANT",
       "ethica": {
-        "ytd_cases": 240.3,
-        "stores": 364,
-        "jul_cases": 23.16,
-        "aug_cases": 24.68,
+        "ytd_cases": 242.33,
+        "stores": 366,
+        "jul_cases": 23.17,
+        "aug_cases": 24.67,
         "sep_cases": 13.33,
-        "oct_cases": 2.16
+        "oct_cases": 4.17
       },
       "ethica_source": "Ethica depletions (10.02.26)",
       "mapping_note": "Ethica tracks the Food Lion banner; Circana rolls up all Ahold Delhaize USA banners (Food Lion + Giant/Martin's + Stop & Shop + Hannaford). Expect Circana > Ethica by the Giant/S&S/Hannaford share.",
@@ -165,12 +165,12 @@
       "kind": "STATE_LIQR",
       "bucket": "ACCELERATING",
       "ethica": {
-        "ytd_cases": 407.83,
+        "ytd_cases": 409.92,
         "stores": 94,
         "jul_cases": 48.42,
         "aug_cases": 26.83,
         "sep_cases": 30.83,
-        "oct_cases": 15.58
+        "oct_cases": 17.67
       },
       "ethica_source": "Ethica depletions (10.02.26)",
       "mapping_note": "Circana aggregates NJ liquor stores in its panel; Ethica NJ off-prem includes all retailer types.",
@@ -237,12 +237,12 @@
       "kind": "STATE_LIQR",
       "bucket": "DECLINING",
       "ethica": {
-        "ytd_cases": 348.85,
-        "stores": 90,
-        "jul_cases": 34.43,
-        "aug_cases": 25.16,
+        "ytd_cases": 352.42,
+        "stores": 92,
+        "jul_cases": 34.42,
+        "aug_cases": 25.17,
         "sep_cases": 27.25,
-        "oct_cases": 4.16
+        "oct_cases": 7.75
       },
       "ethica_source": "Ethica depletions (10.02.26)",
       "mapping_note": "Circana FL liquor panel; Ethica FL off-prem is broader.",
@@ -273,12 +273,12 @@
       "kind": "STATE_LIQR",
       "bucket": "DECLINING",
       "ethica": {
-        "ytd_cases": 103.32,
+        "ytd_cases": 106.33,
         "stores": 32,
         "jul_cases": 22.08,
-        "aug_cases": 15.16,
+        "aug_cases": 15.17,
         "sep_cases": 11.92,
-        "oct_cases": 1.0
+        "oct_cases": 4.0
       },
       "ethica_source": "Ethica depletions (10.02.26)",
       "mapping_note": "Circana MA liquor panel; Ethica MA off-prem is broader.",
@@ -309,12 +309,12 @@
       "kind": "STATE_LIQR",
       "bucket": "HEALTHY",
       "ethica": {
-        "ytd_cases": 46.92,
+        "ytd_cases": 49.92,
         "stores": 25,
         "jul_cases": 1.0,
         "aug_cases": 4.25,
-        "sep_cases": 28.41,
-        "oct_cases": 1.0
+        "sep_cases": 28.42,
+        "oct_cases": 4.0
       },
       "ethica_source": "Ethica depletions (10.02.26)",
       "mapping_note": "Circana WA liquor panel; Ethica WA off-prem is broader.",
@@ -345,12 +345,12 @@
       "kind": "STATE_LIQR",
       "bucket": "HEALTHY",
       "ethica": {
-        "ytd_cases": 490.01,
+        "ytd_cases": 494.5,
         "stores": 161,
-        "jul_cases": 63.09,
-        "aug_cases": 58.06,
+        "jul_cases": 63.08,
+        "aug_cases": 58.08,
         "sep_cases": 90.58,
-        "oct_cases": 29.84
+        "oct_cases": 34.33
       },
       "ethica_source": "Ethica depletions (10.02.26)",
       "mapping_note": "NY Metro only (no state-wide NY aggregate in Circana). Ethica NY off-prem is broader (statewide).",
@@ -417,12 +417,12 @@
       "kind": "STATE_LIQR",
       "bucket": "HEALTHY",
       "ethica": {
-        "ytd_cases": 40.26,
-        "stores": 34,
+        "ytd_cases": 41.33,
+        "stores": 35,
         "jul_cases": 11.08,
         "aug_cases": 9.08,
         "sep_cases": 1.0,
-        "oct_cases": 0.0
+        "oct_cases": 1.08
       },
       "ethica_source": "Ethica depletions (10.02.26)",
       "mapping_note": "Circana CO liquor panel; Ethica CO off-prem is broader.",
@@ -482,12 +482,12 @@
       "kind": "STATE_LIQR",
       "bucket": "LOW_VOLUME",
       "ethica": {
-        "ytd_cases": 20.17,
-        "stores": 14,
+        "ytd_cases": 20.92,
+        "stores": 16,
         "jul_cases": 1.0,
         "aug_cases": 2.0,
         "sep_cases": 2.42,
-        "oct_cases": 0.0
+        "oct_cases": 0.75
       },
       "ethica_source": "Ethica depletions (10.02.26)",
       "mapping_note": "Circana GA liquor panel; Ethica GA off-prem is broader.",
@@ -516,57 +516,57 @@
   "ethica_only_chains": [
     {
       "chain": "Eataly",
-      "ytd_cases": 391.16,
+      "ytd_cases": 402.17,
       "stores": 15,
       "jul_cases": 67.0,
       "aug_cases": 26.0,
       "sep_cases": 49.08,
-      "oct_cases": 12.0
+      "oct_cases": 23.0
     },
     {
       "chain": "Bevmo!",
-      "ytd_cases": 344.0,
+      "ytd_cases": 353.0,
       "stores": 145,
       "jul_cases": 54.0,
       "aug_cases": 33.0,
       "sep_cases": 29.0,
-      "oct_cases": 14.0
+      "oct_cases": 23.0
     },
     {
       "chain": "Wine.Com",
-      "ytd_cases": 215.92,
+      "ytd_cases": 216.92,
       "stores": 7,
       "jul_cases": 20.0,
       "aug_cases": 19.0,
       "sep_cases": 54.92,
-      "oct_cases": 46.0
+      "oct_cases": 47.0
     },
     {
       "chain": "Binnys Beverage Depot",
-      "ytd_cases": 197.99,
+      "ytd_cases": 201.0,
       "stores": 45,
       "jul_cases": 56.08,
       "aug_cases": 16.0,
       "sep_cases": 18.0,
-      "oct_cases": 5.0
+      "oct_cases": 8.0
     },
     {
       "chain": "Trader Joes",
-      "ytd_cases": 155.0,
+      "ytd_cases": 158.0,
       "stores": 16,
       "jul_cases": 26.0,
       "aug_cases": 25.0,
       "sep_cases": 28.0,
-      "oct_cases": 4.0
+      "oct_cases": 7.0
     },
     {
       "chain": "Garys Wine & Marketplace",
-      "ytd_cases": 77.0,
+      "ytd_cases": 78.0,
       "stores": 3,
       "jul_cases": 0.0,
       "aug_cases": 1.0,
       "sep_cases": 0.0,
-      "oct_cases": 0.0
+      "oct_cases": 1.0
     },
     {
       "chain": "Milams Markets",
@@ -597,30 +597,39 @@
     },
     {
       "chain": "Stew Leonards",
-      "ytd_cases": 42.0,
+      "ytd_cases": 43.0,
       "stores": 2,
       "jul_cases": 2.0,
       "aug_cases": 3.0,
       "sep_cases": 0.0,
-      "oct_cases": 0.0
-    },
-    {
-      "chain": "Harris Teeter",
-      "ytd_cases": 28.27,
-      "stores": 25,
-      "jul_cases": 4.01,
-      "aug_cases": 5.26,
-      "sep_cases": 13.74,
-      "oct_cases": 1.17
+      "oct_cases": 1.0
     },
     {
       "chain": "Capital One Lounge",
-      "ytd_cases": 28.17,
+      "ytd_cases": 35.17,
       "stores": 4,
       "jul_cases": 0.0,
       "aug_cases": 0.0,
       "sep_cases": 28.17,
-      "oct_cases": 0.0
+      "oct_cases": 7.0
+    },
+    {
+      "chain": "Harris Teeter",
+      "ytd_cases": 30.08,
+      "stores": 28,
+      "jul_cases": 4.0,
+      "aug_cases": 5.25,
+      "sep_cases": 13.75,
+      "oct_cases": 3.0
+    },
+    {
+      "chain": "H E B Central Market",
+      "ytd_cases": 29.42,
+      "stores": 6,
+      "jul_cases": 8.0,
+      "aug_cases": 6.0,
+      "sep_cases": 4.0,
+      "oct_cases": 2.0
     },
     {
       "chain": "Bottle King",
@@ -632,26 +641,35 @@
       "oct_cases": 2.0
     },
     {
-      "chain": "H E B Central Market",
-      "ytd_cases": 27.42,
-      "stores": 6,
-      "jul_cases": 8.0,
+      "chain": "Specs Warehouse",
+      "ytd_cases": 26.0,
+      "stores": 1,
+      "jul_cases": 0.0,
+      "aug_cases": 0.0,
+      "sep_cases": 12.0,
+      "oct_cases": 14.0
+    },
+    {
+      "chain": "True Food Kitchen",
+      "ytd_cases": 25.0,
+      "stores": 17,
+      "jul_cases": 0.0,
       "aug_cases": 6.0,
-      "sep_cases": 4.0,
-      "oct_cases": 0.0
+      "sep_cases": 0.0,
+      "oct_cases": 19.0
     },
     {
       "chain": "Haggen Food & Pharmacy",
-      "ytd_cases": 22.0,
+      "ytd_cases": 24.0,
       "stores": 14,
       "jul_cases": 0.0,
       "aug_cases": 1.0,
       "sep_cases": 21.0,
-      "oct_cases": 0.0
+      "oct_cases": 2.0
     },
     {
       "chain": "Vin Chicago",
-      "ytd_cases": 20.16,
+      "ytd_cases": 20.17,
       "stores": 2,
       "jul_cases": 0.0,
       "aug_cases": 0.0,
@@ -659,13 +677,13 @@
       "oct_cases": 0.0
     },
     {
-      "chain": "Specs Warehouse",
-      "ytd_cases": 19.0,
-      "stores": 1,
+      "chain": "Greens Discount Beverage Store",
+      "ytd_cases": 20.0,
+      "stores": 5,
       "jul_cases": 0.0,
       "aug_cases": 0.0,
-      "sep_cases": 12.0,
-      "oct_cases": 7.0
+      "sep_cases": 8.0,
+      "oct_cases": 12.0
     },
     {
       "chain": "Shoprite Liquors",
@@ -695,6 +713,15 @@
       "oct_cases": 0.0
     },
     {
+      "chain": "Safeway",
+      "ytd_cases": 14.0,
+      "stores": 14,
+      "jul_cases": 0.0,
+      "aug_cases": 2.0,
+      "sep_cases": 7.0,
+      "oct_cases": 5.0
+    },
+    {
       "chain": "Moxy Hotels",
       "ytd_cases": 13.0,
       "stores": 2,
@@ -704,15 +731,6 @@
       "oct_cases": 0.0
     },
     {
-      "chain": "True Food Kitchen",
-      "ytd_cases": 13.0,
-      "stores": 7,
-      "jul_cases": 0.0,
-      "aug_cases": 6.0,
-      "sep_cases": 0.0,
-      "oct_cases": 7.0
-    },
-    {
       "chain": "Sodexo Live!",
       "ytd_cases": 13.0,
       "stores": 1,
@@ -720,24 +738,6 @@
       "aug_cases": 5.0,
       "sep_cases": 2.0,
       "oct_cases": 0.0
-    },
-    {
-      "chain": "Specs Wholesale",
-      "ytd_cases": 12.17,
-      "stores": 2,
-      "jul_cases": 1.0,
-      "aug_cases": 2.0,
-      "sep_cases": 1.0,
-      "oct_cases": 0.0
-    },
-    {
-      "chain": "Buona Forchetta",
-      "ytd_cases": 12.0,
-      "stores": 4,
-      "jul_cases": 2.0,
-      "aug_cases": 0.0,
-      "sep_cases": 0.0,
-      "oct_cases": 1.0
     }
   ],
   "dropped_as_overlap": [

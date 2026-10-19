@@ -345,7 +345,25 @@
       "upcs_moving": 1.0,
       "weeks_in_dist": 35.0,
       "price_per_750ml": 19.84
+    },
+    {
+      "week_ending": "2026-10-16",
+      "dollar_sales": 328499.097940557,
+      "unit_sales": 16610.565996408463,
+      "volume_sales": 1383.660179380979,
+      "price_per_unit": 19.776514419291015,
+      "price_per_volume": 237.41313281670122,
+      "cat_wtd_dist": 7.229547905038083,
+      "total_pts_wtd_dist": 5.738225264208786,
+      "stores_selling": 1462.8532885876477,
+      "avg_wk_dollars_per_store": 33.37584894976659,
+      "avg_wk_units_per_store": 1.6764352051878553,
+      "wtd_avg_base_price": 20.181986345866015,
+      "wtd_avg_pct_price_reduction": 2.0090783911270096,
+      "upcs_moving": 1.0,
+      "weeks_in_dist": 36.0,
+      "price_per_750ml": 19.784427734725103
     }
   ],
-  "as_of": "2026-10-09"
+  "as_of": "2026-10-16"
 }

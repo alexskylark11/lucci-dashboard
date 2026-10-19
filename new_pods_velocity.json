@@ -75,47 +75,60 @@
       "week_ending": "2026-10-09",
       "total_pods": 2174,
       "new_pods": 56
+    },
+    {
+      "week_ending": "2026-10-16",
+      "total_pods": 2214,
+      "new_pods": 40
     }
   ],
   "this_week_by_state": [
     {
-      "state": "TX",
-      "count": 27
+      "state": "FL",
+      "count": 7
     },
     {
-      "state": "NY",
+      "state": "VA",
       "count": 6
     },
     {
+      "state": "LA",
+      "count": 5
+    },
+    {
+      "state": "TX",
+      "count": 4
+    },
+    {
+      "state": "SC",
+      "count": 4
+    },
+    {
+      "state": "IL",
+      "count": 3
+    },
+    {
       "state": "CA",
-      "count": 4
-    },
-    {
-      "state": "NC",
-      "count": 4
-    },
-    {
-      "state": "FL",
-      "count": 3
-    },
-    {
-      "state": "MI",
-      "count": 3
+      "count": 2
     },
     {
       "state": "AZ",
       "count": 2
     },
     {
-      "state": "NJ",
+      "state": "CO",
       "count": 2
     },
     {
-      "state": "IL",
-      "count": 1
+      "state": "NC",
+      "count": 2
     },
     {
-      "state": "CO",
+      "state": "GA",
+      "count": 2
+    },
+    {
+      "state": "NY",
       "count": 1
     },
     {
@@ -123,40 +136,44 @@
       "count": 1
     },
     {
-      "state": "DC",
+      "state": "DE",
       "count": 1
     },
     {
-      "state": "MA",
+      "state": "MD",
+      "count": 1
+    },
+    {
+      "state": "MN",
+      "count": 1
+    },
+    {
+      "state": "ME",
       "count": 1
     }
   ],
   "this_week_by_channel_on": [
     {
       "channel": "RESTAURANT",
-      "count": 16
-    },
-    {
-      "channel": "OTHER ON PREMISE",
-      "count": 3
+      "count": 17
     },
     {
       "channel": "HOTEL/ MOTEL",
       "count": 2
+    },
+    {
+      "channel": "BAR/TAVERN",
+      "count": 1
     }
   ],
   "this_week_by_channel_off": [
     {
-      "channel": "LIQUOR/PACKAGE STORE",
-      "count": 22
-    },
-    {
-      "channel": "OTHER OFF PREMISE",
-      "count": 6
-    },
-    {
       "channel": "SUPERMARKET",
-      "count": 6
+      "count": 15
+    },
+    {
+      "channel": "LIQUOR/PACKAGE STORE",
+      "count": 9
     },
     {
       "channel": "CONVENIENCE/ GAS",
