@@ -694,6 +694,8 @@ ship_monthly_cases = pd.DataFrame([
     {"Month": "May '26", "Cases": 490},
     {"Month": "Jun '26", "Cases": 520},
     {"Month": "Jul '26", "Cases": 691},
+    {"Month": "Aug '26", "Cases": 1318},
+    {"Month": "Sep '26", "Cases": 557},
 ])
 
 # Top accounts — chain data from Ethica 05.11.26 (samples removed)
@@ -1040,7 +1042,7 @@ st.markdown("---")
 # SHARED MONTH OPTIONS
 # ══════════════════════════════════════════════════════════════════════════════
 DEPL_MONTHS = ["Nov", "Dec", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct"]
-SHIP_MONTHS = ["Dec '25", "Jan '26", "Feb '26", "Mar '26", "Apr '26", "May '26", "Jun '26", "Jul '26"]
+SHIP_MONTHS = ["Dec '25", "Jan '26", "Feb '26", "Mar '26", "Apr '26", "May '26", "Jun '26", "Jul '26", "Aug '26", "Sep '26"]
 ALL_STATES = sorted(set(on_states["State"].tolist() + off_states["State"].tolist()))
 
 # ══════════════════════════════════════════════════════════════════════════════
@@ -1061,7 +1063,7 @@ if active_tab == "Overview":
     with c2:
         st.markdown(kpi("Total YTD PODs", "2,302", "29 active states", dark=True), unsafe_allow_html=True)
     with c3:
-        st.markdown(kpi("Cases Shipped", "6,822", "Dec '25 – Jul '26 · Aug pending"), unsafe_allow_html=True)
+        st.markdown(kpi("Cases Shipped", "8,697", "Dec '25 – Sep '26 · Oct pending"), unsafe_allow_html=True)
     with c4:
         st.markdown(kpi("Gopuff YTD Units", "169", f"29 locations · as of {GOPUFF_AS_OF}"), unsafe_allow_html=True)
     with c5:
@@ -1247,7 +1249,7 @@ if active_tab == "Overview":
 # SHIPMENTS & REVENUE
 # ══════════════════════════════════════════════════════════════════════════════
 elif active_tab == "Shipments":
-    st.caption("📅 Shipment data through Jul 2026 · Aug shipments pending from EW · Source: Lucci Payment Process file")
+    st.caption("📅 Shipment data through Sep 2026 · Oct shipments pending from EW · Source: Lucci Payment Process file")
     sh_months = st.multiselect("Filter by Month", SHIP_MONTHS, default=SHIP_MONTHS, key="sh_months")
     sc_filt = ship_monthly_cases[ship_monthly_cases["Month"].isin(sh_months)].reset_index(drop=True)
 
