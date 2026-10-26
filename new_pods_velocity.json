@@ -80,47 +80,48 @@
       "week_ending": "2026-10-16",
       "total_pods": 2214,
       "new_pods": 40
+    },
+    {
+      "week_ending": "2026-10-23",
+      "total_pods": 2261,
+      "new_pods": 54
     }
   ],
   "this_week_by_state": [
     {
       "state": "FL",
-      "count": 7
+      "count": 10
     },
     {
-      "state": "VA",
+      "state": "IL",
+      "count": 8
+    },
+    {
+      "state": "CA",
       "count": 6
     },
     {
-      "state": "LA",
+      "state": "NC",
       "count": 5
-    },
-    {
-      "state": "TX",
-      "count": 4
     },
     {
       "state": "SC",
       "count": 4
     },
     {
-      "state": "IL",
+      "state": "NY",
       "count": 3
     },
     {
-      "state": "CA",
+      "state": "LA",
+      "count": 3
+    },
+    {
+      "state": "NJ",
       "count": 2
     },
     {
-      "state": "AZ",
-      "count": 2
-    },
-    {
-      "state": "CO",
-      "count": 2
-    },
-    {
-      "state": "NC",
+      "state": "NV",
       "count": 2
     },
     {
@@ -128,7 +129,15 @@
       "count": 2
     },
     {
-      "state": "NY",
+      "state": "TX",
+      "count": 2
+    },
+    {
+      "state": "NE",
+      "count": 2
+    },
+    {
+      "state": "MA",
       "count": 1
     },
     {
@@ -136,48 +145,56 @@
       "count": 1
     },
     {
-      "state": "DE",
-      "count": 1
-    },
-    {
       "state": "MD",
       "count": 1
     },
     {
-      "state": "MN",
+      "state": "MO",
       "count": 1
     },
     {
-      "state": "ME",
+      "state": "WI",
       "count": 1
     }
   ],
   "this_week_by_channel_on": [
     {
       "channel": "RESTAURANT",
-      "count": 17
+      "count": 20
+    },
+    {
+      "channel": "BAR/TAVERN",
+      "count": 3
     },
     {
       "channel": "HOTEL/ MOTEL",
       "count": 2
     },
     {
-      "channel": "BAR/TAVERN",
+      "channel": "OTHER ON PREMISE",
+      "count": 1
+    },
+    {
+      "channel": "GOLF/ COUNTRY CLUB",
       "count": 1
     }
   ],
   "this_week_by_channel_off": [
     {
       "channel": "SUPERMARKET",
-      "count": 15
+      "count": 11
     },
     {
       "channel": "LIQUOR/PACKAGE STORE",
-      "count": 9
+      "count": 11
     },
     {
-      "channel": "CONVENIENCE/ GAS",
-      "count": 1
+      "channel": "OTHER OFF PREMISE",
+      "count": 3
+    },
+    {
+      "channel": "UNASSIGNED",
+      "count": 2
     }
   ]
 }
