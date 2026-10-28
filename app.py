@@ -409,6 +409,41 @@ def pct_change_fmt(val):
 # "New PODs" = accounts activated for the FIRST time in a given month.
 DEPLETION_AS_OF = "10/23/2026"
 
+# ─── REORDER METRICS + COHORT ANALYSIS ────────────────────────────────────
+# Rewritten by apply_dashboard_update.py from refresh_dashboard.py each week.
+# "Had time to reorder" excludes PODs whose first order fell in the current
+# partial month (they haven't had a chance to come back yet).
+REORDER_METRICS = {
+    "reorder_rate_pct":      42.7,
+    "reorder_rate_on_pct":   28.9,
+    "reorder_rate_off_pct":  49.6,
+    "reorder_count":         947,
+    "eligible_pods":         2220,
+    "reorder_cases":         3381.92,
+    "first_order_cases":     2793.92,
+    "reorder_volume_pct":    54.8,
+    "partial_month_split":   {
+        "month": "Oct",
+        "cases_from_existing_pods": 428.58,
+        "cases_from_new_pods":      145.67,
+        "pct_from_existing":        74.6,
+        "pct_from_new":             25.4,
+    },
+    "cohort_velocity": [
+        {"first_month": "Dec", "pods": 26, "avg_ytd_cases": 8.02, "months_tracked": 11, "avg_monthly_velocity": 0.73},
+        {"first_month": "Jan", "pods": 199, "avg_ytd_cases": 5.52, "months_tracked": 10, "avg_monthly_velocity": 0.55},
+        {"first_month": "Feb", "pods": 349, "avg_ytd_cases": 3.91, "months_tracked": 9, "avg_monthly_velocity": 0.43},
+        {"first_month": "Mar", "pods": 466, "avg_ytd_cases": 2.24, "months_tracked": 8, "avg_monthly_velocity": 0.28},
+        {"first_month": "Apr", "pods": 214, "avg_ytd_cases": 2.82, "months_tracked": 7, "avg_monthly_velocity": 0.4},
+        {"first_month": "May", "pods": 285, "avg_ytd_cases": 2.66, "months_tracked": 6, "avg_monthly_velocity": 0.44},
+        {"first_month": "Jun", "pods": 240, "avg_ytd_cases": 1.57, "months_tracked": 5, "avg_monthly_velocity": 0.31},
+        {"first_month": "Jul", "pods": 167, "avg_ytd_cases": 1.35, "months_tracked": 4, "avg_monthly_velocity": 0.34},
+        {"first_month": "Aug", "pods": 128, "avg_ytd_cases": 1.05, "months_tracked": 3, "avg_monthly_velocity": 0.35},
+        {"first_month": "Sep", "pods": 145, "avg_ytd_cases": 1.46, "months_tracked": 2, "avg_monthly_velocity": 0.73},
+        {"first_month": "Oct", "pods": 131, "avg_ytd_cases": 1.11, "months_tracked": 1, "avg_monthly_velocity": 1.11},
+    ],
+}
+
 grand_monthly = pd.DataFrame([
     {"Month": "Nov", "Cases": 0, "PODs": 0},
     {"Month": "Dec", "Cases": 26.50, "PODs": 27},
@@ -1077,9 +1112,14 @@ if active_tab == "Overview":
     with c3:
         st.markdown(kpi("Cases Shipped", "8,697", "Dec '25 – Sep '26 · Oct pending"), unsafe_allow_html=True)
     with c4:
-        st.markdown(kpi("Gopuff YTD Units", "169", f"29 locations · as of {GOPUFF_AS_OF}"), unsafe_allow_html=True)
+        _rr  = REORDER_METRICS["reorder_rate_pct"]
+        _rr_on  = REORDER_METRICS["reorder_rate_on_pct"]
+        _rr_off = REORDER_METRICS["reorder_rate_off_pct"]
+        st.markdown(kpi("Reorder Rate", f"{_rr:.1f}%", f"On {_rr_on:.0f}% · Off {_rr_off:.0f}% · of eligible PODs"), unsafe_allow_html=True)
     with c5:
-        st.markdown(kpi("ReserveBar Units", "86", "27 orders · as of 4/25/26"), unsafe_allow_html=True)
+        _rv  = REORDER_METRICS["reorder_volume_pct"]
+        _rc  = REORDER_METRICS["reorder_cases"]
+        st.markdown(kpi("Reorder Volume", f"{_rv:.1f}%", f"{_rc:,.0f} cases from repeat orders"), unsafe_allow_html=True)
 
     st.markdown("<br>", unsafe_allow_html=True)
     col1, col2 = st.columns(2)
@@ -1095,7 +1135,58 @@ if active_tab == "Overview":
             use_container_width=True,
         )
 
+    # ── BUSINESS HEALTH ──────────────────────────────────────────────────
+    st.markdown("<br>", unsafe_allow_html=True)
+    section_title("Business Health — Existing vs New PODs")
+    _pm = REORDER_METRICS["partial_month_split"]
+    _coh = REORDER_METRICS["cohort_velocity"]
+    # Running "existing" POD base = all cohorts BEFORE the partial month
+    _existing_pods = sum(c["pods"] for c in _coh if c["first_month"] != _pm["month"])
+    _existing_vel  = sum(c["pods"] * c["avg_monthly_velocity"] for c in _coh if c["first_month"] != _pm["month"]) / max(_existing_pods, 1)
+
+    bh1, bh2, bh3 = st.columns(3)
+    with bh1:
+        st.markdown(kpi(f"{_pm['month']} Cases from Existing PODs",
+                        f"{_pm['cases_from_existing_pods']:,.1f}",
+                        f"{_pm['pct_from_existing']:.0f}% of {_pm['month']} MTD · base of {_existing_pods:,} accounts",
+                        dark=True), unsafe_allow_html=True)
+    with bh2:
+        st.markdown(kpi(f"{_pm['month']} Cases from New PODs",
+                        f"{_pm['cases_from_new_pods']:,.1f}",
+                        f"{_pm['pct_from_new']:.0f}% of {_pm['month']} MTD · first-timers only"), unsafe_allow_html=True)
+    with bh3:
+        _new_pods = next((c["pods"] for c in _coh if c["first_month"]==_pm["month"]), 0)
+        _new_vel  = next((c["avg_monthly_velocity"] for c in _coh if c["first_month"]==_pm["month"]), 0)
+        st.markdown(kpi("Avg monthly velocity",
+                         f"{_existing_vel:.2f} / {_new_vel:.2f}",
+                         f"Existing vs new c/POD/month"), unsafe_allow_html=True)
+
+    # Cohort velocity table — avg cases/POD/month by first-order month
+    st.caption(
+        f"**Reading the cohort table:** each row is the group of accounts that FIRST depleted Lucci in that month. "
+        f"'Avg monthly velocity' = YTD cases ÷ months tracked, telling you how productive each cohort has been on average. "
+        f"Earlier cohorts have had more time to accumulate but should also show a steadier run-rate. "
+        f"Of {_pm['month']} 2026 depletions, **{_pm['pct_from_existing']:.0f}%** came from existing accounts and **{_pm['pct_from_new']:.0f}%** from brand-new placements — "
+        f"a healthy sign that new wins aren't masking soft performance in the base."
+    )
+    coh_df = pd.DataFrame(_coh).rename(columns={
+        "first_month":"First Month","pods":"PODs",
+        "avg_ytd_cases":"Avg YTD Cases/POD",
+        "months_tracked":"Months Tracked",
+        "avg_monthly_velocity":"Avg Monthly Velocity (c/POD)",
+    })
+    st.dataframe(
+        coh_df, use_container_width=True, hide_index=True, height=380,
+        column_config={
+            "PODs": st.column_config.NumberColumn("PODs", format="%d"),
+            "Avg YTD Cases/POD": st.column_config.NumberColumn("Avg YTD Cases/POD", format="%.2f"),
+            "Months Tracked": st.column_config.NumberColumn("Months Tracked", format="%d"),
+            "Avg Monthly Velocity (c/POD)": st.column_config.NumberColumn("Monthly Velocity (c/POD)", format="%.2f"),
+        },
+    )
+
     # Monthly detail — click column headers to sort
+    st.markdown("<br>", unsafe_allow_html=True)
     section_title("Monthly Detail")
     st.caption("Partial months (Sep) compare to same-period prior month (Oct 1-2 vs Oct 1-2). Click any column to sort.")
     cd_filt = channel_detail[channel_detail["Short"].isin(ov_months)].copy()
