@@ -235,7 +235,7 @@ st.markdown(f"""
         </div>
         <div style="text-align:right;">
             <p style="margin:0; font-size:10px; color:rgba(255,255,255,0.55); letter-spacing:0.12em; text-transform:uppercase;">Data as of</p>
-            <p style="margin:0; font-size:13px; color:rgba(255,255,255,0.95); font-weight:700;">Depletions: 11/06/26 &middot; Gopuff: 4/25/26 &middot; ReserveBar: 4/25/26</p>
+            <p style="margin:0; font-size:13px; color:rgba(255,255,255,0.95); font-weight:700;">Depletions: 11/13/26 &middot; Gopuff: 4/25/26 &middot; ReserveBar: 4/25/26</p>
         </div>
     </div>
     <p class="lucci-period">Sales Intelligence Dashboard &middot; Samples / internal accounts excluded from depletions</p>
@@ -1106,7 +1106,7 @@ if active_tab == "Overview":
     with c1:
         st.markdown(kpi("Total Depletions YTD", f"{total_cases:,.2f}", f"Cases · samples excl · as of {DEPLETION_AS_OF}", dark=True), unsafe_allow_html=True)
     with c2:
-        st.markdown(kpi("Total YTD PODs", "2,351", "29 active states", dark=True), unsafe_allow_html=True)
+        st.markdown(kpi("Total YTD PODs", "2,470", "32 active states", dark=True), unsafe_allow_html=True)
     with c3:
         st.markdown(kpi("Cases Shipped", "8,697", "Dec '25 – Sep '26 · Oct pending"), unsafe_allow_html=True)
     with c4:
@@ -1334,11 +1334,11 @@ if active_tab == "Overview":
                 <p style="margin:4px 0 0; font-size:11px; color:rgba(255,255,255,0.6); letter-spacing:0.1em;">TOTAL CASES</p>
             </div>
             <div style="text-align:center;">
-                <p style="margin:0; font-size:30px; font-weight:900; color:white; line-height:1;">2,351</p>
+                <p style="margin:0; font-size:30px; font-weight:900; color:white; line-height:1;">2,470</p>
                 <p style="margin:4px 0 0; font-size:11px; color:rgba(255,255,255,0.6); letter-spacing:0.1em;">TOTAL PODS</p>
             </div>
             <div style="text-align:center;">
-                <p style="margin:0; font-size:30px; font-weight:900; color:white; line-height:1;">28</p>
+                <p style="margin:0; font-size:30px; font-weight:900; color:white; line-height:1;">32</p>
                 <p style="margin:4px 0 0; font-size:11px; color:rgba(255,255,255,0.6); letter-spacing:0.1em;">STATES</p>
             </div>
         </div>
