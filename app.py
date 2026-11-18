@@ -423,11 +423,11 @@ REORDER_METRICS = {
     "first_order_cases":     2793.92,
     "reorder_volume_pct":    54.8,
     "partial_month_split":   {
-        "month": "Oct",
-        "cases_from_existing_pods": 428.58,
-        "cases_from_new_pods":      145.67,
-        "pct_from_existing":        74.6,
-        "pct_from_new":             25.4,
+        "month": "Nov MTD",
+        "cases_from_existing_pods": 262.98,
+        "cases_from_new_pods":      36.32,
+        "pct_from_existing":        87.9,
+        "pct_from_new":             12.1,
     },
     "cohort_velocity": [
         {"first_month": "Dec", "pods": 26, "avg_ytd_cases": 8.02, "months_tracked": 11, "avg_monthly_velocity": 0.73},
@@ -441,6 +441,7 @@ REORDER_METRICS = {
         {"first_month": "Aug", "pods": 128, "avg_ytd_cases": 1.05, "months_tracked": 3, "avg_monthly_velocity": 0.35},
         {"first_month": "Sep", "pods": 145, "avg_ytd_cases": 1.46, "months_tracked": 2, "avg_monthly_velocity": 0.73},
         {"first_month": "Oct", "pods": 131, "avg_ytd_cases": 1.11, "months_tracked": 1, "avg_monthly_velocity": 1.11},
+        {"first_month": "Nov MTD", "pods": 49, "avg_ytd_cases": 0.74, "months_tracked": 1, "avg_monthly_velocity": 0.74},
     ],
 }
 
@@ -1150,12 +1151,12 @@ if active_tab == "Overview":
     with bh1:
         st.markdown(kpi(f"{_pm['month']} Cases from Existing PODs",
                         f"{_pm['cases_from_existing_pods']:,.1f}",
-                        f"{_pm['pct_from_existing']:.0f}% of {_pm['month']} MTD · base of {_existing_pods:,} accounts",
+                        f"{_pm['pct_from_existing']:.0f}% of {_pm['month']} · base of {_existing_pods:,} accounts",
                         dark=True), unsafe_allow_html=True)
     with bh2:
         st.markdown(kpi(f"{_pm['month']} Cases from New PODs",
                         f"{_pm['cases_from_new_pods']:,.1f}",
-                        f"{_pm['pct_from_new']:.0f}% of {_pm['month']} MTD · first-timers only"), unsafe_allow_html=True)
+                        f"{_pm['pct_from_new']:.0f}% of {_pm['month']} · first-timers only"), unsafe_allow_html=True)
     with bh3:
         _new_pods = next((c["pods"] for c in _coh if c["first_month"]==_pm["month"]), 0)
         _new_vel  = next((c["avg_monthly_velocity"] for c in _coh if c["first_month"]==_pm["month"]), 0)
@@ -1616,7 +1617,7 @@ elif active_tab == "Depletions":
     # Top 15 accounts - toggleable (Overall / On / Off)
     st.markdown("<br>", unsafe_allow_html=True)
     section_title("Top 15 Accounts by YTD Depletions")
-    st.caption(f"As of {DEPLETION_AS_OF} · Apr is full month · Samples / internal accounts excluded · Source: Ethica depletion report")
+    st.caption(f"As of {DEPLETION_AS_OF} · Oct final · Samples / internal accounts excluded · Source: Ethica depletion report")
 
     acct_view = st.radio(
         "Account view",
@@ -1908,7 +1909,7 @@ elif active_tab == "Account Explorer":
 
     # Summary metrics for the current filter
     ae_cases = ae_filt["ytd_cases"].sum()
-    ae_oct_cases = ae_filt["oct"].sum() if "oct" in ae_filt.columns else 0
+    ae_nov_cases = ae_filt["nov26"].sum() if "nov26" in ae_filt.columns else 0
     ae_count = len(ae_filt)
     ae_states_filt = ae_filt["state"].nunique()
     aek1, aek2, aek3, aek4, aek5 = st.columns(5)
@@ -1917,7 +1918,7 @@ elif active_tab == "Account Explorer":
     with aek2:
         st.markdown(kpi("Filtered YTD Cases", f"{ae_cases:,.2f}", f"Across {ae_states_filt} state(s)"), unsafe_allow_html=True)
     with aek3:
-        st.markdown(kpi("Oct Cases", f"{ae_oct_cases:,.2f}", f"Through {DEPLETION_AS_OF}"), unsafe_allow_html=True)
+        st.markdown(kpi("Nov MTD Cases", f"{ae_nov_cases:,.2f}", f"Through {DEPLETION_AS_OF} (43% of month)"), unsafe_allow_html=True)
     with aek4:
         active = int((ae_filt["status"] == "Green").sum())
         st.markdown(kpi("🟢 Active (≤60d)", f"{active:,}", f"{round(active/max(ae_count,1)*100,1)}% of filtered"), unsafe_allow_html=True)
@@ -1928,12 +1929,12 @@ elif active_tab == "Account Explorer":
     # Prep display DataFrame — sortable via st.dataframe native click-to-sort
     ae_display = ae_filt[[
         "account", "city", "state", "premise", "chain", "channel",
-        "ytd_cases", "aug", "sep", "oct",
+        "ytd_cases", "sep", "oct", "nov26",
         "last_order_date", "days_since", "status",
     ]].copy()
     ae_display.columns = [
         "Account", "City", "State", "Premise", "Chain", "Channel",
-        "YTD Cases", "Aug", "Sep", "Oct",
+        "YTD Cases", "Sep", "Oct", "Nov MTD",
         "Last Order", "Days Since", "Status",
     ]
     ae_display = ae_display.sort_values("YTD Cases", ascending=False)
@@ -1944,9 +1945,9 @@ elif active_tab == "Account Explorer":
         use_container_width=True, height=650, hide_index=True,
         column_config={
             "YTD Cases": st.column_config.NumberColumn("YTD Cases", format="%.2f"),
-            "Aug":       st.column_config.NumberColumn("Aug", format="%.2f"),
             "Sep":       st.column_config.NumberColumn("Sep", format="%.2f"),
-            "Oct":   st.column_config.NumberColumn("Oct", format="%.2f"),
+            "Oct":       st.column_config.NumberColumn("Oct", format="%.2f"),
+            "Nov MTD":   st.column_config.NumberColumn("Nov MTD", format="%.2f"),
             "Days Since": st.column_config.NumberColumn("Days Since", format="%d"),
         },
     )
