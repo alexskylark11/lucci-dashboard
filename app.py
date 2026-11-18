@@ -1194,7 +1194,7 @@ if active_tab == "Overview":
     cd_filt = channel_detail[channel_detail["Short"].isin(ov_months)].copy()
     cd_display = cd_filt[["Month", "Total Depletions", "Compare Ref", "Depl Change vs LM", "% Change vs LM", "On-Premise", "Off-Premise"]].copy()
     st.dataframe(
-        cd_display, use_container_width=True, hide_index=True, height=340,
+        cd_display, use_container_width=True, hide_index=True, height=500,
         column_config={
             "Month":               st.column_config.TextColumn("Month"),
             "Total Depletions":    st.column_config.NumberColumn("Total Depletions", format="%.2f"),
@@ -1452,7 +1452,7 @@ elif active_tab == "Depletions":
     cd_filt = channel_detail[channel_detail["Short"].isin(dp_months)].copy()
     cd_display = cd_filt[["Month", "Total Depletions", "Total PODs", "Compare Ref", "Depl Change vs LM", "% Change vs LM", "On-Premise", "Off-Premise"]].copy()
     st.dataframe(
-        cd_display, use_container_width=True, hide_index=True, height=380,
+        cd_display, use_container_width=True, hide_index=True, height=530,
         column_config={
             "Month":               st.column_config.TextColumn("Month"),
             "Total Depletions":    st.column_config.NumberColumn("Total Depletions", format="%.2f"),
