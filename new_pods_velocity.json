@@ -1,5 +1,5 @@
 {
-  "as_of": "2026-10-02",
+  "as_of": "2026-11-13",
   "weekly": [
     {
       "week_ending": "2026-07-03",
@@ -85,35 +85,54 @@
       "week_ending": "2026-10-23",
       "total_pods": 2261,
       "new_pods": 54
+    },
+    {
+      "week_ending": "2026-10-30",
+      "total_pods": 2410,
+      "new_pods": 54
+    },
+    {
+      "week_ending": "2026-11-06",
+      "total_pods": 2434,
+      "new_pods": 26
+    },
+    {
+      "week_ending": "2026-11-13",
+      "total_pods": 2470,
+      "new_pods": 39
     }
   ],
   "this_week_by_state": [
     {
-      "state": "FL",
-      "count": 10
-    },
-    {
-      "state": "IL",
+      "state": "CA",
       "count": 8
     },
     {
-      "state": "CA",
-      "count": 6
-    },
-    {
-      "state": "NC",
+      "state": "FL",
       "count": 5
     },
     {
-      "state": "SC",
+      "state": "VA",
+      "count": 5
+    },
+    {
+      "state": "NC",
       "count": 4
     },
     {
-      "state": "NY",
+      "state": "NE",
+      "count": 4
+    },
+    {
+      "state": "IL",
       "count": 3
     },
     {
-      "state": "LA",
+      "state": "TX",
+      "count": 3
+    },
+    {
+      "state": "NY",
       "count": 3
     },
     {
@@ -121,7 +140,7 @@
       "count": 2
     },
     {
-      "state": "NV",
+      "state": "KY",
       "count": 2
     },
     {
@@ -129,15 +148,11 @@
       "count": 2
     },
     {
-      "state": "TX",
+      "state": "LA",
       "count": 2
     },
     {
-      "state": "NE",
-      "count": 2
-    },
-    {
-      "state": "MA",
+      "state": "AZ",
       "count": 1
     },
     {
@@ -145,29 +160,45 @@
       "count": 1
     },
     {
-      "state": "MD",
+      "state": "DC",
       "count": 1
     },
     {
-      "state": "MO",
+      "state": "IN",
       "count": 1
     },
     {
-      "state": "WI",
+      "state": "MN",
+      "count": 1
+    },
+    {
+      "state": "ME",
+      "count": 1
+    },
+    {
+      "state": "SC",
+      "count": 1
+    },
+    {
+      "state": "WA",
       "count": 1
     }
   ],
   "this_week_by_channel_on": [
     {
       "channel": "RESTAURANT",
-      "count": 20
+      "count": 16
     },
     {
       "channel": "BAR/TAVERN",
-      "count": 3
+      "count": 2
     },
     {
-      "channel": "HOTEL/ MOTEL",
+      "channel": "FINE DINING/ WHITE TABLECLOTH",
+      "count": 2
+    },
+    {
+      "channel": "GOLF/ COUNTRY CLUB",
       "count": 2
     },
     {
@@ -175,7 +206,7 @@
       "count": 1
     },
     {
-      "channel": "GOLF/ COUNTRY CLUB",
+      "channel": "HOTEL/ MOTEL",
       "count": 1
     }
   ],
@@ -186,15 +217,15 @@
     },
     {
       "channel": "LIQUOR/PACKAGE STORE",
-      "count": 11
+      "count": 10
     },
     {
       "channel": "OTHER OFF PREMISE",
-      "count": 3
+      "count": 5
     },
     {
-      "channel": "UNASSIGNED",
-      "count": 2
+      "channel": "FINE WINE STORE",
+      "count": 1
     }
   ]
 }
