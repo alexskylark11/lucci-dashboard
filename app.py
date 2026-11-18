@@ -729,6 +729,7 @@ ship_monthly_cases = pd.DataFrame([
     {"Month": "Jul '26", "Cases": 691},
     {"Month": "Aug '26", "Cases": 1318},
     {"Month": "Sep '26", "Cases": 557},
+    {"Month": "Oct '26", "Cases": 610},
 ])
 
 # Top accounts — chain data from Ethica 05.11.26 (samples removed)
@@ -1087,7 +1088,7 @@ st.markdown("---")
 # SHARED MONTH OPTIONS
 # ══════════════════════════════════════════════════════════════════════════════
 DEPL_MONTHS = ["Nov", "Dec", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct"]
-SHIP_MONTHS = ["Dec '25", "Jan '26", "Feb '26", "Mar '26", "Apr '26", "May '26", "Jun '26", "Jul '26", "Aug '26", "Sep '26"]
+SHIP_MONTHS = ["Dec '25", "Jan '26", "Feb '26", "Mar '26", "Apr '26", "May '26", "Jun '26", "Jul '26", "Aug '26", "Sep '26", "Oct '26"]
 ALL_STATES = sorted(set(on_states["State"].tolist() + off_states["State"].tolist()))
 
 # ══════════════════════════════════════════════════════════════════════════════
@@ -1108,7 +1109,7 @@ if active_tab == "Overview":
     with c2:
         st.markdown(kpi("Total YTD PODs", "2,470", "32 active states", dark=True), unsafe_allow_html=True)
     with c3:
-        st.markdown(kpi("Cases Shipped", "8,697", "Dec '25 – Sep '26 · Oct pending"), unsafe_allow_html=True)
+        st.markdown(kpi("Cases Shipped", "9,307", "Dec '25 – Oct '26 · 11 months"), unsafe_allow_html=True)
     with c4:
         _rr  = REORDER_METRICS["reorder_rate_pct"]
         _rr_on  = REORDER_METRICS["reorder_rate_on_pct"]
@@ -1350,7 +1351,7 @@ if active_tab == "Overview":
 # SHIPMENTS & REVENUE
 # ══════════════════════════════════════════════════════════════════════════════
 elif active_tab == "Shipments":
-    st.caption("📅 Shipment data through Sep 2026 · Oct shipments pending from EW · Source: Lucci Payment Process file")
+    st.caption("📅 Shipment data through Oct 2026 · Source: Lucci Payment Process + October 2026 Coms file")
     sh_months = st.multiselect("Filter by Month", SHIP_MONTHS, default=SHIP_MONTHS, key="sh_months")
     sc_filt = ship_monthly_cases[ship_monthly_cases["Month"].isin(sh_months)].reset_index(drop=True)
 
@@ -1464,8 +1465,8 @@ elif active_tab == "Depletions":
     st.markdown("<br>", unsafe_allow_html=True)
 
     # ── State Performance — Jun / Jul / Aug with new PODs ──
-    section_title("State Performance — Jul / Aug / Sep")
-    st.caption(f"As of {DEPLETION_AS_OF}. Aug, Sep, and Oct (1–30 of 31) are shown. 'YTD PODs' = unique accounts active YTD. 'New Aug/Sep/Oct PODs' = accounts that first depleted Lucci that month. Samples excluded.")
+    section_title("State Performance — Aug / Sep / Oct")
+    st.caption(f"As of {DEPLETION_AS_OF}. Aug, Sep, and Oct (final) are shown. 'YTD PODs' = unique accounts active YTD. 'New Aug/Sep/Oct PODs' = accounts that first depleted Lucci that month. Samples excluded.")
 
     state_view = st.radio(
         "View",
@@ -1566,7 +1567,7 @@ elif active_tab == "Depletions":
         return out
 
     section_title("Off-Premise by Trade Channel")
-    st.caption(f"As of {DEPLETION_AS_OF} · Jan 2026 → Oct 1–30 · '% vs Sep' compares Oct cases to Sep scaled to 30/31 days (same-period). Click any column to sort. Samples / internal excluded.")
+    st.caption(f"As of {DEPLETION_AS_OF} · Jan 2026 → Oct final · '% vs Sep' compares Oct cases to Sep. Click any column to sort. Samples / internal excluded.")
     tc_off = _tc_with_mtd(off_trade_channels)
     st.dataframe(
         tc_off[["Trade Channel", "YTD Cases", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "% vs Sep"]],
@@ -1588,7 +1589,7 @@ elif active_tab == "Depletions":
     )
 
     section_title("On-Premise by Trade Channel")
-    st.caption(f"As of {DEPLETION_AS_OF} · Jan 2026 → Oct 1–30 · '% vs Sep' compares Oct cases to Sep scaled to 30/31 days (same-period). Click any column to sort. Samples / internal excluded.")
+    st.caption(f"As of {DEPLETION_AS_OF} · Jan 2026 → Oct final · '% vs Sep' compares Oct cases to Sep. Click any column to sort. Samples / internal excluded.")
     tc_on = _tc_with_mtd(on_trade_channels)
     st.dataframe(
         tc_on[["Trade Channel", "YTD Cases", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "% vs Sep"]],
