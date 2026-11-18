@@ -1216,13 +1216,15 @@ if active_tab == "Overview":
 
     # ── NEW PODs THIS PAST WEEK ──────────────────────────────────────────────
     section_title("New PODs This Past Week")
-    n_total = len(new_pods_week)
-    n_on = int((new_pods_week["Premise"] == "On").sum())
-    n_off = int((new_pods_week["Premise"] == "Off").sum())
-    cs_total = new_pods_week["Cases"].sum()
-    cs_on = new_pods_week.loc[new_pods_week["Premise"] == "On", "Cases"].sum()
-    cs_off = new_pods_week.loc[new_pods_week["Premise"] == "Off", "Cases"].sum()
-    state_count = new_pods_week["State"].nunique()
+    # Combine real new + watchlist for totals so KPI matches week-over-week velocity series
+    _all_new = pd.concat([new_pods_week, new_pods_watchlist], ignore_index=True)
+    n_total = len(_all_new)
+    n_on = int((_all_new["Premise"] == "On").sum())
+    n_off = int((_all_new["Premise"] == "Off").sum())
+    cs_total = _all_new["Cases"].sum()
+    cs_on = _all_new.loc[_all_new["Premise"] == "On", "Cases"].sum()
+    cs_off = _all_new.loc[_all_new["Premise"] == "Off", "Cases"].sum()
+    state_count = _all_new["State"].nunique()
     # 4-week rolling avg from velocity for context
     velo = velocity_df.dropna(subset=["new_pods"])
     last4 = velo.tail(4)["new_pods"].mean() if len(velo) >= 4 else velo["new_pods"].mean() if len(velo) else 0

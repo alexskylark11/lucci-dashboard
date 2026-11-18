@@ -93,13 +93,13 @@
     },
     {
       "week_ending": "2026-11-06",
-      "total_pods": 2434,
-      "new_pods": 26
+      "total_pods": 2422,
+      "new_pods": 14
     },
     {
       "week_ending": "2026-11-13",
       "total_pods": 2470,
-      "new_pods": 39
+      "new_pods": 51
     }
   ],
   "this_week_by_state": [
