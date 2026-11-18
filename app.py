@@ -1311,7 +1311,7 @@ if active_tab == "Overview":
         section_title(f"Watchlist · First-timers below 1/3 case ({len(new_pods_watchlist)})")
         st.caption(
             "Accounts that first appeared this week with fewer than 4 bottles YTD. "
-            "Not counted toward the new-POD total — these are typically one-off tastings "
+            "Included in the new-POD total above but called out separately — these are typically one-off tastings "
             "that haven't converted to repeat retail velocity yet. Watch for the next 1–2 weeks."
         )
         wl_display = new_pods_watchlist[["Account", "City", "State", "Premise", "Chain", "Channel", "Cases"]].copy()
