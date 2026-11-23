@@ -1,5 +1,5 @@
 {
-  "as_of": "2026-11-13",
+  "as_of": "2026-11-20",
   "weekly": [
     {
       "week_ending": "2026-07-03",
@@ -100,55 +100,36 @@
       "week_ending": "2026-11-13",
       "total_pods": 2470,
       "new_pods": 51
+    },
+    {
+      "week_ending": "2026-11-20",
+      "total_pods": 2497,
+      "new_pods": 30
     }
   ],
   "this_week_by_state": [
     {
-      "state": "CA",
-      "count": 8
+      "state": "VA",
+      "count": 7
     },
     {
       "state": "FL",
-      "count": 5
+      "count": 6
     },
     {
-      "state": "VA",
-      "count": 5
-    },
-    {
-      "state": "NC",
-      "count": 4
-    },
-    {
-      "state": "NE",
-      "count": 4
-    },
-    {
-      "state": "IL",
+      "state": "CA",
       "count": 3
     },
     {
-      "state": "TX",
+      "state": "LA",
       "count": 3
     },
     {
       "state": "NY",
-      "count": 3
-    },
-    {
-      "state": "NJ",
       "count": 2
     },
     {
-      "state": "KY",
-      "count": 2
-    },
-    {
-      "state": "GA",
-      "count": 2
-    },
-    {
-      "state": "LA",
+      "state": "IL",
       "count": 2
     },
     {
@@ -156,19 +137,19 @@
       "count": 1
     },
     {
-      "state": "OH",
-      "count": 1
-    },
-    {
-      "state": "DC",
-      "count": 1
-    },
-    {
       "state": "IN",
       "count": 1
     },
     {
-      "state": "MN",
+      "state": "OR",
+      "count": 1
+    },
+    {
+      "state": "NJ",
+      "count": 1
+    },
+    {
+      "state": "MA",
       "count": 1
     },
     {
@@ -176,55 +157,59 @@
       "count": 1
     },
     {
-      "state": "SC",
-      "count": 1
-    },
-    {
-      "state": "WA",
+      "state": "TN",
       "count": 1
     }
   ],
   "this_week_by_channel_on": [
     {
       "channel": "RESTAURANT",
-      "count": 16
+      "count": 8
     },
     {
       "channel": "BAR/TAVERN",
-      "count": 2
-    },
-    {
-      "channel": "FINE DINING/ WHITE TABLECLOTH",
-      "count": 2
+      "count": 3
     },
     {
       "channel": "GOLF/ COUNTRY CLUB",
       "count": 2
     },
     {
-      "channel": "OTHER ON PREMISE",
-      "count": 1
+      "channel": "HOTEL/ MOTEL",
+      "count": 2
     },
     {
-      "channel": "HOTEL/ MOTEL",
+      "channel": "OTHER ON PREMISE",
       "count": 1
     }
   ],
   "this_week_by_channel_off": [
     {
       "channel": "SUPERMARKET",
-      "count": 11
-    },
-    {
-      "channel": "LIQUOR/PACKAGE STORE",
-      "count": 10
-    },
-    {
-      "channel": "OTHER OFF PREMISE",
       "count": 5
     },
     {
+      "channel": "LIQUOR/PACKAGE STORE",
+      "count": 3
+    },
+    {
       "channel": "FINE WINE STORE",
+      "count": 2
+    },
+    {
+      "channel": "OTHER OFF PREMISE",
+      "count": 1
+    },
+    {
+      "channel": "CONVENIENCE/ GAS",
+      "count": 1
+    },
+    {
+      "channel": "SMALL GROCERY STORE",
+      "count": 1
+    },
+    {
+      "channel": "WHOLESALE CLUB",
       "count": 1
     }
   ]
